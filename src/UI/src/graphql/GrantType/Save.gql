@@ -1,0 +1,10 @@
+mutation SaveGrantType($input: SaveGrantTypeInput!) {
+  saveGrantType(input: $input) {
+    grantType {
+      id
+      isCustom
+      name
+      tenants
+    }
+  }
+}

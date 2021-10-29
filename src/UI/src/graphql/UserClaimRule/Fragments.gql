@@ -1,0 +1,20 @@
+fragment UserClaimRule on UserClaimRule {
+  id
+  name
+  tenant
+  applicationId
+  tenantInfo {
+    color
+    id
+  }
+  rules {
+    claimType
+    environmentId
+    matchMode
+    value
+  }
+  claims {
+    type
+    value
+  }
+}

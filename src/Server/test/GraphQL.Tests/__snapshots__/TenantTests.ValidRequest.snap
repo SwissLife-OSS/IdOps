@@ -1,0 +1,10 @@
+﻿{
+  "data": {
+    "tenants": [
+      {
+        "id": "TestTenant",
+        "description": "testing"
+      }
+    ]
+  }
+}

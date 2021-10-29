@@ -1,12 +1,50 @@
 <Project>
   <PropertyGroup>
-    <CCSourceDirectory>$(MSBuildThisFileDirectory.TrimEnd('\').TrimEnd('/'))</CCSourceDirectory>
-    <CCSettingsProps>$([System.IO.Path]::Combine($(CCSourceDirectory), 'Settings.props'))</CCSettingsProps>
-    <CCVersionProps>$([System.IO.Path]::Combine($(CCSourceDirectory), 'Version.props'))</CCVersionProps>
-    <CCPackageProps>$([System.IO.Path]::Combine($(CCSourceDirectory), 'Package.props'))</CCPackageProps>
+    <PropsAbove>$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))</PropsAbove>
+  </PropertyGroup>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Versions.props', '$(MSBuildThisFileDirectory)'))" />
+  <Import Project="$(PropsAbove)" Condition="Exists($(PropsAbove))" />
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>IdOps</RootNamespace>
+    <Nullable>enable</Nullable>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
 
-  <Import Project="$(CCSettingsProps)" Condition="Exists('$(CCSettingsProps)')"/>
-  <Import Project="$(CCVersionProps)" Condition="Exists('$(CCVersionProps)')"/>
-  <Import Project="$(CCPackageProps)" Condition="Exists('$(CCPackageProps)')"/>
+  <PropertyGroup>
+    <Version Condition="$(Version) == ''">0.8.0-preview.36</Version>
+    <Product>IdOps</Product>
+    <Authors>Swiss Life authors and contributors</Authors>
+    <Company>Swiss Life</Company>
+    <Copyright>Copyright © $([System.DateTime]::Now.Year) $(Company)</Copyright>
+    <PackageLicenseUrl>https://github.com/SwissLife-OSS/IdOps/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/SwissLife-OSS/IdOps</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SwissLife-OSS/IdOps.git</RepositoryUrl>
+    <PackageReleaseNotes>Release notes: https://github.com/SwissLife-OSS/IdOps/releases/$(Version)</PackageReleaseNotes>
+    <PackageTags>idops identity</PackageTags>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageIconUrl>https://github.com/SwissLife-OSS/IdOps/raw/master/logo.png</PackageIconUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <IsPackable>false</IsPackable>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.0-beta-20204-02" PrivateAssets="All"/>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj\**</DefaultItemExcludes>
+  </PropertyGroup>
+
 </Project>

@@ -1,0 +1,9 @@
+#import "./Fragments.gql"
+
+mutation saveIdentityResource($input: SaveIdentityResourceInput!) {
+  saveIdentityResource(input: $input) {
+    identityResource {
+      ...IdentityResource
+    }
+  }
+}

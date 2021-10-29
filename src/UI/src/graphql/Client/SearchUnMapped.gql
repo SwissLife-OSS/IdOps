@@ -1,0 +1,6 @@
+query SearchUnMappedClients($input: String!) {
+  searchUnMappedClients(tenant: $input) {
+    id
+    name
+  }
+}

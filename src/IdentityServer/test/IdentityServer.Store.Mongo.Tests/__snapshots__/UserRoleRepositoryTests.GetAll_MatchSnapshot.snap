@@ -1,0 +1,15 @@
+﻿[
+  {
+    "Id": "Test1",
+    "Description": "Test Desc",
+    "Application": "UnitTest",
+    "Tenant": "TEST",
+    "Maps": [
+      {
+        "Type": "app",
+        "Value": "123",
+        "Environment": "A"
+      }
+    ]
+  }
+]

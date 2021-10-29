@@ -27,7 +27,7 @@ bld/
 # Visual Studio 2015/2017 cache/options directory
 .vs/
 # Uncomment if you have tasks that create the project's static files in wwwroot
-#wwwroot/
+wwwroot/
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/
@@ -55,7 +55,7 @@ BenchmarkDotNet.Artifacts/
 project.lock.json
 project.fragment.lock.json
 artifacts/
-**/Properties/launchSettings.json
+#**/Properties/launchSettings.json
 
 # StyleCop
 StyleCopReport.xml
@@ -165,7 +165,6 @@ DocProject/Help/Html2
 DocProject/Help/html
 
 # Click-Once directory
-publish/
 
 # Publish Web Output
 *.[Pp]ublish.xml
@@ -224,7 +223,7 @@ ClientBin/
 *.publishsettings
 orleans.codegen.cs
 
-# Including strong name files can present a security risk 
+# Including strong name files can present a security risk
 # (https://github.com/github/gitignore/pull/2483#issue-259490424)
 #*.snk
 
@@ -320,7 +319,7 @@ __pycache__/
 # OpenCover UI analysis results
 OpenCover/
 
-# Azure Stream Analytics local run output 
+# Azure Stream Analytics local run output
 ASALocalRun/
 
 # MSBuild Binary and Structured Log
@@ -329,12 +328,18 @@ ASALocalRun/
 # NVidia Nsight GPU debugger configuration file
 *.nvuser
 
-# MFractors (Xamarin productivity tool) working folder 
+# MFractors (Xamarin productivity tool) working folder
 .mfractor/
 
 .sonarqube/
 
 testoutput/
 
+.DS_Store
 tools/**
 !tools/packages.config
+.nuget/
+src/Server/src/AspNet/UI
+/src/Server/test/GraphQL.Tests/__snapshots__/__mismatch__
+appsettings.user.json
+__mismatch__

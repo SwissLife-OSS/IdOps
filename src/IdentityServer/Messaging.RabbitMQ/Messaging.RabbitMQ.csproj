@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>IdOps.IdentityServer.RabbitMq</AssemblyName>
+    <RootNamespace>IdOps.IdentityServer.RabbitMq</RootNamespace>
+    <PackageId>IdOps.IdentityServer.Messaging.RabbitMq</PackageId>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit.RabbitMQ" Version="$(MassTransitVersion)" />
+    <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="$(MassTransitVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\IdentityServer.Core\Core.csproj" />
+  </ItemGroup>
+</Project>

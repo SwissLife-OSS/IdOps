@@ -1,0 +1,15 @@
+query clientTemplates {
+  clientTemplates {
+    id
+    name
+    tenant
+    requireClientSecret
+    apiScopes
+    identityScopes
+    allowedGrantTypes
+    tenantInfo{
+        color
+        id
+      }
+  }
+}

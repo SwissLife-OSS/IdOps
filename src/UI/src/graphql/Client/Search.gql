@@ -1,0 +1,15 @@
+query SearchClients($input: SearchClientsInput!) {
+  searchClients(input: $input) {
+    hasMore
+    items {
+      id
+      clientId
+      environments
+      name
+      tenantInfo{
+        color
+        id
+      }
+    }
+  }
+}

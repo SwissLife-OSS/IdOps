@@ -1,9 +1,18 @@
-Work in Progress
+IdOps is a multi-tenant Identity Server resource management platform.
 
 ## Getting Started
+A local environment can be started using the `tye.yaml` configuration from the repository root.
 
+```powershell
+tye run
+```
+This will build and start the followings:
+- IdOps UI & Server
+- 2 x Identity Servers
+- MongoDB
+- RabbitMq
 ## Features
-
+Work in Progress
 ## Community
 
 This project has adopted the code of conduct defined by the [Contributor Covenant](https://contributor-covenant.org/)

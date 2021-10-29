@@ -1,0 +1,9 @@
+#import "./Fragments.gql"
+
+mutation addEnvironmentToApplication($input: AddEnvironmentToApplicationInput!) {
+  addEnvironmentToApplication(input: $input) {
+    application {
+      ...Application
+    }
+  }
+}

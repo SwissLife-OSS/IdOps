@@ -1,0 +1,6 @@
+#import "./Fragments.gql"
+query personalAccessTokenById($id: Uuid!) {
+  personalAccessToken(id: $id) {
+    ...PersonalAccessToken
+  }
+}

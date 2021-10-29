@@ -1,0 +1,22 @@
+mutation saveTenant($input: SaveTenantInput!) {
+  saveTenant(input: $input) {
+    tenant {
+      id
+      description
+      color
+      modules {
+        name
+        settings {
+          name
+          value
+        }
+      }
+          roleMappings{
+      role
+      claimValue
+      environmentId
+    }
+    emails
+    }
+  }
+}

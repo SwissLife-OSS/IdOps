@@ -1,0 +1,25 @@
+query searchIdentityServerEvents($input: SearchIdentityServerEventsInput!) {
+  searchIdentityServerEvents(input: $input) {
+    items {
+      activityId
+      category
+      clientId
+      endpoint
+      environmentName
+      eventId
+      eventType
+      hostname
+      id
+      localIpAddress
+      message
+      name
+      processId
+      remoteIpAddress
+      subjectId
+      timeStamp
+      rawData
+    }
+    hasMore
+    totalCount
+  }
+}

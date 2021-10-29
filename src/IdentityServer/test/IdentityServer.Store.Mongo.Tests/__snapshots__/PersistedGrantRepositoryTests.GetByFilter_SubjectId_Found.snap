@@ -1,0 +1,14 @@
+﻿[
+  {
+    "Key": "ABC",
+    "Type": "Z",
+    "SubjectId": "subject",
+    "SessionId": "Session",
+    "ClientId": "123",
+    "Description": null,
+    "CreationTime": "2020-09-03T18:36:42.872Z",
+    "Expiration": null,
+    "ConsumedTime": null,
+    "Data": null
+  }
+]

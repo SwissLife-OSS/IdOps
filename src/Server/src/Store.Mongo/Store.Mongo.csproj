@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>IdOps.Store.Mongo</AssemblyName>
+    <RootNamespace>IdOps.Store.Mongo</RootNamespace>
+    <PackageId>IdOps.Server.Store.Mongo</PackageId>
+    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Extensions.Context" Version="0.9.1" />
+    <PackageReference Include="MongoDB.Driver" Version="2.13.2" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

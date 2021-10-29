@@ -1,0 +1,35 @@
+﻿{
+  "Application": {
+    "Id": "aa69f6a7-e5bf-48c7-a6e2-3371d2503f53",
+    "Tenant": "Contoso",
+    "Name": "MyApplication",
+    "Title": "MyApplication",
+    "ApiScopes": [
+      "202badbf-7922-4832-8651-ac7984d44774",
+      "5772ee6f-216c-4298-855c-42d64b946a40"
+    ],
+    "IdentityScopes": [
+      "5135561c-6827-40c8-9f0f-3ffe8d1d9fbe"
+    ],
+    "RedirectUris": [
+      "https://asdf.ch"
+    ],
+    "PostLogoutRedirectUris": [],
+    "ClientIds": [
+      "d72c1f59-3244-4bb4-add7-5a5da9b272b4"
+    ],
+    "Version": null,
+    "AllowedGrantTypes": [
+      "asdf"
+    ],
+    "TemplateId": "5bc2dd66-f142-45fc-a7a7-e3b725f90147"
+  },
+  "Clients": [
+    {
+      "Id": "d72c1f59-3244-4bb4-add7-5a5da9b272b4",
+      "ClientId": null,
+      "Name": null,
+      "SecretValue": "fdasdfasdf"
+    }
+  ]
+}

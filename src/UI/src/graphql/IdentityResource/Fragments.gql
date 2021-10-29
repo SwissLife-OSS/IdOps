@@ -1,0 +1,20 @@
+fragment IdentityResource on IdentityResource
+{
+    id
+    name
+    displayName
+    description
+    enabled
+    tenants
+    userClaims
+    enabled
+    showInDiscoveryDocument
+    required
+    emphasize
+    identityServerGroupId
+    identityServerGroup{
+      id
+      name
+      color
+    }
+}

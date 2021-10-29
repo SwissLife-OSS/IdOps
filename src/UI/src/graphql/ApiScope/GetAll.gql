@@ -1,0 +1,7 @@
+#import "./Fragments.gql"
+
+query apiScopes($input: GetApiScopesInput) {
+  apiScopes(input: $input) {
+    ...ApiScope
+  }
+}

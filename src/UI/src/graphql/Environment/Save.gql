@@ -1,0 +1,9 @@
+mutation SaveEnvironment($input: SaveEnvironmentInput!) {
+  saveEnvironment(input: $input) {
+    environment {
+      id
+      name
+      order
+    }
+  }
+}

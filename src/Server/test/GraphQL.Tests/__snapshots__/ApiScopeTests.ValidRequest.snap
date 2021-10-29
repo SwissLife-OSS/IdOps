@@ -1,0 +1,13 @@
+﻿{
+  "data": {
+    "apiScopes": [
+      {
+        "id": "aaa375c78dfa4730a7a22f4a805c419a",
+        "name": "scope",
+        "tenant": "TestTenant",
+        "enabled": true,
+        "title": "scope"
+      }
+    ]
+  }
+}

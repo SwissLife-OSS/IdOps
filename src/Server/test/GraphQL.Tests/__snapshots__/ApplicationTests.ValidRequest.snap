@@ -1,0 +1,25 @@
+﻿{
+  "data": {
+    "createApplication": {
+      "application": {
+        "id": "379b5561cf554cc0b2f161260b7ccf10",
+        "name": "MyApplication",
+        "tenant": "TestTenant",
+        "templateId": "4a74d535d5c34e21b5b4137c27b2e6dc",
+        "allowedGrantTypes": [
+          "grantType"
+        ],
+        "redirectUris": [
+          "https://localhost"
+        ],
+        "identityScopes": [
+          "8cab598b78c34532a4257ae376abe5eb",
+          "5404b6fd223e435da28b9da695d7d6f6"
+        ],
+        "apiScopes": [
+          "39da2d550adc4b468ae0c9f80dc6b356"
+        ]
+      }
+    }
+  }
+}

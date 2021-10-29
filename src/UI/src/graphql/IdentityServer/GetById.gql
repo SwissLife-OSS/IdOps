@@ -1,0 +1,17 @@
+query getIdentityServerById($id: Uuid!) {
+  identityServer(id: $id) {
+    id
+    environmentId
+    groupId
+    url
+    name
+    keys {
+      kid
+      alg
+      serialNumber
+      subject
+      thumbprint
+      validUntil
+    }
+  }
+}

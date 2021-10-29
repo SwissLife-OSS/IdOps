@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>IdOps.IdentityServer.AzureServiceBus</AssemblyName>
+    <RootNamespace>IdOps.IdentityServer.AzureServiceBus</RootNamespace>
+    <PackageId>IdOps.IdentityServer.Messaging.AzureServiceBus</PackageId>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit.Azure.ServiceBus.Core" Version="$(MassTransitVersion)" />
+    <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="$(MassTransitVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\IdentityServer.Core\Core.csproj" />
+  </ItemGroup>
+
+</Project>

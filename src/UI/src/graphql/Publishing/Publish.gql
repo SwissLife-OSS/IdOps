@@ -1,0 +1,5 @@
+mutation PublishResource($input: PublishResourceInput!) {
+  publishResource(input: $input) {
+    resources
+  }
+}

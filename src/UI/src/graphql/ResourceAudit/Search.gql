@@ -1,0 +1,20 @@
+query searchAudit($input: SearchResourceAuditInput!) {
+  searchResourceAudits(input: $input) {
+    items {
+      id
+      resourceId
+      resourceType
+      userId
+      timestamp
+      version
+      action
+      changes {
+        before
+        after
+        property
+        delta
+        arrayIndex
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+fragment ApiScope on ApiScope {
+  id
+  name
+  displayName
+  description
+  showInDiscoveryDocument
+  enabled
+  tenant
+  tenantInfo{
+    color
+  }
+}

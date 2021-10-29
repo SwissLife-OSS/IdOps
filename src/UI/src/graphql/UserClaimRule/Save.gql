@@ -1,0 +1,9 @@
+#import "./Fragments.gql"
+
+mutation userClaimsRules($input: SaveUserClaimRuleInput!) {
+  saveUserClaimRule(input: $input) {
+    rule {
+      ...UserClaimRule
+    }
+  }
+}

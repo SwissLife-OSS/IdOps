@@ -1,0 +1,7 @@
+query environments {
+  environments {
+    id
+    name
+    order
+  }
+}

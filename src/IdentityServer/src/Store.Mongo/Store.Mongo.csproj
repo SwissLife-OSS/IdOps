@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>IdOps.IdentityServer.Store.Mongo</AssemblyName>
+    <RootNamespace>IdOps.IdentityServer.Store.Mongo</RootNamespace>
+    <PackageId>IdOps.IdentityServer.Store.Mongo</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Extensions.Context" Version="0.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

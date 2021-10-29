@@ -1,0 +1,95 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using MongoDB.Driver;
+
+namespace IdOps.Store.Mongo
+{
+    public abstract class ResourceStore<T> : IResourceStore<T>
+        where T : class, IResource, new()
+    {
+        private static readonly string _name = typeof(T).Name;
+
+        protected ResourceStore(IMongoCollection<T> collection)
+        {
+            Collection = collection;
+        }
+
+        protected IMongoCollection<T> Collection { get; }
+
+        public bool IsOfType(IResource resource) => resource is T;
+
+        public bool IsOfType(string resource) => resource == _name;
+
+        public abstract Task<IReadOnlyList<T>> GetResourceWithOpenApproval(
+            IEnumerable<Guid>? ids,
+            IEnumerable<string>? tenants,
+            CancellationToken cancellationToken);
+
+        public abstract Task<IReadOnlyList<T>> GetAllAsync(
+            IEnumerable<Guid>? ids,
+            IEnumerable<string>? tenants,
+            CancellationToken cancellationToken);
+
+        public virtual async Task<IReadOnlyList<T>> GetAllAsync(CancellationToken cancellationToken)
+            => await GetAllAsync(null, null, cancellationToken);
+
+        async Task<IReadOnlyList<IResource>> IResourceStore.GetByIdsAsync(
+            IEnumerable<Guid>? ids,
+            CancellationToken cancellationToken) =>
+            await GetByIdsAsync(ids, cancellationToken);
+
+        public Task<IReadOnlyList<T>> GetByIdsAsync(
+            IEnumerable<Guid>? ids,
+            CancellationToken cancellationToken) =>
+            GetAllAsync(ids, null, cancellationToken);
+
+        public virtual async Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            FilterDefinition<T>? filter = Builders<T>.Filter.Eq(x => x.Id, id);
+            return await Collection.Find(filter).SingleOrDefaultAsync(cancellationToken);
+        }
+
+        public virtual async Task<T> SaveAsync(T resource, CancellationToken cancellationToken)
+        {
+            FilterDefinition<T>? filter = Builders<T>.Filter.Eq(x => x.Id, resource.Id);
+            ReplaceOptions options = new() { IsUpsert = true };
+            await Collection.ReplaceOneAsync(filter, resource, options, cancellationToken);
+            return resource;
+        }
+
+        async Task<IReadOnlyList<IResource>> IResourceStore.GetResourceApprovals(
+            IEnumerable<Guid>? ids,
+            IEnumerable<string>? tenants,
+            CancellationToken cancellationToken) =>
+            await GetResourceWithOpenApproval(ids, tenants, cancellationToken);
+
+        async Task<IReadOnlyList<IResource>> IResourceStore.GetAllAsync(
+            IEnumerable<Guid>? ids,
+            IEnumerable<string>? tenants,
+            CancellationToken cancellationToken) =>
+            await GetAllAsync(ids, tenants, cancellationToken);
+
+        async Task<IResource> IResourceStore.GetByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken) =>
+            await GetByIdAsync(id, cancellationToken);
+
+        async Task<IReadOnlyList<IResource>> IResourceStore.GetAllAsync(
+            CancellationToken cancellationToken) =>
+            await GetAllAsync(cancellationToken);
+
+        async Task<IResource> IResourceStore.SaveAsync(
+            IResource resource,
+            CancellationToken cancellationToken)
+        {
+            if (resource is not T resourceOfT)
+            {
+                throw new ArgumentException($"Resource was not of type {_name}", nameof(resource));
+            }
+
+            return await SaveAsync(resourceOfT, cancellationToken);
+        }
+    }
+}

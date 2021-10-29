@@ -1,0 +1,9 @@
+#import "./Fragments.gql"
+
+mutation saveApiScope($input: SaveApiScopeInput!) {
+  saveApiScope(input: $input) {
+    apiScope {
+      ...ApiScope
+    }
+  }
+}

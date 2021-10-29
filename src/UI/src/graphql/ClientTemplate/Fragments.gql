@@ -1,0 +1,42 @@
+fragment ClientTemplate on ClientTemplate {
+  id
+  name
+  nameTemplate
+  urlTemplate
+  allowedGrantTypes
+  tenant
+  postLogoutRedirectUris
+  clientIdGenerator
+  secretGenerator
+  redirectUris
+  requirePkce
+  allowOfflineAccess
+  allowAccessTokensViaBrowser
+  requireClientSecret
+  apiScopes
+  identityScopes
+  dataConnectors{
+    enabled
+    name
+    profileTypeFilter
+    properties {
+      name
+      value
+    }
+  }
+  enabledProviders{
+    name
+    requestMfa
+    userIdClaimType
+  }
+  secrets{
+    type
+    value
+    environmentId
+    environment
+  }
+  tenantInfo{
+      color
+      id
+    }  
+}

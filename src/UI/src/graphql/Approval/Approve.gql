@@ -1,0 +1,5 @@
+mutation ApproveResources($input: ApproveResourcesInput!) {
+  approveResources(input: $input) {
+    resources
+  }
+}

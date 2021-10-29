@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>IdOps.Server.AspNet</AssemblyName>
+    <RootNamespace>IdOps.Server.AspNet</RootNamespace>
+    <PackageId>IdOps.Server.AspNet</PackageId>
+    <IsPackable>true</IsPackable>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(AspNetCoreVersion)" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="$(AspNetCoreVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(AspNetCoreVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Compile Remove="Program.Dev.cs" />
+    <Compile Remove="AuthenticationExtensions.Dev.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="UI/**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="UI\index.html" />
+  </ItemGroup>
+
+</Project>

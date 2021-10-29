@@ -1,0 +1,9 @@
+#import "./Fragments.gql"
+
+mutation CreateClient($input: CreateClientInput!) {
+  createClient(input: $input) {
+    client {
+      ... Client
+    }
+  }
+}

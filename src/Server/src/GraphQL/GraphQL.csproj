@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>IdOps.GraphQL</AssemblyName>
+    <RootNamespace>IdOps.GraphQL</RootNamespace>
+    <PackageId>IdOps.Server.GraphQL</PackageId>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HotChocolate.AspNetCore" Version="$(HotChocolateVersion)" />
+    <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="$(HotChocolateVersion)" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
+    <ProjectReference Include="..\Authorization\Authorization.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+
+</Project>

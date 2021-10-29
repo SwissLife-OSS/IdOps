@@ -1,0 +1,21 @@
+mutation () {
+  createClient (input: {
+      clientId: "client"
+      name: "MyClient",
+      tenant: "TestTenant",
+      allowedGrantTypes: ["grantType"],
+      environments: ["cff48ea9f6d8463a89a4152f4cb9b63a", "1954177776e54dd183e0e5736aeccedc"],
+      identityScopes: ["289e4b72eec44a7ead356a50f99070e2", "3fb18661a0b243b0abd834e738fe07ae"],
+      apiScopes: ["3fcb5372de9547a88fba0590f6f3262d", "cfbfd1e49c894eef89c1cca44b91183a"]
+    }) {
+    client {
+      id
+      name
+      tenant
+      allowedGrantTypes
+      environments
+      apiScopes
+      identityScopes
+    }
+  }
+}

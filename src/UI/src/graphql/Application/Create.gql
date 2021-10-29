@@ -1,0 +1,15 @@
+#import "./Fragments.gql"
+
+mutation CreateApplication($input: CreateApplicationInput!) {
+  createApplication(input: $input) {
+    application {
+      ...Application
+    }
+    clients {
+      id
+      clientId
+      name
+      secretValue
+    }
+  }
+}

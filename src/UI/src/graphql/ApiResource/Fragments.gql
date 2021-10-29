@@ -1,0 +1,21 @@
+fragment ApiResource on ApiResource {
+  id
+  name
+  displayName
+  description
+  enabled
+  tenant
+  tenantInfo{
+    color
+  }  
+  scopes {
+    id
+    name
+  }
+    apiSecrets {
+    id
+    description
+    value
+    type
+  }
+}

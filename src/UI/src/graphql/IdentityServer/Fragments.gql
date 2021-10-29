@@ -1,0 +1,7 @@
+fragment IdentityServer on IdentityServer {
+  id
+  environmentId
+  url
+  name
+  groupId
+}

@@ -1,0 +1,89 @@
+fragment Client on Client {
+  id
+  clientId
+  name
+  absoluteRefreshTokenLifetime
+  accessTokenLifetime
+  accessTokenType
+  allowAccessTokensViaBrowser
+  allowedCorsOrigins
+  allowedGrantTypes
+  allowedIdentityTokenSigningAlgorithms
+  allowedScopes {
+    id
+    type
+  }
+  apiScopes
+  identityScopes
+  allowOfflineAccess
+  allowPlainTextPkce
+  allowRememberConsent
+  alwaysIncludeUserClaimsInIdToken
+  alwaysSendClientClaims
+  authorizationCodeLifetime
+  backChannelLogoutSessionRequired
+  backChannelLogoutUri
+  claims {
+    type
+    value
+    valueType
+  }
+  clientClaimsPrefix
+  clientSecrets {
+    id
+    description
+    value
+    type
+  }
+  properties {
+    key
+    value
+  }
+  clientUri
+  consentLifetime
+  description
+  deviceCodeLifetime
+  frontChannelLogoutSessionRequired
+  frontChannelLogoutUri
+  identityTokenLifetime
+  includeJwtId
+  logoUri
+  pairWiseSubjectSalt
+  postLogoutRedirectUris
+  protocolType
+  redirectUris
+  refreshTokenExpiration
+  refreshTokenUsage
+  requireClientSecret
+  requireConsent
+  requirePkce
+  requireRequestObject
+  slidingRefreshTokenLifetime
+  tenant
+  updateAccessTokenClaimsOnRefresh
+  userCodeType
+  userSsoLifetime
+  environments
+  dataConnectors {
+    enabled
+    name
+    profileTypeFilter
+    properties {
+      name
+      value
+    }
+  }
+  enabledProviders {
+    name
+    requestMfa
+    userIdClaimType
+  }
+  application {
+    id
+    name
+  }
+  tenantInfo {
+    color
+    id
+  }
+}

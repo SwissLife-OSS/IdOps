@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <PropsAbove>$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))</PropsAbove>
+  </PropertyGroup>
+  <Import Project="$(PropsAbove)" Condition="Exists($(PropsAbove))"/>
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+</Project>

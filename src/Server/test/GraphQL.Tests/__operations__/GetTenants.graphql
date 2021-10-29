@@ -1,0 +1,6 @@
+query tenants {
+  tenants {
+    id
+    description
+  }
+}
