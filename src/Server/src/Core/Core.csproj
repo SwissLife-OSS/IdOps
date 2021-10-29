@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>IdOps.Core</AssemblyName>
+    <PackageId>IdOps.Server</PackageId>
+    <IsPackable>true</IsPackable>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Handlebars.Net" Version="2.0.4" />
+    <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="$(MassTransitVersion)" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="$(MassTransitVersion)" />
+    <PackageReference Include="MassTransit.Azure.ServiceBus.Core" Version="$(MassTransitVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
+    <PackageReference Include="AnyClone" Version="1.0.39" />
+    <PackageReference Include="AnyDiff" Version="1.0.83" />
+    <PackageReference Include="IdentityModel" Version="5.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="5.0.0" />
+    <PackageReference Include="System.Linq.Async" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="$(AspNetCoreVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="5.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\IdentityServer\src\Hashing\Hashing.csproj" />
+    <ProjectReference Include="..\..\..\IdentityServer\src\IdentityServer.Storage\IdentityServer.Storage.csproj" />
+    <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\ApiScope" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>IdOps.Authorization</AssemblyName>
+    <RootNamespace>IdOps.Authorization</RootNamespace>
+    <PackageId>IdOps.Server.Authorization</PackageId>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="$(HotChocolateVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
+  </ItemGroup>
+</Project>

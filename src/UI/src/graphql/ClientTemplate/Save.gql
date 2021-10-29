@@ -1,0 +1,9 @@
+#import "./Fragments.gql"
+
+mutation saveClientTemplate($input: SaveClientTemplateInput!) {
+  saveClientTemplate(input: $input) {
+    clientTemplate {
+      ...ClientTemplate
+    }
+  }
+}

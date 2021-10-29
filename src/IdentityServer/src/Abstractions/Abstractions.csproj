@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>IdOps.IdentityServer.Abstractions</AssemblyName>
+    <RootNamespace>IdOps.IdentityServer.Abstractions</RootNamespace>
+    <PackageId>IdOps.IdentityServer.Abstractions</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Duende.IdentityServer" Version="5.0.3" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(AspNetCoreVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IdentityServer.Storage\IdentityServer.Storage.csproj" />
+  </ItemGroup>
+
+</Project>

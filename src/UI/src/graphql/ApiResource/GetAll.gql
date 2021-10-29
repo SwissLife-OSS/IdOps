@@ -1,0 +1,7 @@
+#import "./Fragments.gql"
+
+query apiResources($input: GetApiResourcesInput!) {
+  apiResources(input: $input) {
+    ...ApiResource
+  }
+}

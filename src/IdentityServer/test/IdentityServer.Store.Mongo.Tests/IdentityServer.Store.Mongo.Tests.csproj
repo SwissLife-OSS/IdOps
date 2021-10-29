@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>IdOps.IdentityServer.Store.Mongo.Tests</AssemblyName>
+    <RootNamespace>IdOps.IdentityServer.Store.Mongo.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="Snapshooter.Xunit" Version="0.5.8" />
+    <PackageReference Include="Squadron.Mongo" Version="0.9.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Store.Mongo\Store.Mongo.csproj" />
+  </ItemGroup>
+
+</Project>

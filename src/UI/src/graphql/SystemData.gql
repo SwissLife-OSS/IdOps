@@ -1,0 +1,42 @@
+#import "../graphql/IdentityServer/Fragments.gql"
+
+query system {
+  tenants {
+    id
+    description
+    color
+    modules {
+      name
+      settings {
+        name
+        value
+      }
+    }
+    roleMappings{
+      role
+      claimValue
+      environmentId
+    }
+    emails
+  }
+
+  identityServers {
+    ...IdentityServer
+  }
+
+  identityServersGroups{
+    id
+    name
+    tenants
+  }
+
+  hashAlgorithms {
+    name
+  }
+
+  environments {
+    id
+    name
+    order
+  }
+}

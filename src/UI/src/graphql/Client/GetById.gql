@@ -1,0 +1,7 @@
+#import "./Fragments.gql"
+
+query getClient($id: Uuid!) {
+  client(id: $id) {
+    ...Client
+  }
+}

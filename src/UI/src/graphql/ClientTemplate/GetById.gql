@@ -1,0 +1,7 @@
+#import "./Fragments.gql"
+
+query getClientTemplate($id: Uuid!) {
+  clientTemplateById(id: $id) {
+    ...ClientTemplate
+  }
+}

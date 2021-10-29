@@ -1,0 +1,13 @@
+query apiScopes ($tenants: [String!]!) {
+  apiScopes (input:
+  {
+    tenants: $tenants
+  })
+  {
+    id
+    name
+    tenant
+    enabled
+    title
+  }
+}

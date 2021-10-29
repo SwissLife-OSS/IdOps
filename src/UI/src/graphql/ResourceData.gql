@@ -1,0 +1,53 @@
+#import "../graphql/ApiResource/Fragments.gql"
+#import "../graphql/ApiScope/Fragments.gql"
+#import "../graphql/IdentityResource/Fragments.gql"
+
+query resourceData{
+  apiScopes {
+    ...ApiScope
+  }
+
+  apiResources{
+    ... ApiResource
+  }
+
+  identityResources {
+    ... IdentityResource
+  }
+
+  grantTypes {
+    id
+    name
+    isCustom
+    tenants
+  }
+
+  accessTokenType: __type(name: "AccessTokenType") {
+    values: enumValues {
+      ...EnumValue
+    }
+  }
+
+  tokenExpiration: __type(name: "TokenExpiration") {
+    values: enumValues {
+      ...EnumValue
+    }
+  }
+
+  tokenUsage: __type(name: "TokenUsage") {
+    values: enumValues {
+      ...EnumValue
+    }
+  }
+
+  connectorProfileTypes: __type(name: "ConnectorProfileType") {
+    values: enumValues {
+      ...EnumValue
+    }
+  }
+}
+
+fragment EnumValue on __EnumValue {
+  value: name
+  text
+}

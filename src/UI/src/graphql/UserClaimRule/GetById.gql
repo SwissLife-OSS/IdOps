@@ -1,0 +1,7 @@
+#import "./Fragments.gql"
+
+query getUserClaimRule($id: Uuid!) {
+  userClaimsRule(id: $id) {
+    ...UserClaimRule
+  }
+}

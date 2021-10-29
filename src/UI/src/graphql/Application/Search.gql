@@ -1,0 +1,13 @@
+query SearchApplications($input: SearchApplicationsInput!) {
+  searchApplications(input: $input) {
+    hasMore
+    items {
+      id
+      name
+      tenantInfo{
+        color
+        id
+      }  
+    }
+  }
+}

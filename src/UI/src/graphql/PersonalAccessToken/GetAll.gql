@@ -1,0 +1,6 @@
+#import "./Fragments.gql"
+query personalAccessTokens($input: GetPersonalAccessTokensInput!) {
+  personalAccessTokens(input: $input) {
+    ...PersonalAccessToken
+  }
+}

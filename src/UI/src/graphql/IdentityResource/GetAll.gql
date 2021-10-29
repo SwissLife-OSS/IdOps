@@ -1,0 +1,7 @@
+#import "./Fragments.gql"
+
+query identityResources($input: GetIdentityResourcesInput) {
+  identityResources(input: $input) {
+    ...IdentityResource
+  }
+}

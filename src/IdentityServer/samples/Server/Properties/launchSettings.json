@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "Sample.IdentityServer": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "IdOps__Environment": "A"
+      },
+      "dotnetRunMessages": "true",
+      "applicationUrl": "https://localhost:5010"
+    }
+  }
+}

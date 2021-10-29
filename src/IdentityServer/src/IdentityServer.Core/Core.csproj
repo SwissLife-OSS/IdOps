@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>IdOps.IdentityServer.Core</AssemblyName>
+    <RootNamespace>IdOps.IdentityServer</RootNamespace>
+    <PackageId>IdOps.IdentityServer</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Consumers\**" />
+    <EmbeddedResource Remove="Consumers\**" />
+    <None Remove="Consumers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
+    <PackageReference Include="Duende.IdentityServer" Version="$(IdentityServerVersion)" />
+    <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="$(MassTransitVersion)" />
+    <PackageReference Include="FluentValidation" Version="9.2.0" />
+    <ProjectReference Include="..\Hashing\Hashing.csproj" />
+  </ItemGroup>
+
+</Project>

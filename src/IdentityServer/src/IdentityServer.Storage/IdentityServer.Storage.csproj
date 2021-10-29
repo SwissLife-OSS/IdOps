@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+
+  <PropertyGroup>
+    <AssemblyName>IdOps.IdentityServer.Storage</AssemblyName>
+    <RootNamespace>IdOps.IdentityServer</RootNamespace>
+    <PackageId>IdOps.IdentityServer.Storage</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Duende.IdentityServer.Storage" Version="$(IdentityServerVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hashing\Hashing.csproj" />
+  </ItemGroup>
+
+</Project>

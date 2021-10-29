@@ -1,0 +1,17 @@
+query userClaimsRules($input: GetUserClaimRulesInput!) {
+  userClaimsRules(input: $input) {
+    id
+    name
+    tenant
+    tenantInfo {
+      color
+      id
+    }
+  }
+  claimRuleMatchModes: __type(name: "ClaimRuleMatchMode") {
+    values: enumValues {
+      value: name
+      text
+    }
+  }
+}

@@ -1,0 +1,16 @@
+query dependencies($input: GetDependenciesInput!) {
+  dependencies(input: $input) {
+    apiScopes {
+      title
+      id
+    }
+    identityResources {
+      title
+      id
+    }
+    apiResources {
+      title
+      id
+    }
+  }
+}

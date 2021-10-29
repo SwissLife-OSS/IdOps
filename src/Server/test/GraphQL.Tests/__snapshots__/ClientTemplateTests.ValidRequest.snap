@@ -1,0 +1,25 @@
+﻿{
+  "data": {
+    "clientTemplates": [
+      {
+        "id": "443680dbca114aa09a5b6eceb1ba1671",
+        "name": "Template1",
+        "tenant": "TestTenant",
+        "apiScopes": [
+          "4986e94402f04afeb0768288457b7bf1",
+          "d5684d9f86a747f187c161ed2bc3407c"
+        ],
+        "identityScopes": [
+          "2c654c8558a44236bdd5e9ad40beb953"
+        ],
+        "secrets": [
+          {
+            "environmentId": "34ca1d86dd6d4837bb9aeeeeb591fef9",
+            "type": "SharedSecret",
+            "value": "***"
+          }
+        ]
+      }
+    ]
+  }
+}

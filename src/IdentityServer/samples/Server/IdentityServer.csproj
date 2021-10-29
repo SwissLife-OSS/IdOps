@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <AssemblyName>IdOps.IdentityServer.Samples.Host</AssemblyName>
+    <RootNamespace>IdOps.IdentityServer.Samples</RootNamespace>
+    <UserSecretsId>e6c6b12a-8730-4e71-b02b-f9c1d1e9e859</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.0" />
+    <PackageReference Include="MassTransit.AspNetCore" Version="$(MassTransitVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Messaging.AzureServiceBus\Messaging.AzureServiceBus.csproj" />
+    <ProjectReference Include="..\..\Messaging.RabbitMQ\Messaging.RabbitMQ.csproj" />
+    <ProjectReference Include="..\..\src\IdentityServer.Core\Core.csproj" />
+    <ProjectReference Include="..\..\src\Store.Mongo\Store.Mongo.csproj" />
+  </ItemGroup>
+
+</Project>

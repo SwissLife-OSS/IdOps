@@ -1,0 +1,22 @@
+query PublishedResources($input: PublishedResourcesInput) {
+  publishedResouces(input: $input) {
+    currentVersion {
+      version
+      createdBy
+      createdAt
+    }
+    id
+    type
+    title
+
+    environments {
+      environment {
+        id
+        name
+      }
+      version
+      publishedAt
+      state
+    }
+  }
+}

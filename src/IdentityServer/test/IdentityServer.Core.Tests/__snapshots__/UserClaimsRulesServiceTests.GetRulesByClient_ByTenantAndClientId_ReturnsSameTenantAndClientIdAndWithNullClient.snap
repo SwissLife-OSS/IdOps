@@ -1,0 +1,18 @@
+﻿[
+  {
+    "Name": "b",
+    "Tenant": "Tenant_A",
+    "ClientIds": [],
+    "Rules": [],
+    "Claims": [],
+    "Source": null
+  },
+  {
+    "Name": "c",
+    "Tenant": "Tenant_B",
+    "ClientIds": [],
+    "Rules": [],
+    "Claims": [],
+    "Source": null
+  }
+]

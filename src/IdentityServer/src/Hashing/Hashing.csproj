@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>IdOps.IdentityServer.Hashing</AssemblyName>
+    <RootNamespace>IdOps.IdentityServer.Hashing</RootNamespace>
+    <PackageId>IdOps.IdentityServer.Hashing</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="5.0.9" />
+  </ItemGroup>
+</Project>

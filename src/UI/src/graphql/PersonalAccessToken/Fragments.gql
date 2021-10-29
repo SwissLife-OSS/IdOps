@@ -1,0 +1,26 @@
+fragment PersonalAccessToken on PersonalAccessToken{
+  id
+  title
+  userName
+  environmentId
+  tokens {
+    id
+    token
+    expiresAt
+    createdAt
+  }
+  createdAt
+  allowedScopes
+  allowedApplicationIds
+  source
+  hashAlgorithm
+  tenant
+  claimsExtensions {
+    type
+    value
+  }
+  tenantInfo {
+    color
+    id
+  }
+}

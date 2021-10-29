@@ -1,0 +1,14 @@
+query clientTemplates {
+  clientTemplates {
+    id
+    name
+    tenant
+    apiScopes
+    identityScopes
+    secrets {
+      environmentId
+      type
+      value
+    }
+  }
+}

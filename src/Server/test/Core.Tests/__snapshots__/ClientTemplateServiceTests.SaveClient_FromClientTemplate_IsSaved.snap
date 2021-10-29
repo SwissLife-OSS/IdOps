@@ -1,0 +1,14 @@
+﻿{
+  "Id": "8d775725-ecab-415c-96f0-8419aa880c29",
+  "Tenant": "TenantTest",
+  "Name": null,
+  "Title": null,
+  "ApiScopes": [],
+  "IdentityScopes": [],
+  "RedirectUris": [],
+  "PostLogoutRedirectUris": [],
+  "ClientIds": [],
+  "Version": null,
+  "AllowedGrantTypes": [],
+  "TemplateId": "00000000-0000-0000-0000-000000000000"
+}

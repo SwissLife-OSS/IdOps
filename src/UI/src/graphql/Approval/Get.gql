@@ -1,0 +1,21 @@
+query ApprovedResources($input: ResourceApprovalInput) {
+  resourceApprovals(input: $input) {
+    currentVersion {
+      version
+      createdBy
+      createdAt
+    }
+    id
+    type
+    title
+    environments {
+      environment {
+        id
+        name
+      }
+      version
+      approvedAt
+      state
+    }
+  }
+}

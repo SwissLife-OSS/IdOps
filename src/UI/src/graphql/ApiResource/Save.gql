@@ -1,0 +1,9 @@
+#import "./Fragments.gql"
+
+mutation saveApiResource($input: SaveApiResourceInput!) {
+  saveApiResource(input: $input) {
+    apiResource {
+      ...ApiResource
+    }
+  }
+}

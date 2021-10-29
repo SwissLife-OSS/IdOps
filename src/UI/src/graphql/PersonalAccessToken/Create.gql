@@ -1,0 +1,9 @@
+#import "./Fragments.gql"
+
+mutation createPersonalAccessToken($input: CreatePersonalAccessTokenInput!) {
+  createPersonalAccessToken(input: $input) {
+    token {
+      ...PersonalAccessToken
+    }
+  }
+}

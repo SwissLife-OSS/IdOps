@@ -1,0 +1,15 @@
+﻿{
+  "Id": "19d7b959-aa75-422b-a675-7185b44b4be5",
+  "UserName": "userName",
+  "Token": "tokensecret",
+  "CreatedAt": "2020-12-09T11:36:58.832Z",
+  "ExpiresAt": "2021-12-09T11:36:58.833Z",
+  "IsOneTime": false,
+  "IsUsed": false,
+  "AllowedScopes": [
+    "api1"
+  ],
+  "AllowedClients": [
+    "Test.PAT01"
+  ]
+}

@@ -1,0 +1,45 @@
+services:
+  - name: IdOpsFrontend
+    executable: node
+    args: .\node_modules\@vue\cli-service\bin\vue-cli-service.js serve .\src\main.js
+    workingDirectory: src/UI/idops-ui/
+    env:
+      - DEV_USER=admin
+    bindings:
+      - port: 5010
+        protocol: http
+  - name: IdOpsBackend
+    project: src/Server/src/Api.Host/Api.Host.csproj
+    buildProperties:
+    - name: Configuration
+      value: Debug
+    env_file:
+      - env/idops.env
+    bindings:
+      - port: 5000
+  - name: IdDev
+    project: src/IdentityServer/samples/Server/IdentityServer.csproj
+    replicas: 1
+    env_file:
+      - env/id.env
+      - env/id_dev.env
+    bindings:
+      - port: 5001
+  - name: IdStaging
+    replicas: 1
+    project: src/IdentityServer/samples/Server/IdentityServer.csproj
+    env_file:
+      - env/id.env
+      - env/id_stage.env
+    bindings:
+     - port: 5002
+  - name: mongo
+    image: mongo
+    bindings:
+      - port: 27027
+        containerPort: 27017
+  - name: rabbitmq
+    image: rabbitmq:3-management
+    bindings:
+      - protocol: amqp
+        port: 5672

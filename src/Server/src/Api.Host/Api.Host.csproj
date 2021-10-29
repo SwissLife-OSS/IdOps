@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <AssemblyName>IdOps.Api.Host</AssemblyName>
+    <RootNamespace>IdOps.Api</RootNamespace>
+    <UserSecretsId>56b85f50-ed0f-45aa-b380-3920d3286400</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MassTransit.AspNetCore" Version="$(MassTransitVersion)" />
+
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AspNet\AspNet.csproj" />
+    <ProjectReference Include="..\Authorization\Authorization.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\GraphQL\GraphQL.csproj" />
+    <ProjectReference Include="..\Store.Mongo\Store.Mongo.csproj" />
+  </ItemGroup>
+</Project>
