@@ -3,6 +3,11 @@ IdOps is a multi-tenant Identity Server resource management platform.
 ## Getting Started
 A local environment can be started using the `tye.yaml` configuration from the repository root.
 
+- first install all node_modules needed for the UI
+```powershell
+yarn --cwd .\src\UI\
+```
+- then start the environment
 ```powershell
 tye run
 ```
