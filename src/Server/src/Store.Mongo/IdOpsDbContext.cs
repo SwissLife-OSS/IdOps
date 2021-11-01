@@ -1,11 +1,11 @@
 using IdOps.Model;
-using IdOps.Store.Mongo.Configuration;
+using IdOps.Server.Storage.Mongo.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 
-namespace IdOps.Store.Mongo
+namespace IdOps.Server.Storage.Mongo
 {
     public class IdOpsDbContext : MongoDbContext, IIdOpsDbContext
     {

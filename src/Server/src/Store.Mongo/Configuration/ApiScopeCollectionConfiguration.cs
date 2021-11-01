@@ -2,7 +2,7 @@ using IdOps.Model;
 using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 
-namespace IdOps.Store.Mongo.Configuration
+namespace IdOps.Server.Storage.Mongo.Configuration
 {
     internal class ApiScopeCollectionConfiguration :
         IMongoCollectionConfiguration<ApiScope>
@@ -25,7 +25,7 @@ namespace IdOps.Store.Mongo.Configuration
                          Builders<ApiScope>.IndexKeys
                              .Ascending(c => c.Name)
                              .Ascending(c => c.Tenant),
-                            
+
                          new CreateIndexOptions { Unique = true });
 
                     collection.Indexes.CreateOne(nameIndex);

@@ -7,7 +7,7 @@ using MongoDB.Driver;
 using static MongoDB.Driver.Builders<IdOps.Model.Environment>;
 using Environment = IdOps.Model.Environment;
 
-namespace IdOps.Store.Mongo
+namespace IdOps.Server.Storage.Mongo
 {
     public class EnvironmentStore : IEnvironmentStore
     {

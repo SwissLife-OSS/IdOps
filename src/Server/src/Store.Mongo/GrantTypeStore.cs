@@ -5,7 +5,7 @@ using IdOps.Model;
 using MongoDB.Driver;
 using static MongoDB.Driver.Builders<IdOps.Model.GrantType>;
 
-namespace IdOps.Store.Mongo
+namespace IdOps.Server.Storage.Mongo
 {
     public class GrantTypeStore : IGrantTypeStore
     {

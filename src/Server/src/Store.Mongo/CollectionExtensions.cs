@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 
-namespace IdOps.Store.Mongo
+namespace IdOps.Server.Storage.Mongo
 {
     public static class CollectionExtensions
     {

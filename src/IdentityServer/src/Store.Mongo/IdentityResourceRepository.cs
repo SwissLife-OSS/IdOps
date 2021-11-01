@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using IdOps.IdentityServer.Model;
 
-namespace  IdOps.IdentityServer.Store.Mongo
+namespace  IdOps.IdentityServer.Storage.Mongo
 {
     public class IdentityResourceRepository : IIdentityResourceRepository
     {

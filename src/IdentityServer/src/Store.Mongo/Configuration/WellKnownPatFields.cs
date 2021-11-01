@@ -1,4 +1,4 @@
-namespace IdOps.IdentityServer.Store.Mongo
+namespace IdOps.IdentityServer.Storage.Mongo
 {
     public static class WellKnownPatFields
     {

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using IdOps.IdentityServer.Model;
-using IdOps.IdentityServer.Store.Mongo;
+using IdOps.IdentityServer.Storage.Mongo;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 

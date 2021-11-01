@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 
-namespace IdOps.Store.Mongo
+namespace IdOps.Server.Storage.Mongo
 {
     public abstract class TenantResourceStore<T> : ResourceStore<T>, ITenantResourceStore<T>
         where T : class, ITenantResource, new()

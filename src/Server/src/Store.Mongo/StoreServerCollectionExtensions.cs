@@ -1,6 +1,6 @@
 using IdOps.Model;
 using IdOps.Store;
-using IdOps.Store.Mongo;
+using IdOps.Server.Storage.Mongo;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Extensions.Context;

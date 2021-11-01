@@ -8,7 +8,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using static MongoDB.Driver.Builders<IdOps.Model.UserClaimRule>;
 
-namespace IdOps.Store.Mongo
+namespace IdOps.Server.Storage.Mongo
 {
     public class UserClaimRulesStore : TenantResourceStore<UserClaimRule>, IUserClaimRuleStore
     {

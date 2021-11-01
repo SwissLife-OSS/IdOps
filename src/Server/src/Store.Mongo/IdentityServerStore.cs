@@ -7,7 +7,7 @@ using MongoDB.Driver;
 using static MongoDB.Driver.Builders<IdOps.Model.IdentityServer>;
 using Group = MongoDB.Driver.Builders<IdOps.Model.IdentityServerGroup>;
 
-namespace IdOps.Store.Mongo
+namespace IdOps.Server.Storage.Mongo
 {
     public class IdentityServerStore : ResourceStore<Model.IdentityServer>, IIdentityServerStore
     {

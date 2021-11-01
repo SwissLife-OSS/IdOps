@@ -2,7 +2,7 @@ using IdOps.IdentityServer.Model;
 using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 
-namespace IdOps.IdentityServer.Store.Mongo
+namespace IdOps.IdentityServer.Storage.Mongo
 {
     internal class UserClaimRuleCollectionConfiguration :
         IMongoCollectionConfiguration<UserClaimRule>

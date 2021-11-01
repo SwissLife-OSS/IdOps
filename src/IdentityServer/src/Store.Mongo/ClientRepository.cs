@@ -7,7 +7,7 @@ using IdOps.IdentityServer.Model;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace IdOps.IdentityServer.Store.Mongo
+namespace IdOps.IdentityServer.Storage.Mongo
 {
     public class ClientRepository : IClientRepository
     {

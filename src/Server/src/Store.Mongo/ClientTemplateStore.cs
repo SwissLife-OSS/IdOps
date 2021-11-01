@@ -8,7 +8,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using static MongoDB.Driver.Builders<IdOps.Model.ClientTemplate>;
 
-namespace IdOps.Store.Mongo
+namespace IdOps.Server.Storage.Mongo
 {
     public class ClientTemplateStore : IClientTemplateStore
     {

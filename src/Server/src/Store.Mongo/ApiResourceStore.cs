@@ -1,6 +1,6 @@
 using IdOps.Model;
 
-namespace IdOps.Store.Mongo
+namespace IdOps.Server.Storage.Mongo
 {
     public class ApiResourceStore : TenantResourceStore<ApiResource>, IApiResourceStore
     {

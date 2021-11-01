@@ -6,7 +6,7 @@ using IdOps.IdentityServer.Model;
 using MongoDB.Driver;
 using static MongoDB.Driver.Builders<IdOps.IdOpsPersonalAccessToken>;
 
-namespace IdOps.IdentityServer.Store.Mongo
+namespace IdOps.IdentityServer.Storage.Mongo
 {
     public class PersonalAccessTokenRepository : IPersonalAccessTokenRepository
     {

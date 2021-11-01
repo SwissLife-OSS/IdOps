@@ -1,6 +1,6 @@
 ﻿using MongoDB.Extensions.Context;
 
-namespace IdOps.IdentityServer.Store.Mongo
+namespace IdOps.IdentityServer.Storage.Mongo
 {
     public class IdOpsMongoOptions : MongoOptions
     {
