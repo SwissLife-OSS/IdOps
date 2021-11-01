@@ -17,13 +17,13 @@
     <Authors>Swiss Life authors and contributors</Authors>
     <Company>Swiss Life</Company>
     <Copyright>Copyright © $([System.DateTime]::Now.Year) $(Company)</Copyright>
-    <PackageLicense>https://github.com/SwissLife-OSS/IdOps/blob/master/LICENSE</PackageLicense>
+    <PackageLicenseUrl>https://github.com/SwissLife-OSS/IdOps/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/SwissLife-OSS/IdOps</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SwissLife-OSS/IdOps.git</RepositoryUrl>
     <PackageReleaseNotes>Release notes: https://github.com/SwissLife-OSS/IdOps/releases/$(Version)</PackageReleaseNotes>
     <PackageTags>idops identity</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageIcon>https://github.com/SwissLife-OSS/IdOps/raw/master/logo.png</PackageIcon>
+    <PackageIconUrl>https://github.com/SwissLife-OSS/IdOps/raw/master/logo.png</PackageIconUrl>
     <RepositoryType>GitHub</RepositoryType>
     <IsPackable>false</IsPackable>
     <Deterministic>true</Deterministic>
