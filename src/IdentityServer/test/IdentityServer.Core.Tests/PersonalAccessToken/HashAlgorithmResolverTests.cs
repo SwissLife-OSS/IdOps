@@ -5,7 +5,7 @@ using IdOps.IdentityServer.Hashing;
 using Microsoft.AspNetCore.Identity;
 using Xunit;
 
-namespace IdentityServer.Core.Tests
+namespace IdOps.IdentityServer.Tests
 {
     public class HashAlgorithmResolverTests
     {

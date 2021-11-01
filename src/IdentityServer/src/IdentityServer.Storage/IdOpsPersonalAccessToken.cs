@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using IdOps.IdentityServer.Model;
 
-namespace IdOps
+namespace IdOps.IdentityServer.Model
 {
     /// <summary>
     /// A personal access token for one login that can be used to authenticate on the identity

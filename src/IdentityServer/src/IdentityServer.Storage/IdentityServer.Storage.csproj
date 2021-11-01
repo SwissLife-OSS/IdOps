@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <AssemblyName>IdOps.IdentityServer.Storage</AssemblyName>
-    <RootNamespace>IdOps.IdentityServer</RootNamespace>
+    <RootNamespace>IdOps.IdentityServer.Storage</RootNamespace>
     <PackageId>IdOps.IdentityServer.Storage</PackageId>
   </PropertyGroup>
 

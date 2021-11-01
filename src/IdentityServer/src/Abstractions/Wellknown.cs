@@ -1,4 +1,4 @@
-namespace IdOps
+namespace IdOps.IdentityServer
 {
     public static class Wellknown
     {

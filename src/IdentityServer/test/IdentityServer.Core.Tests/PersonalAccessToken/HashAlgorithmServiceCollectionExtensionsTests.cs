@@ -2,7 +2,7 @@ using IdOps.IdentityServer.Hashing;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace IdentityServer.Core.Tests
+namespace IdOps.IdentityServer.Tests
 {
     public class HashAlgorithmServiceCollectionExtensionsTests
     {

@@ -1,4 +1,4 @@
-namespace IdOps.IdentityServer
+namespace IdOps.IdentityServer.Model
 {
     public enum ResourceType
     {

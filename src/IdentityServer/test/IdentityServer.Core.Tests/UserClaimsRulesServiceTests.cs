@@ -12,7 +12,7 @@ using Moq;
 using Snapshooter.Xunit;
 using Xunit;
 
-namespace IdOps
+namespace IdOps.IdentityServer.Tests
 {
     public class UserClaimsRulesServiceTests
     {
