@@ -13,18 +13,17 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version Condition="$(Version) == ''">0.8.0-preview.36</Version>
     <Product>IdOps</Product>
     <Authors>Swiss Life authors and contributors</Authors>
     <Company>Swiss Life</Company>
     <Copyright>Copyright © $([System.DateTime]::Now.Year) $(Company)</Copyright>
-    <PackageLicenseUrl>https://github.com/SwissLife-OSS/IdOps/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicense>https://github.com/SwissLife-OSS/IdOps/blob/master/LICENSE</PackageLicense>
     <PackageProjectUrl>https://github.com/SwissLife-OSS/IdOps</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SwissLife-OSS/IdOps.git</RepositoryUrl>
     <PackageReleaseNotes>Release notes: https://github.com/SwissLife-OSS/IdOps/releases/$(Version)</PackageReleaseNotes>
     <PackageTags>idops identity</PackageTags>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageIconUrl>https://github.com/SwissLife-OSS/IdOps/raw/master/logo.png</PackageIconUrl>
+    <PackageIcon>https://github.com/SwissLife-OSS/IdOps/raw/master/logo.png</PackageIcon>
     <RepositoryType>GitHub</RepositoryType>
     <IsPackable>false</IsPackable>
     <Deterministic>true</Deterministic>
