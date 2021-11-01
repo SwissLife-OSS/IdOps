@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdOps.IdentityServer.DataConnector;
 
-namespace IdOps.IdentityServer.Store
+namespace IdOps.IdentityServer.Storage
 {
     public interface IUserDataConnectorDataRepository
     {

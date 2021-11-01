@@ -1,5 +1,5 @@
 using IdOps.Model;
-using IdOps.Store;
+using IdOps.Server.Storage;
 using IdOps.Server.Storage.Mongo;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

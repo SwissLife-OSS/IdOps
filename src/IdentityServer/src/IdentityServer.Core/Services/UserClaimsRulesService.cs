@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using IdOps.IdentityServer.Model;
-using IdOps.IdentityServer.Store;
+using IdOps.IdentityServer.Storage;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace IdOps.IdentityServer.Services

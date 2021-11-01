@@ -1,5 +1,5 @@
 using System;
-using IdOps.Store;
+using IdOps.Server.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdOps

@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdOps.IdentityServer.Model;
 using IdOps.IdentityServer.Services;
-using IdOps.IdentityServer.Store;
+using IdOps.IdentityServer.Storage;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using Snapshooter.Xunit;

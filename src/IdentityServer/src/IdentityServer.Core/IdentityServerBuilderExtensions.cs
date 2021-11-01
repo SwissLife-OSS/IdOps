@@ -7,7 +7,7 @@ using IdOps.IdentityServer.Events;
 using IdOps.IdentityServer.Hashing;
 using IdOps.IdentityServer.ResourceUpdate;
 using IdOps.IdentityServer.Services;
-using IdOps.IdentityServer.Store;
+using IdOps.IdentityServer.Storage;
 using MassTransit;
 using MassTransit.ExtensionsDependencyInjectionIntegration;
 using Microsoft.Extensions.Configuration;

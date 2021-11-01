@@ -2,7 +2,7 @@ using System;
 using IdOps;
 using IdOps.Exceptions;
 using IdOps.IdentityServer;
-using IdOps.IdentityServer.Store;
+using IdOps.IdentityServer.Storage;
 using IdOps.IdentityServer.Storage.Mongo;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Extensions.Context;

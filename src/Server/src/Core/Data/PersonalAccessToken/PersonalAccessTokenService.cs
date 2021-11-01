@@ -7,7 +7,7 @@ using IdOps.Builder;
 using IdOps.IdentityServer.Hashing;
 using IdOps.Model;
 using IdOps.Security;
-using IdOps.Store;
+using IdOps.Server.Storage;
 
 namespace IdOps
 {

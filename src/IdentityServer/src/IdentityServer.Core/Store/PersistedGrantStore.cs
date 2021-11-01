@@ -5,7 +5,7 @@ using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Stores;
 
-namespace IdOps.IdentityServer.Store
+namespace IdOps.IdentityServer.Storage
 {
     public class PersistedGrantStore : IPersistedGrantStore
     {

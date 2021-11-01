@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate.Types;
 using IdOps.Model;
-using IdOps.Store;
+using IdOps.Server.Storage;
 
 namespace IdOps.GraphQL
 {
@@ -18,7 +18,7 @@ namespace IdOps.GraphQL
 
         [AuthorizeClientAuthoring(AccessMode.Read, includeTenantAuth: false)]
         public async Task<SearchResult<ResourceAuditEvent>> SearchResourceAudits(
-            SearchResourceAuditRequest input,   
+            SearchResourceAuditRequest input,
             CancellationToken cancellationToken)
         {
             return await _resouceAuditStore.SearchAsync(input, cancellationToken);

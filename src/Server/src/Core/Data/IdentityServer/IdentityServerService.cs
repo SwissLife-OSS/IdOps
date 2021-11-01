@@ -9,7 +9,7 @@ using IdentityModel.Client;
 using IdentityModel.Jwk;
 using IdOps.Model;
 using IdOps.Security;
-using IdOps.Store;
+using IdOps.Server.Storage;
 
 namespace IdOps
 {

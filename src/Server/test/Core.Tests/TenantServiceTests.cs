@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdOps.Model;
 using IdOps.Security;
-using IdOps.Store;
+using IdOps.Server.Storage;
 using Moq;
 using Snapshooter.Xunit;
 using Xunit;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using IdOps.Store;
+using IdOps.Server.Storage;
 
 namespace IdOps
 {
