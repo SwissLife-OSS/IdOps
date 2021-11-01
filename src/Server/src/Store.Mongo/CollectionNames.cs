@@ -1,4 +1,4 @@
-namespace IdOps.Store.Mongo
+namespace IdOps.Server.Storage.Mongo
 {
     public static class CollectionNames
     {

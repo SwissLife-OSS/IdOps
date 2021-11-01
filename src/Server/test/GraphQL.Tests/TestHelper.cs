@@ -7,7 +7,7 @@ using HotChocolate.Execution;
 using IdOps.Api;
 using IdOps.Model;
 using IdOps.Security;
-using IdOps.Store.Mongo;
+using IdOps.Server.Storage.Mongo;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

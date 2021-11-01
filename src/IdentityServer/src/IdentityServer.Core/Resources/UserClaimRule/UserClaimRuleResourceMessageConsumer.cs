@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using IdOps.IdentityServer.Model;
-using IdOps.IdentityServer.Store;
+using IdOps.IdentityServer.Storage;
 
 namespace IdOps.IdentityServer.ResourceUpdate
 {

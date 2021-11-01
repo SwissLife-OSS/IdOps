@@ -7,7 +7,7 @@ using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 
-namespace IdOps.IdentityServer.Store.Mongo
+namespace IdOps.IdentityServer.Storage.Mongo
 {
     public class IdentityStoreDbContext : MongoDbContext, IIdentityStoreDbContext
     {

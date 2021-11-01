@@ -5,7 +5,7 @@ using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace IdOps
+namespace IdOps.IdentityServer.RabbitMQ
 {
     public static class RabbitMqIdOpsBuilderExtensions
     {

@@ -1,6 +1,6 @@
 using IdOps.Model;
 
-namespace IdOps.Store
+namespace IdOps.Server.Storage
 {
     public interface IIdentityResourceStore : IResourceStore<IdentityResource>
     {

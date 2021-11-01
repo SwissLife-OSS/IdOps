@@ -372,7 +372,7 @@ type KeyValuePairOfStringAndString {
   value: String!
 }
 
-type Mutation @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) @authorize(policy: "ResourceAuthoringPublish", apply: BEFORE_RESOLVER) @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER) {
+type Mutation @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) {
   saveApiScope(input: SaveApiScopeInput!): SaveApiScopePayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
   saveIdentityResource(input: SaveIdentityResourceInput!): SaveIdentityResourcePayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
   createClient(input: CreateClientInput!): SaveClientPayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
@@ -385,17 +385,17 @@ type Mutation @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) @aut
   addClientToApplication(input: AddClientInput!): UpdateApplicationPayload!
   addEnvironmentToApplication(input: AddEnvironmentToApplicationInput!): UpdateApplicationPayload!
   saveTenant(input: SaveTenantInput!): SaveTenantPayload! @authorize(policy: "TenantManage", apply: BEFORE_RESOLVER)
-  publishResource(input: PublishResourceInput!): PublishResourcePayload!
+  publishResource(input: PublishResourceInput!): PublishResourcePayload! @authorize(policy: "ResourceAuthoringPublish", apply: BEFORE_RESOLVER)
   createPersonalAccessToken(input: CreatePersonalAccessTokenInput!): CreatePersonalAccessTokenPayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "PersonalAccessTokenEdit", apply: BEFORE_RESOLVER)
   updatePersonalAccessToken(input: UpdatePersonalAccessTokenInput!): SavePersonalAccessTokenPayload! @authorize(policy: "PersonalAccessTokenEdit", apply: BEFORE_RESOLVER)
   addSecretToPersonalAccessToken(input: AddSecretPersonalAccessTokenInput!): AddSecretPersonalAccessTokenPayload! @authorize(policy: "PersonalAccessTokenEdit", apply: BEFORE_RESOLVER)
   removeSecretOfPersonalAccessToken(input: RemoveSecretPersonalAccessTokenInput!): RemoveSecretPersonalAccessTokenPayload! @authorize(policy: "PersonalAccessTokenEdit", apply: BEFORE_RESOLVER)
   saveGrantType(input: SaveGrantTypeInput!): SaveGrantTypePayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
-  saveEnvironment(input: SaveEnvironmentInput!): SaveEnvironmentPayload!
+  saveEnvironment(input: SaveEnvironmentInput!): SaveEnvironmentPayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
   saveIdentityServer(input: SaveIdentityServerInput!): SaveIdentityServerPayload! @authorize(policy: "IdentityServerManage", apply: BEFORE_RESOLVER)
   saveClientTemplate(input: SaveClientTemplateInput!): SaveClientTemplatePayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
   saveUserClaimRule(input: SaveUserClaimRuleInput!): SaveUserClaimRulePayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
-  approveResources(input: ApproveResourcesInput!): ApproveResourcesResult!
+  approveResources(input: ApproveResourcesInput!): ApproveResourcesResult! @authorize(policy: "ResourceApproval", apply: BEFORE_RESOLVER)
   saveApiResource(input: SaveApiResourceInput!): SaveApiResourcePayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
   addApiSecret(input: AddApiSecretInput!): AddApiSecretPayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
   removeApiSecret(input: RemoveApiSecretInput!): SaveApiResourcePayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
@@ -445,7 +445,7 @@ type PublishedResourceEnvironment {
   state: String
 }
 
-type Query @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER) {
+type Query @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) {
   apiScopes(input: GetApiScopesInput): [ApiScope!]! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   clientIdGenerators: [String!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   sharedSecretGenerators: [String!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
@@ -455,9 +455,9 @@ type Query @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) @author
   searchApplications(input: SearchApplicationsInput!): SearchResultOfApplication!
   searchUnMappedClients(tenant: String!): [Client!]!
   tenants: [Tenant!]!
-  environments: [Environment!]!
+  environments: [Environment!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   grantTypes: [GrantType!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  publishedResouces(input: PublishedResourcesInput): [PublishedResource!]!
+  publishedResouces(input: PublishedResourcesInput): [PublishedResource!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   searchIdentityServerEvents(input: SearchIdentityServerEventsInput!): SearchResultOfIdentityServerEvent!
   identityResources(input: GetIdentityResourcesInput): [IdentityResource!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   searchResourceAudits(input: SearchResourceAuditInput!): SearchResultOfResourceAuditEvent! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
@@ -465,7 +465,7 @@ type Query @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) @author
   identityServers: [IdentityServer!]!
   identityServersGroups: [IdentityServerGroup!]!
   identityServer(id: Uuid!): IdentityServer!
-  clientTemplates: [ClientTemplate!]! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
+  clientTemplates: [ClientTemplate!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   clientTemplateById(id: Uuid!): ClientTemplate! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   secrets: [ClientTemplateSecret!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   userClaimsRules(input: GetUserClaimRulesInput!): [UserClaimRule!]! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
@@ -475,7 +475,7 @@ type Query @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) @author
   searchPersonalAccessTokens(input: SearchPersonalAccessTokensInput!): SearchResultOfPersonalAccessToken! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "PersonalAccessTokenRead", apply: BEFORE_RESOLVER)
   apiResources(input: GetApiResourcesInput): [ApiResource!]! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   hashAlgorithms: [HashAlgorithm!]!
-  resourceApprovals(input: ResourceApprovalInput): [ResourcApproval!]!
+  resourceApprovals(input: ResourceApprovalInput): [ResourceApproval!]! @authorize(policy: "ResourceApproval", apply: BEFORE_RESOLVER)
   dependencies(input: GetDependenciesInput!): Dependency! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
 }
 
@@ -484,7 +484,7 @@ type RemoveSecretPersonalAccessTokenPayload {
   hash: HashedToken
 }
 
-type ResourcApproval {
+type ResourceApproval {
   id: Uuid!
   title: String!
   type: String!
@@ -874,7 +874,7 @@ input ResourceApprovalInput {
 
 input SaveApiResourceInput {
   name: String!
-  displayName: String!
+  displayName: String
   tenant: String!
   scopes: [Uuid!]!
   id: Uuid

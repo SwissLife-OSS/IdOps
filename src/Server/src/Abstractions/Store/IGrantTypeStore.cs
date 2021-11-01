@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdOps.Model;
 
-namespace IdOps.Store
+namespace IdOps.Server.Storage
 {
     public interface IGrantTypeStore
     {

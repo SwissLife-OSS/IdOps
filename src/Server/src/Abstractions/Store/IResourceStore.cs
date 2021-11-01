@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace IdOps.Store
+namespace IdOps.Server.Storage
 {
     public interface IResourceStore
     {

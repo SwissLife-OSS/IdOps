@@ -1,8 +1,9 @@
+using IdOps.IdentityServer.Model;
 using MongoDB.Driver;
 using MongoDB.Extensions.Context;
-using static MongoDB.Driver.Builders<IdOps.IdOpsPersonalAccessToken>;
+using static MongoDB.Driver.Builders<IdOps.IdentityServer.Model.IdOpsPersonalAccessToken>;
 
-namespace IdOps.IdentityServer.Store.Mongo
+namespace IdOps.IdentityServer.Storage.Mongo
 {
     internal class PersonalAccessTokenCollectionConfiguration
         : IMongoCollectionConfiguration<IdOpsPersonalAccessToken>

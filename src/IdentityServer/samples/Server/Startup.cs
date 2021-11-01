@@ -1,5 +1,6 @@
 using System;
 using IdOps.IdentityServer.AzureServiceBus;
+using IdOps.IdentityServer.RabbitMQ;
 using IdOps.IdentityServer.Samples.DataSeeding;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;

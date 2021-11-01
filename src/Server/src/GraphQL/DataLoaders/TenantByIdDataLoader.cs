@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GreenDonut;
 using IdOps.Model;
-using IdOps.Store;
+using IdOps.Server.Storage;
 
 namespace IdOps.GraphQL.DataLoaders
 {

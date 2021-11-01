@@ -3,7 +3,7 @@ using IdOps.IdentityServer.DataConnector;
 using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 
-namespace IdOps.IdentityServer.Store.Mongo
+namespace IdOps.IdentityServer.Storage.Mongo
 {
     internal class UserDataConnectorDataCollectionConfiguration :
         IMongoCollectionConfiguration<UserDataConnectorData>

@@ -12,7 +12,7 @@ namespace IdOps.GraphQL
     [ExtendObjectType(RootTypes.Query)]
     public class ClientTemplateQueries
     {
-        [AuthorizeClientAuthoring(AccessMode.Read, includeTenantAuth: true)]
+        [AuthorizeClientAuthoring(AccessMode.Read, includeTenantAuth: false)]
         public async Task<IEnumerable<ClientTemplate>> GetClientTemplatesAsync(
             [Service] IClientTemplateService clientTemplateService,
             CancellationToken cancellationToken)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using IdentityModel;
 using IdOps.Model;
 using IdOps.Security;
-using IdOps.Store;
+using IdOps.Server.Storage;
 
 namespace IdOps.Templates
 {

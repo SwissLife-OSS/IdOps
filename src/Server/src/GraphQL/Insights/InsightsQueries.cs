@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using HotChocolate;
 using HotChocolate.Types;
 using IdOps.Model;
-using IdOps.Store;
+using IdOps.Server.Storage;
 
 namespace IdOps.GraphQL
 {

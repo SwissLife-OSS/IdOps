@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using IdOps.Messages;
 using IdOps.Model;
-using IdOps.Store;
+using IdOps.Server.Storage;
 using MassTransit;
 
 namespace IdOps.Consumers

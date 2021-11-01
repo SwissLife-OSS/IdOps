@@ -1,4 +1,4 @@
-using IdOps.Store.Mongo;
+using IdOps.Server.Storage.Mongo;
 using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 using Squadron;

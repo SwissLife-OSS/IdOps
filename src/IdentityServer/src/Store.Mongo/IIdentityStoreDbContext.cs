@@ -3,7 +3,7 @@ using IdOps.IdentityServer.DataConnector;
 using IdOps.IdentityServer.Model;
 using MongoDB.Driver;
 
-namespace  IdOps.IdentityServer.Store.Mongo
+namespace  IdOps.IdentityServer.Storage.Mongo
 {
     public interface IIdentityStoreDbContext
     {

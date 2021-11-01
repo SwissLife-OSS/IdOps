@@ -6,7 +6,7 @@ using IdOps.Model;
 using MongoDB.Driver;
 using static MongoDB.Driver.Builders<IdOps.Model.ResourceApprovalLog>;
 
-namespace IdOps.Store.Mongo
+namespace IdOps.Server.Storage.Mongo
 {
     public class ResourceApprovalLogStore : IResourceApprovalLogStore
     {

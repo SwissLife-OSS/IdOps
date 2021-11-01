@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using IdOps.Model;
 using IdOps.Security;
-using IdOps.Store;
+using IdOps.Server.Storage;
 using IdOps.Templates;
 using Moq;
 using Snapshooter.Xunit;

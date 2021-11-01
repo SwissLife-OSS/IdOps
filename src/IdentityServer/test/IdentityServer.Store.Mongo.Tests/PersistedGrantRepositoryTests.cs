@@ -4,14 +4,14 @@ using System.Threading.Tasks;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Stores;
 using FluentAssertions;
-using IdOps.IdentityServer.Store.Mongo.Tests;
+using IdOps.IdentityServer.Storage.Mongo.Tests;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using Snapshooter.Xunit;
 using Squadron;
 using Xunit;
 
-namespace IdOps.IdentityServer.Store.Mongo.Tests
+namespace IdOps.IdentityServer.Storage.Mongo.Tests
 {
     [Collection(TestCollectionNames.Store)]
     public class PersistedGrantRepositoryTests : RepositoryTest

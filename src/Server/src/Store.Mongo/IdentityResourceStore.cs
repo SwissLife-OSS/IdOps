@@ -7,7 +7,7 @@ using IdOps.Model;
 using MongoDB.Driver;
 using static MongoDB.Driver.Builders<IdOps.Model.IdentityResource>;
 
-namespace IdOps.Store.Mongo
+namespace IdOps.Server.Storage.Mongo
 {
     public class IdentityResourceStore : ResourceStore<IdentityResource>, IIdentityResourceStore
     {

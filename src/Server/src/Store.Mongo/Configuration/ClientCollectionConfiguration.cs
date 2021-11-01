@@ -2,7 +2,7 @@ using IdOps.Model;
 using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 
-namespace IdOps.Store.Mongo.Configuration
+namespace IdOps.Server.Storage.Mongo.Configuration
 {
     internal class ClientCollectionConfiguration :
         IMongoCollectionConfiguration<Client>

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using IdOps.Model;
 using MongoDB.Driver;
 
-namespace IdOps.Store.Mongo
+namespace IdOps.Server.Storage.Mongo
 {
     public class TenantStore : ITenantStore
     {

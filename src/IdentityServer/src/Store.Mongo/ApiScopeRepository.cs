@@ -7,7 +7,7 @@ using MongoDB.Driver;
 using Duende.IdentityServer.Models;
 using IdOps.IdentityServer.Model;
 
-namespace  IdOps.IdentityServer.Store.Mongo
+namespace  IdOps.IdentityServer.Storage.Mongo
 {
     public class ApiScopeRepository : IApiScopeRepository
     {

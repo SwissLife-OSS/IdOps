@@ -2,14 +2,14 @@ using System;
 using System.Threading.Tasks;
 using Duende.IdentityServer.Models;
 using FluentAssertions;
-using IdOps.IdentityServer.Store.Mongo;
-using IdOps.IdentityServer.Store.Mongo.Tests;
+using IdOps.IdentityServer.Storage.Mongo;
+using IdOps.IdentityServer.Storage.Mongo.Tests;
 using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 using Squadron;
 using Xunit;
 
-namespace IdOps.IdentityServer.Store.Mongo.Tests
+namespace IdOps.IdentityServer.Storage.Mongo.Tests
 {
     [Collection(TestCollectionNames.Store)]
     public class LoginDbContextTests
@@ -51,6 +51,6 @@ namespace IdOps.IdentityServer.Store.Mongo.Tests
             // Assert
             action.Should().NotThrow();
         }
-        
+
     }
 }

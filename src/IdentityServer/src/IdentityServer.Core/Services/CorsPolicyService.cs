@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Duende.IdentityServer.Services;
 using IdOps.IdentityServer.Events;
-using IdOps.IdentityServer.Store;
+using IdOps.IdentityServer.Storage;
 
 namespace IdOps.IdentityServer.Services
 {
@@ -68,7 +68,7 @@ namespace IdOps.IdentityServer.Services
                 }
                 catch (Exception ex)
                 {
-                    
+
                 }
             }
 

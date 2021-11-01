@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Stores;
 
-namespace IdOps.IdentityServer.Store
+namespace IdOps.IdentityServer.Storage
 {
     public interface IPersistedGrantRepository
     {

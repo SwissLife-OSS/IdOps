@@ -16,7 +16,7 @@ namespace IdOps.Host.Tests
         }
 
 
-        [Fact]
+        [Fact(Skip = "TODO")]
         public async Task Start_Root_Redirected()
         {
             //Arrange

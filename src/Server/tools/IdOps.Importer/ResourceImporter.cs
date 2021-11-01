@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using IdOps.Model;
-using IdOps.Store.Mongo;
+using IdOps.Server.Storage.Mongo;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using Omu.ValueInjecter;

@@ -6,7 +6,7 @@ using IdOps.IdentityServer.Model;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-namespace  IdOps.IdentityServer.Store.Mongo
+namespace  IdOps.IdentityServer.Storage.Mongo
 {
     public class ApiResourceRepository : IApiResourceRepository
     {

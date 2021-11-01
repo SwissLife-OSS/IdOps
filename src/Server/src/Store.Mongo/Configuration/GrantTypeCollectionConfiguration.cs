@@ -2,7 +2,7 @@
 using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 
-namespace IdOps.Store.Mongo.Configuration
+namespace IdOps.Server.Storage.Mongo.Configuration
 {
     internal class GrantTypeCollectionConfiguration :
         IMongoCollectionConfiguration<GrantType>

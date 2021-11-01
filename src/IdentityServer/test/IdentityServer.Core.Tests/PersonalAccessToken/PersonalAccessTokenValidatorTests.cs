@@ -8,14 +8,15 @@ using Duende.IdentityServer.Services;
 using IdOps;
 using IdOps.IdentityServer;
 using IdOps.IdentityServer.Hashing;
-using IdOps.IdentityServer.Store;
+using IdOps.IdentityServer.Model;
+using IdOps.IdentityServer.Storage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
 
-namespace IdentityServer.Core.Tests
+namespace IdOps.IdentityServer.Tests
 {
     public class PersonalAccessTokenValidatorTests
     {

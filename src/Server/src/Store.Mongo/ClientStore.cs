@@ -9,7 +9,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using static MongoDB.Driver.Builders<IdOps.Model.Client>;
 
-namespace IdOps.Store.Mongo
+namespace IdOps.Server.Storage.Mongo
 {
     public class ClientStore : TenantResourceStore<Client>, IClientStore
     {

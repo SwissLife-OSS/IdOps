@@ -9,7 +9,7 @@ using Duende.IdentityServer.Services;
 using IdentityModel;
 using IdOps.IdentityServer.Events;
 using IdOps.IdentityServer.Model;
-using IdOps.IdentityServer.Store;
+using IdOps.IdentityServer.Storage;
 using Microsoft.Extensions.Logging;
 using static Duende.IdentityServer.IdentityServerConstants.ProfileDataCallers;
 

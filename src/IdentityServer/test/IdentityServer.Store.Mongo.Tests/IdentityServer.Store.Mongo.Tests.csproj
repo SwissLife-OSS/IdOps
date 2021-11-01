@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyName>IdOps.IdentityServer.Store.Mongo.Tests</AssemblyName>
-    <RootNamespace>IdOps.IdentityServer.Store.Mongo.Tests</RootNamespace>
+    <AssemblyName>IdOps.IdentityServer.Storage.Mongo.Tests</AssemblyName>
+    <RootNamespace>IdOps.IdentityServer.Storage.Mongo.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

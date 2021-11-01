@@ -2,7 +2,7 @@ using System.Text;
 using Squadron;
 using Xunit;
 
-namespace IdOps.IdentityServer.Store.Mongo.Tests
+namespace IdOps.IdentityServer.Storage.Mongo.Tests
 {
     public static class TestCollectionNames
     {

@@ -5,7 +5,7 @@ using IdOps.IdentityServer.Model;
 using Squadron;
 using Xunit;
 
-namespace IdOps.IdentityServer.Store.Mongo.Tests
+namespace IdOps.IdentityServer.Storage.Mongo.Tests
 {
     [Collection(TestCollectionNames.Store)]
     public class ClientRepositoryTests : RepositoryTest

@@ -4,7 +4,7 @@ using IdOps.Model;
 using MongoDB.Driver;
 using static MongoDB.Driver.Builders<IdOps.Model.ResourceAuditEvent>;
 
-namespace IdOps.Store.Mongo
+namespace IdOps.Server.Storage.Mongo
 {
     public class ResouceAuditStore : IResouceAuditStore
     {

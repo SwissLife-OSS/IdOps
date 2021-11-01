@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using IdOps.IdentityServer.Model;
 using MongoDB.Driver;
 
-namespace IdOps.IdentityServer.Store.Mongo
+namespace IdOps.IdentityServer.Storage.Mongo
 {
     public class UserClaimRuleRepository : IUserClaimRuleRepository
     {

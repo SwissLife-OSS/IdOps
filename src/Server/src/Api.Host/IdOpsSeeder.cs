@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdOps.Model;
 using IdOps.Security;
-using IdOps.Store.Mongo;
+using IdOps.Server.Storage.Mongo;
 using Microsoft.Extensions.Hosting;
 
 namespace IdOps.Api

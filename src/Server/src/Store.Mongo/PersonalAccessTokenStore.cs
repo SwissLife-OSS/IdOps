@@ -7,7 +7,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using static MongoDB.Driver.Builders<IdOps.Model.PersonalAccessToken>;
 
-namespace IdOps.Store.Mongo
+namespace IdOps.Server.Storage.Mongo
 {
     public class PersonalAccessTokenStore
         : TenantResourceStore<PersonalAccessToken>, IPersonalAccessTokenStore

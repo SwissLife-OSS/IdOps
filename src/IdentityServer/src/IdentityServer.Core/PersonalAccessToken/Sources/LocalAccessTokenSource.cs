@@ -7,6 +7,7 @@ using Duende.IdentityServer.Validation;
 using FluentValidation;
 using IdentityModel;
 using IdOps.IdentityServer.Events;
+using IdOps.IdentityServer.Model;
 using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace IdOps.IdentityServer

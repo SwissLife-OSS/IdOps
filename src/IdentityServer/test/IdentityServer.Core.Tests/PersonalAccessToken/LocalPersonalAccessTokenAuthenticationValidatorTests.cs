@@ -8,8 +8,9 @@ using IdOps.IdentityServer;
 using Xunit;
 using IdOps;
 using IdOps.IdentityServer.Hashing;
+using IdOps.IdentityServer.Model;
 
-namespace IdentityServer.Core.Tests
+namespace IdOps.IdentityServer.Tests
 {
     public class LocalPersonalAccessTokenAuthenticationValidatorTests
     {

@@ -2,7 +2,7 @@ using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 using Squadron;
 
-namespace IdOps.IdentityServer.Store.Mongo.Tests
+namespace IdOps.IdentityServer.Storage.Mongo.Tests
 {
     public class RepositoryTest
     {

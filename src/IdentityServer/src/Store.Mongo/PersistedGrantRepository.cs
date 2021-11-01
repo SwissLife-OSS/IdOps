@@ -6,7 +6,7 @@ using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Stores;
 using MongoDB.Driver;
 
-namespace IdOps.IdentityServer.Store.Mongo
+namespace IdOps.IdentityServer.Storage.Mongo
 {
     public class PersistedGrantRepository : IPersistedGrantRepository
     {
