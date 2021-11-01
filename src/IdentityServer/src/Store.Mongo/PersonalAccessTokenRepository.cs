@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdOps.IdentityServer.Model;
 using MongoDB.Driver;
-using static MongoDB.Driver.Builders<IdOps.IdOpsPersonalAccessToken>;
+using static MongoDB.Driver.Builders<IdOps.IdentityServer.Model.IdOpsPersonalAccessToken>;
 
 namespace IdOps.IdentityServer.Storage.Mongo
 {

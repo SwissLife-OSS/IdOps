@@ -8,6 +8,7 @@ using Duende.IdentityServer.Services;
 using IdOps;
 using IdOps.IdentityServer;
 using IdOps.IdentityServer.Hashing;
+using IdOps.IdentityServer.Model;
 using IdOps.IdentityServer.Storage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;

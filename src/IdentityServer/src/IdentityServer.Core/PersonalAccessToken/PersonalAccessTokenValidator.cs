@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Duende.IdentityServer.Services;
 using IdOps.IdentityServer.Events;
 using IdOps.IdentityServer.Hashing;
+using IdOps.IdentityServer.Model;
 using IdOps.IdentityServer.Storage;
 using Microsoft.Extensions.Logging;
 
@@ -94,7 +95,7 @@ namespace IdOps.IdentityServer
                 await _patTokenRepository.GetActiveTokensByUserNameAsync(userName,
                     CancellationToken.None);
 
-            foreach (var tokenDefinition in possibleTokens)
+            foreach (IdOpsPersonalAccessToken tokenDefinition in possibleTokens)
             {
                 if (_hashAlgorithmResolver.TryResolve(
                     tokenDefinition.HashAlgorithm,
