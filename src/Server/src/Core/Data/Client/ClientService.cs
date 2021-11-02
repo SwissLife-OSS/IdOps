@@ -224,7 +224,5 @@ namespace IdOps
         public IReadOnlyList<string> GetClientIdGenerators() => _clientIdGeneratorsNames;
 
         public IReadOnlyList<string> GetSharedSecretGenerators() => _sharedSecretGeneratorNames;
-
-        public bool RequiresApproval(Guid id) => true;
     }
 }
