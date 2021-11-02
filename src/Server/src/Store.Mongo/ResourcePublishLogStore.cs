@@ -12,8 +12,6 @@ namespace IdOps.Server.Storage.Mongo
 {
     public class ResourcePublishLogStore : IResourcePublishLogStore
     {
-        private readonly IIdOpsDbContext _dbContext;
-
         public ResourcePublishLogStore(IIdOpsDbContext dbContext)
         {
             Collection = dbContext.ResourcePublishLogs;
@@ -33,7 +31,7 @@ namespace IdOps.Server.Storage.Mongo
             ResourcePublishLog log,
             CancellationToken cancellationToken)
         {
-            await _dbContext.ResourcePublishLogs
+            await Collection
                 .InsertOneAsync(log, options: null, cancellationToken);
         }
 
@@ -53,7 +51,7 @@ namespace IdOps.Server.Storage.Mongo
                 filter &= Filter.Eq(x => x.EnvironmentId, request.ResourceId);
             }
 
-            return await _dbContext.ResourcePublishLogs
+            return await Collection
                 .ExecuteSearchAsync(filter, request, cancellationToken);
         }
     }
