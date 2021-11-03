@@ -32,6 +32,8 @@ namespace IdOps.Server.Storage.Mongo
                 .ConfigureCollection(new IdentityServerEventCollectionConfiguration())
                 .ConfigureCollection(new ResourcePublishLogCollectionConfiguration())
                 .ConfigureCollection(new ResourcePublishStateCollectionConfiguration())
+                .ConfigureCollection(new ResourceApprovalLogCollectionConfiguration())
+                .ConfigureCollection(new ResourceApprovalStateCollectionConfiguration())
                 .ConfigureCollection(new IdentityServerCollectionConfiguration())
                 .ConfigureCollection(new IdentityServerGroupCollectionConfiguration())
                 .ConfigureCollection(new SecureSecretCollectionConfiguration())
