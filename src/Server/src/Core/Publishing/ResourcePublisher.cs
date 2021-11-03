@@ -80,6 +80,11 @@ namespace IdOps
                     continue;
                 }
 
+                if (!resourceService.IsAllowedToPublish())
+                {
+                    continue;
+                }
+
                 // Task: Resolve Clients from Application OnSave and not OnPublish (UserClaimRules)
                 if (envState?.State is ResourceStates.Latest && !resourceService.ForcePublish)
                 {

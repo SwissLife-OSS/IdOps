@@ -23,6 +23,10 @@ namespace IdOps
 
         public string ResourceType => _resourceName;
 
+        public abstract bool IsAllowedToPublish();
+
+        public abstract bool IsAllowedToApprove();
+
         async ValueTask<IResource?> IResourceService.GetResourceByIdAsync(
             Guid id,
             CancellationToken cancellationToken) =>

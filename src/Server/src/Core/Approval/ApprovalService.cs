@@ -99,6 +99,11 @@ namespace IdOps
                     continue;
                 }
 
+                if (!service.IsAllowedToApprove())
+                {
+                    continue;
+                }
+
                 IReadOnlyList<IResource> resources =
                     await service.GetByTenantsAsync(ids, tenants, cancellationToken);
 
