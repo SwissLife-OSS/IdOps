@@ -4,15 +4,15 @@ using MongoDB.Extensions.Context;
 
 namespace IdOps.Server.Storage.Mongo.Configuration
 {
-    internal class ResourceApprovalLogCollectionConfiguration :
-        IMongoCollectionConfiguration<ResourceApprovalLog>
+    internal class ResourceApprovalStateCollectionConfiguration :
+        IMongoCollectionConfiguration<ResourceApprovalState>
     {
         public void OnConfiguring(
-            IMongoCollectionBuilder<ResourceApprovalLog> builder)
+            IMongoCollectionBuilder<ResourceApprovalState> builder)
         {
             builder
-                .WithCollectionName(CollectionNames.ResourceApprovalLog)
-                .AddBsonClassMap<ResourceApprovalLog>(cm =>
+                .WithCollectionName(CollectionNames.ResourceApprovalState)
+                .AddBsonClassMap<ResourceApprovalState>(cm =>
                 {
                     cm.AutoMap();
                     cm.MapIdMember(c => c.Id);
