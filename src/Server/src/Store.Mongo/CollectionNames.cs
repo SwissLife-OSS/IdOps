@@ -20,5 +20,7 @@ namespace IdOps.Server.Storage.Mongo
         public static readonly string ClientTemplate = "client_template";
         public static readonly string UserClaimRule = "user_claim_rule";
         public static readonly string PersonalAccessToken = "personal_access_tokens";
+        public static readonly string ResourceApprovalState = "resource_approval_state";
+        public static readonly string ResourceApprovalLog = "resource_approval_log";
     }
 }
