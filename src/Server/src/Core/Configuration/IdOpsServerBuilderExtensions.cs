@@ -39,6 +39,7 @@ namespace IdOps
             this IServiceCollection services,
             IdOpsServerOptions options)
         {
+            services.AddSingleton(options);
             services.AddSingleton<ISharedSecretGenerator, DefaultSharedSecretGenerator>();
             services.AddSingleton<ISecretService, SecretService>();
             services.AddSingleton<IIdentityServerEventMapper>(

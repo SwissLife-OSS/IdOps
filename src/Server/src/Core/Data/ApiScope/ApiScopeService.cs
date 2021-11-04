@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using IdOps.Configuration;
 using IdOps.Model;
 using IdOps.Security;
 using IdOps.Server.Storage;
@@ -15,10 +16,11 @@ namespace IdOps
         private readonly IResourceManager<ApiScope> _resourceManager;
 
         public ApiScopeService(
+            IdOpsServerOptions options,
             IApiScopeStore apiScopeStore,
             IResourceManager<ApiScope> resourceManager,
             IUserContextAccessor userContextAccessor)
-                : base(userContextAccessor, apiScopeStore)
+                : base(options, userContextAccessor, apiScopeStore)
         {
             _apiScopeStore = apiScopeStore;
             _resourceManager = resourceManager;
