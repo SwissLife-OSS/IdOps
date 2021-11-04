@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using IdOps.Configuration;
 using IdOps.Security;
 using IdOps.Server.Storage;
 
@@ -14,9 +15,10 @@ namespace IdOps
         private readonly ITenantResourceStore<T> _store;
 
         protected TenantResourceService(
+            IdOpsServerOptions options,
             IUserContextAccessor accessor,
             ITenantResourceStore<T> store)
-            : base(accessor)
+            : base(options, accessor)
         {
             _store = store;
         }

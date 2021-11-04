@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using IdOps.Builder;
+using IdOps.Configuration;
 using IdOps.IdentityServer.Hashing;
 using IdOps.Model;
 using IdOps.Security;
@@ -21,12 +22,13 @@ namespace IdOps
         private readonly IPersonalAccessTokenStore _store;
 
         public PersonalAccessTokenService(
+            IdOpsServerOptions options,
             IPersonalAccessTokenStore store,
             IHashAlgorithmResolver resolver,
             IPasswordProvider passwordProvider,
             IResourceManager<PersonalAccessToken> resourceManager,
             IUserContextAccessor userContextAccessor)
-            : base(userContextAccessor, store)
+            : base(options, userContextAccessor, store)
         {
             _store = store;
             _resolver = resolver;
@@ -157,7 +159,5 @@ namespace IdOps
 
             return result.Resource;
         }
-
-        public bool RequiresApproval(Guid id) => true;
     }
 }

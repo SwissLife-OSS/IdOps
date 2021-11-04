@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using IdOps.Configuration;
 using IdOps.Model;
 using IdOps.Security;
 using IdOps.Server.Storage;
@@ -16,10 +17,11 @@ namespace IdOps
         private readonly IResourceManager<IdentityResource> _resourceManager;
 
         public IdentityResourceService(
+            IdOpsServerOptions options,
             IIdentityResourceStore identityResourceStore,
             IResourceManager<IdentityResource> resourceManager,
             IUserContextAccessor userContextAccessor)
-            : base(userContextAccessor)
+            : base(options, userContextAccessor)
         {
             _identityResourceStore = identityResourceStore;
             _resourceManager = resourceManager;
