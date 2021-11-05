@@ -2,6 +2,7 @@ using System;
 
 namespace IdOps.Model
 {
+    // TODO: Should it be IResource ?
     public class IdentityServer : IResource
     {
         public Guid Id { get; set; }

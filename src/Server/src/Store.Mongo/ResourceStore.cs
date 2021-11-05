@@ -22,11 +22,6 @@ namespace IdOps.Server.Storage.Mongo
 
         public bool IsOfType(string resource) => resource == _name;
 
-        public abstract Task<IReadOnlyList<T>> GetResourceWithOpenApproval(
-            IEnumerable<Guid>? ids,
-            IEnumerable<string>? tenants,
-            CancellationToken cancellationToken);
-
         public abstract Task<IReadOnlyList<T>> GetAllAsync(
             IEnumerable<Guid>? ids,
             IEnumerable<string>? tenants,
@@ -58,12 +53,6 @@ namespace IdOps.Server.Storage.Mongo
             await Collection.ReplaceOneAsync(filter, resource, options, cancellationToken);
             return resource;
         }
-
-        async Task<IReadOnlyList<IResource>> IResourceStore.GetResourceApprovals(
-            IEnumerable<Guid>? ids,
-            IEnumerable<string>? tenants,
-            CancellationToken cancellationToken) =>
-            await GetResourceWithOpenApproval(ids, tenants, cancellationToken);
 
         async Task<IReadOnlyList<IResource>> IResourceStore.GetAllAsync(
             IEnumerable<Guid>? ids,

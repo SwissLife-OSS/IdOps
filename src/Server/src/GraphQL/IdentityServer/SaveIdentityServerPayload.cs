@@ -1,4 +1,4 @@
-﻿namespace IdOps.GraphQL
+namespace IdOps.GraphQL
 {
     public class SaveIdentityServerPayload
     {

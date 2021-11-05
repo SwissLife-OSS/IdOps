@@ -10,8 +10,8 @@ namespace IdOps
 {
     public class ClientMessageFactory : TenantResourceMessageFactory<Client>
     {
-        public ClientMessageFactory(IIdentityServerService identityServerService)
-            : base(identityServerService)
+        public ClientMessageFactory(IIdentityServerGroupService identityServerGroupService)
+            : base(identityServerGroupService)
         {
         }
 

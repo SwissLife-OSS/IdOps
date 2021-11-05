@@ -11,11 +11,6 @@ namespace IdOps.Server.Storage
 
         bool IsOfType(string resource);
 
-        Task<IReadOnlyList<IResource>> GetResourceApprovals(
-            IEnumerable<Guid>? ids,
-            IEnumerable<string>? tenants,
-            CancellationToken cancellationToken);
-
         Task<IReadOnlyList<IResource>> GetAllAsync(
             IEnumerable<Guid>? ids,
             IEnumerable<string>? tenants,
@@ -40,17 +35,12 @@ namespace IdOps.Server.Storage
 
         Task<T> SaveAsync(T resource, CancellationToken cancellationToken);
 
-        new Task<IReadOnlyList<T>> GetResourceWithOpenApproval(
-            IEnumerable<Guid>? ids,
-            IEnumerable<string>? tenants,
-            CancellationToken cancellationToken);
-
         new Task<IReadOnlyList<T>> GetAllAsync(
             IEnumerable<Guid>? ids,
             IEnumerable<string>? tenants,
             CancellationToken cancellationToken);
 
-        Task<IReadOnlyList<T>> GetAllAsync(
+        new Task<IReadOnlyList<T>> GetAllAsync(
             CancellationToken cancellationToken);
 
         new Task<IReadOnlyList<T>> GetByIdsAsync(

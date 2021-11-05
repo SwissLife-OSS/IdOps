@@ -13,26 +13,6 @@ namespace IdOps.Server.Storage.Mongo
         {
         }
 
-        public override async Task<IReadOnlyList<T>> GetResourceWithOpenApproval(
-            IEnumerable<Guid>? ids,
-            IEnumerable<string>? tenants,
-            CancellationToken cancellationToken)
-        {
-            FilterDefinition<T>? filter = Builders<T>.Filter.Empty;
-
-            if (ids is not null)
-            {
-                filter &= Builders<T>.Filter.In(x => x.Id, ids);
-            }
-
-            if (tenants is not null)
-            {
-                filter &= Builders<T>.Filter.In(x => x.Tenant, tenants);
-            }
-
-            return await Collection.Find(filter).ToListAsync(cancellationToken);
-        }
-
         public override async Task<IReadOnlyList<T>> GetAllAsync(
             IEnumerable<Guid>? ids,
             IEnumerable<string>? tenants,

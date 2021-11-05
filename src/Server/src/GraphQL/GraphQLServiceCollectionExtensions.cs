@@ -5,6 +5,7 @@ using IdOps.GraphQL.DataLoaders;
 using IdOps.GraphQL.GraphQL.Serialization;
 using IdOps.GraphQL.Hashing;
 using IdOps.GraphQL.Publish;
+using IdOps.Model;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdOps.GraphQL
@@ -105,6 +106,7 @@ namespace IdOps.GraphQL
                 .AddType<PersonalAccessTokenType>()
                 .AddType<ApplicationType>()
                 .AddType<IdentityServerType>()
+                .AddType<ObjectType<IdentityServerGroup>>()
                 .AddType<IdentityResourceType>()
                 .AddType<ApiScopeType>()
                 .AddType<IdentityServerEventType>()
@@ -157,6 +159,7 @@ namespace IdOps.GraphQL
             builder.RenameRequestToInput<SaveTenantRequest>();
             builder.RenameRequestToInput<SaveEnvironmentRequest>();
             builder.RenameRequestToInput<SaveIdentityServerRequest>();
+            builder.RenameRequestToInput<SaveIdentityServerGroupRequest>();
             builder.RenameRequestToInput<SaveGrantTypeRequest>();
             builder.RenameRequestToInput<SearchResourceAuditRequest>();
             builder.RenameRequestToInput<PublishedResourcesRequest>();

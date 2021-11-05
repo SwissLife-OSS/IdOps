@@ -24,5 +24,19 @@ namespace IdOps.GraphQL
 
             return new SaveIdentityServerPayload(sever);
         }
+
+        [Authorize(
+            Apply = ApplyPolicy.BeforeResolver,
+            Policy = AuthorizationPolicies.Names.IdentityServerManage)]
+        public async Task<SaveIdentityServerGroupPayload> SaveIdentityServerGroupAsync(
+            SaveIdentityServerGroupRequest input,
+            [Service] IIdentityServerGroupService identityServerGroupService,
+            CancellationToken cancellationToken)
+        {
+            IdentityServerGroup severGroup =
+                await  identityServerGroupService.SaveAsync(input, cancellationToken);
+
+            return new SaveIdentityServerGroupPayload(severGroup);
+        }
     }
 }

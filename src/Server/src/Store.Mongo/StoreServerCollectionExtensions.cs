@@ -39,6 +39,7 @@ namespace IdOps
             services.AddSingleton<IResourceApprovalLogStore, ResourceApprovalLogStore>();
             services.AddSingleton<IIdentityServerEventStore, IdentityServerEventStore>();
             services.AddSingleton<IResourceStore<Model.IdentityServer>, IIdentityServerStore, IdentityServerStore>();
+            services.AddSingleton<IIdentityServerGroupStore, IdentityServerGroupStore>();
             services.AddSingleton<IClientTemplateStore, ClientTemplateStore>();
             services.AddSingleton<IResourceStore<UserClaimRule>, IUserClaimRuleStore, UserClaimRulesStore>();
             services.AddSingleton<IResourceStore<PersonalAccessToken>, IPersonalAccessTokenStore, PersonalAccessTokenStore>();

@@ -9,8 +9,8 @@ namespace IdOps
     public class PersonalAccessTokenMessageFactory
         : TenantResourceMessageFactory<PersonalAccessToken>
     {
-        public PersonalAccessTokenMessageFactory(IIdentityServerService identityServerService)
-            : base(identityServerService)
+        public PersonalAccessTokenMessageFactory(IIdentityServerGroupService identityServerGroupService)
+            : base(identityServerGroupService)
         {
         }
 
