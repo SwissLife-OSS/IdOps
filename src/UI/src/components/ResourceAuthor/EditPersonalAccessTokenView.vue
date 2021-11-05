@@ -201,9 +201,14 @@ export default {
       );
     },
     allowedScopes: function() {
-      return this.$store.getters["idResource/apiScopesByTenant"](
+      const apiscopes = this.$store.getters["idResource/apiScopesByTenant"](
         this.personalAccessToken.tenant
       );
+      const identityScopes = this.$store.getters[
+        "idResource/identityScopesByTenant"
+      ](this.personalAccessToken.tenant);
+
+      return [...apiscopes, ...identityScopes].sort((a, b) => a > b);
     },
     environments: function() {
       return this.$store.state.system.environment.items;
