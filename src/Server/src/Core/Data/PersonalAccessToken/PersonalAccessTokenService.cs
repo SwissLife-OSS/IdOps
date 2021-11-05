@@ -158,9 +158,7 @@ namespace IdOps
                 .SaveAsync(token, cancellationToken);
 
             return result.Resource;
-        } 
-
-        public bool RequiresApproval(Guid id) => true;
+        }
 
         public override bool IsAllowedToPublish()
         {
@@ -171,6 +169,6 @@ namespace IdOps
         public override bool IsAllowedToApprove()
         {
             return UserContext.HasPermission(Permissions.ClientAuthoring.Approve);
-        } 
+        }
     }
 }

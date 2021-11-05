@@ -71,8 +71,6 @@ namespace IdOps.Model
 
         public string Tenant { get; set; }
 
-        public bool RequiresApproval(Guid id) => true;
-
         public ICollection<Guid> GetEnvironmentIds() =>
             _environmentIds ??= new[]
             {
