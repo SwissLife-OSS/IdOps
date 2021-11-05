@@ -17,7 +17,7 @@ namespace IdOps
             IEnumerable<Guid> scopeIds) =>
             scopeIds.Select(x =>
                     context.GetIdentityResourceById(x)?.Name ??
-                    context.GetApiResourceById(x)?.Name ??
+                    context.GetApiScopeById(x)?.Name ??
                     string.Empty)
                 .Where(x => !string.IsNullOrEmpty(x))
                 .ToList();
