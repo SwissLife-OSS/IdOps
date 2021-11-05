@@ -113,7 +113,11 @@ export default {
   },
   computed: {
     title: function () {
+<<<<<<< HEAD
       return this.isNew ? "Identity Server Group" : this.group.name;
+=======
+      return this.isNew ? "Group" : this.group.name;
+>>>>>>> d65cd11 (Manage identity server group)
     },
     isNew: function () {
       return !this.group.id;
@@ -154,6 +158,10 @@ export default {
         name: null,
         tenants: [],
       };
+<<<<<<< HEAD
+=======
+      //this.$refs.form.resetValidation();
+>>>>>>> d65cd11 (Manage identity server group)
     },
     async onSave(event) {
       this.$refs.form.validate();
