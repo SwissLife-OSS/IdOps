@@ -94,7 +94,7 @@ namespace IdOps
             await ValidateTenantAccess(tokenResource, cancellationToken);
 
             HashedToken? token = tokenResource.Tokens.FirstOrDefault(x => x.Id == tokenId);
-            if (token is null )
+            if (token is null)
             {
                 return new RemoveSecretPersonalAccessTokenResult(null, null);
             }
@@ -158,6 +158,19 @@ namespace IdOps
                 .SaveAsync(token, cancellationToken);
 
             return result.Resource;
+        } 
+
+        public bool RequiresApproval(Guid id) => true;
+
+        public override bool IsAllowedToPublish()
+        {
+            return UserContext.HasPermission(
+                Permissions.ClientAuthoring.PersonalAccessToken.Publish);
         }
+
+        public override bool IsAllowedToApprove()
+        {
+            return UserContext.HasPermission(Permissions.ClientAuthoring.Approve);
+        } 
     }
 }

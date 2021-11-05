@@ -65,13 +65,19 @@ namespace IdOps
             return result.Resource;
         }
 
-        public async Task<IReadOnlyList<IResource>> GetDependenciesAsync(
+        public Task<IReadOnlyList<IResource>> GetDependenciesAsync(
             ApiScope client,
-            CancellationToken cancellationToken)
-        {
-            var dependencies = new List<IResource>();
+            CancellationToken cancellationToken) =>
+            Task.FromResult((IReadOnlyList<IResource>)Array.Empty<IResource>());
 
-            return dependencies;
+        public override bool IsAllowedToPublish()
+        {
+            return UserContext.HasPermission(Permissions.ClientAuthoring.Publish);
+        }
+
+        public override bool IsAllowedToApprove()
+        {
+            return UserContext.HasPermission(Permissions.ClientAuthoring.Approve);
         }
     }
 }
