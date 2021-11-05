@@ -58,8 +58,16 @@ namespace IdOps
             return result;
         }
 
+        public Task<ICollection<string>> GetClientIdsOfApplicationsAsync(
+            IEnumerable<Guid> applicationIds,
+            CancellationToken cancellationToken)
+        {
+            return GetClientIdsOfApplicationsAsync(applicationIds, default, cancellationToken);
+        }
+
         public async Task<ICollection<string>> GetClientIdsOfApplicationsAsync(
             IEnumerable<Guid> applicationIds,
+            Guid environmentId,
             CancellationToken cancellationToken)
         {
             IReadOnlyList<Application> apps =
@@ -70,7 +78,15 @@ namespace IdOps
             IEnumerable<Client> clients =
                 await _stores.Clients.GetByIdsAsync(appIds, cancellationToken);
 
-            return clients.Select(x => x.ClientId).Distinct().ToArray();
+            if (environmentId != default)
+            {
+                clients = clients.Where(x => x.Environments.Contains(environmentId));
+            }
+
+            return clients
+                .Select(x => x.ClientId)
+                .Distinct()
+                .ToArray();
         }
     }
 }

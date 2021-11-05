@@ -20,6 +20,11 @@ namespace IdOps
 
         Task<ICollection<string>> GetClientIdsOfApplicationsAsync(
             IEnumerable<Guid> applicationIds,
+            Guid environmentId,
+            CancellationToken cancellationToken);
+
+        Task<ICollection<string>> GetClientIdsOfApplicationsAsync(
+            IEnumerable<Guid> applicationIds,
             CancellationToken cancellationToken);
     }
 }

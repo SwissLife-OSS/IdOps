@@ -11,7 +11,7 @@ namespace IdOps
 
         bool IsOfType(string resource);
 
-        bool RequiresApproval(Guid id) => false;
+        bool RequiresApproval(Guid id);
 
         bool ForcePublish => false;
 

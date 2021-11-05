@@ -7,6 +7,8 @@ using IdOps.Model;
 using IdOps.Security;
 using IdOps.Server.Storage.Mongo;
 using Microsoft.Extensions.Hosting;
+using MongoDB.Driver;
+using Environment = IdOps.Model.Environment;
 
 namespace IdOps.Api
 {
@@ -42,6 +44,13 @@ namespace IdOps.Api
             {
                 _userContextAccessor.Context = new DefaultUserContext(_seedUser, default!);
 
+                Environment? checkIfDataIsSeeded = await _idOpsDbContext.Environments
+                    .Find(x => x.Id == _environments.First().Key)
+                    .FirstOrDefaultAsync(cancellationToken);
+                if (checkIfDataIsSeeded is not null)
+                {
+                    return;
+                }
                 await _idOpsDbContext.Environments.InsertManyAsync(
                     _environments.Select(e => new Model.Environment { Id = e.Key, Name = e.Value }),
                     cancellationToken: cancellationToken);

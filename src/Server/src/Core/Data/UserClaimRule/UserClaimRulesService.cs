@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using IdOps.Configuration;
 using IdOps.Model;
 using IdOps.Security;
 using IdOps.Server.Storage;
@@ -15,10 +16,11 @@ namespace IdOps
         private readonly IResourceManager<UserClaimRule> _resourceManager;
 
         public UserClaimRulesService(
+            IdOpsServerOptions options,
             IUserClaimRuleStore store,
             IResourceManager<UserClaimRule> resourceManager,
             IUserContextAccessor userContextAccessor)
-            : base(userContextAccessor, store)
+            : base(options, userContextAccessor, store)
         {
             _store = store;
             _resourceManager = resourceManager;

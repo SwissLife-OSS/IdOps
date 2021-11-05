@@ -28,7 +28,6 @@ namespace IdOps.Model
         /// </summary>
         public string UserName { get; set; }
 
-
         /// <summary>
         /// The Environment where this token is deployed
         /// </summary>
