@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using IdOps.Configuration;
 using IdOps.Model;
 using IdOps.Security;
 using IdOps.Server.Storage;
@@ -19,13 +20,14 @@ namespace IdOps
         private readonly string[] _sharedSecretGeneratorNames;
 
         public ClientService(
+            IdOpsServerOptions options,
             IClientStore clientStore,
             IUserContextAccessor userContextAccessor,
             IResourceManager<Client> resourceManager,
             IEnumerable<IClientIdGenerator> clientIdGenerators,
             ISecretService secretService,
             IEnumerable<ISharedSecretGenerator> sharedSecretGenerators)
-            : base(userContextAccessor, clientStore)
+            : base(options, userContextAccessor, clientStore)
         {
             _clientStore = clientStore;
             _resourceManager = resourceManager;

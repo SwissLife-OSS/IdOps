@@ -7,6 +7,8 @@ namespace IdOps.Configuration
         public MessagingOptions Messaging { get; set; } = default!;
 
         public HashSet<string> MutedClients { get; set; } = new HashSet<string>();
+
+        public HashSet<string> NeedsApproval { get; set; } = new HashSet<string>();
     }
 
     public class MessagingOptions
