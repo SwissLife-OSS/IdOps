@@ -28,63 +28,63 @@ type AddClientSecretPayload {
 }
 
 type AddSecretPersonalAccessTokenPayload {
-  token: PersonalAccessToken
   secret: String
+  token: PersonalAccessToken
 }
 
 type ApiResource implements IResource {
-  tenantInfo: Tenant!
-  scopes: [ApiScope!]!
-  isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
-  id: Uuid!
-  tenant: String!
-  requireResourceIndicator: Boolean!
-  apiSecrets: [Secret!]!
   allowedAccessTokenSigningAlgorithms: [String!]!
-  title: String!
-  enabled: Boolean!
-  name: String!
-  displayName: String
+  apiSecrets: [Secret!]!
   description: String
-  userClaims: [String!]
+  displayName: String
+  enabled: Boolean!
+  id: Uuid!
+  isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
+  name: String!
   properties: [KeyValuePairOfStringAndString!]!
+  requireResourceIndicator: Boolean!
+  scopes: [ApiScope!]!
+  tenant: String!
+  tenantInfo: Tenant!
+  title: String!
+  userClaims: [String!]
   version: ResourceVersion!
 }
 
 type ApiScope implements IResource {
-  tenantInfo: Tenant!
-  isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
-  id: Uuid!
-  tenant: String!
-  showInDiscoveryDocument: Boolean!
-  title: String!
-  enabled: Boolean!
-  name: String!
-  displayName: String
   description: String
-  userClaims: [String!]
+  displayName: String
+  enabled: Boolean!
+  id: Uuid!
+  isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
+  name: String!
   properties: [KeyValuePairOfStringAndString!]!
+  showInDiscoveryDocument: Boolean!
+  tenant: String!
+  tenantInfo: Tenant!
+  title: String!
+  userClaims: [String!]
   version: ResourceVersion!
 }
 
 type Application implements IResource {
-  clients: [Client!]!
-  userClaimRules: [UserClaimRule!]!
-  tenantInfo: Tenant!
-  template: ClientTemplate!
-  isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
-  id: Uuid!
-  tenant: String!
-  name: String!
-  title: String!
-  apiScopes: [Uuid!]!
-  identityScopes: [Uuid!]!
-  redirectUris: [String!]!
-  postLogoutRedirectUris: [String!]!
-  clientIds: [Uuid!]!
-  version: ResourceVersion!
   allowedGrantTypes: [String!]!
+  apiScopes: [Uuid!]!
+  clientIds: [Uuid!]!
+  clients: [Client!]!
+  id: Uuid!
+  identityScopes: [Uuid!]!
+  isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
+  name: String!
+  postLogoutRedirectUris: [String!]!
+  redirectUris: [String!]!
+  template: ClientTemplate!
   templateId: Uuid!
+  tenant: String!
+  tenantInfo: Tenant!
+  title: String!
+  userClaimRules: [UserClaimRule!]!
+  version: ResourceVersion!
 }
 
 type ApproveResourcesResult {
@@ -92,76 +92,76 @@ type ApproveResourcesResult {
 }
 
 type ClaimRuleMatch {
-  environmentId: Uuid
   claimType: String!
-  value: String!
+  environmentId: Uuid
   matchMode: ClaimRuleMatchMode!
+  value: String!
 }
 
 type Client implements IResource {
-  identityScopes: [Uuid!]
-  apiScopes: [Uuid!]
-  dependencies: [IResource!]!
-  tenantInfo: Tenant!
-  application: Application
-  isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
-  environmentIds: [Uuid!]!
-  id: Uuid!
-  tenant: String!
-  enabled: Boolean!
-  clientId: String!
-  protocolType: String
-  clientSecrets: [Secret!]
-  requireClientSecret: Boolean!
-  name: String!
-  description: String
-  clientUri: String
-  logoUri: String
-  requireConsent: Boolean!
-  allowRememberConsent: Boolean!
-  allowedGrantTypes: [String!]
-  requirePkce: Boolean!
-  allowPlainTextPkce: Boolean!
-  requireRequestObject: Boolean!
+  absoluteRefreshTokenLifetime: Int!
+  accessTokenLifetime: Int!
+  accessTokenType: AccessTokenType!
   allowAccessTokensViaBrowser: Boolean!
-  redirectUris: [String!]!
-  postLogoutRedirectUris: [String!]!
-  frontChannelLogoutUri: String
-  frontChannelLogoutSessionRequired: Boolean!
-  backChannelLogoutUri: String
-  backChannelLogoutSessionRequired: Boolean!
   allowOfflineAccess: Boolean!
+  allowPlainTextPkce: Boolean!
+  allowRememberConsent: Boolean!
+  allowedCorsOrigins: [String!]!
+  allowedGrantTypes: [String!]
+  allowedIdentityTokenSigningAlgorithms: [String!]!
   allowedScopes: [ClientScope!]!
   alwaysIncludeUserClaimsInIdToken: Boolean!
-  identityTokenLifetime: Int!
-  allowedIdentityTokenSigningAlgorithms: [String!]!
-  accessTokenLifetime: Int!
-  authorizationCodeLifetime: Int!
-  absoluteRefreshTokenLifetime: Int!
-  slidingRefreshTokenLifetime: Int!
-  consentLifetime: Int
-  refreshTokenUsage: TokenUsage!
-  updateAccessTokenClaimsOnRefresh: Boolean!
-  refreshTokenExpiration: TokenExpiration!
-  accessTokenType: AccessTokenType!
-  enableLocalLogin: Boolean!
-  identityProviderRestrictions: [String!]!
-  includeJwtId: Boolean!
-  claims: [ClientClaim!]!
   alwaysSendClientClaims: Boolean!
+  apiScopes: [Uuid!]
+  application: Application
+  authorizationCodeLifetime: Int!
+  backChannelLogoutSessionRequired: Boolean!
+  backChannelLogoutUri: String
+  claims: [ClientClaim!]!
   clientClaimsPrefix: String
-  pairWiseSubjectSalt: String
-  userSsoLifetime: Int
-  userCodeType: String
-  deviceCodeLifetime: Int!
-  allowedCorsOrigins: [String!]!
-  environments: [Uuid!]!
-  version: ResourceVersion!
-  properties: [KeyValuePairOfStringAndString!]
-  dataConnectors: [DataConnectorOptions!]
-  enabledProviders: [EnabledProvider!]
-  title: String!
   clientDependencies: ClientDependencies!
+  clientId: String!
+  clientSecrets: [Secret!]
+  clientUri: String
+  consentLifetime: Int
+  dataConnectors: [DataConnectorOptions!]
+  dependencies: [IResource!]!
+  description: String
+  deviceCodeLifetime: Int!
+  enableLocalLogin: Boolean!
+  enabled: Boolean!
+  enabledProviders: [EnabledProvider!]
+  environmentIds: [Uuid!]!
+  environments: [Uuid!]!
+  frontChannelLogoutSessionRequired: Boolean!
+  frontChannelLogoutUri: String
+  id: Uuid!
+  identityProviderRestrictions: [String!]!
+  identityScopes: [Uuid!]
+  identityTokenLifetime: Int!
+  includeJwtId: Boolean!
+  isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
+  logoUri: String
+  name: String!
+  pairWiseSubjectSalt: String
+  postLogoutRedirectUris: [String!]!
+  properties: [KeyValuePairOfStringAndString!]
+  protocolType: String
+  redirectUris: [String!]!
+  refreshTokenExpiration: TokenExpiration!
+  refreshTokenUsage: TokenUsage!
+  requireClientSecret: Boolean!
+  requireConsent: Boolean!
+  requirePkce: Boolean!
+  requireRequestObject: Boolean!
+  slidingRefreshTokenLifetime: Int!
+  tenant: String!
+  tenantInfo: Tenant!
+  title: String!
+  updateAccessTokenClaimsOnRefresh: Boolean!
+  userCodeType: String
+  userSsoLifetime: Int
+  version: ResourceVersion!
 }
 
 type ClientClaim {
@@ -171,44 +171,44 @@ type ClientClaim {
 }
 
 type ClientDependencies {
+  apiResources: [ApiResource!]
   apiScopes: [ApiScope!]
   identityResources: [IdentityResource!]
-  apiResources: [ApiResource!]
 }
 
 type ClientScope {
-  type: ScopeType!
   id: Uuid!
+  type: ScopeType!
 }
 
 type ClientTemplate {
-  secrets: [ClientTemplateSecret!]!
-  tenantInfo: Tenant!
-  id: Uuid!
-  name: String!
-  tenant: String!
-  clientIdGenerator: String
-  secretGenerator: String
-  nameTemplate: String
-  urlTemplate: String
-  requireClientSecret: Boolean!
-  requirePkce: Boolean!
-  allowedGrantTypes: [String!]!
   allowAccessTokensViaBrowser: Boolean!
-  redirectUris: [String!]!
-  postLogoutRedirectUris: [String!]!
   allowOfflineAccess: Boolean!
+  allowedGrantTypes: [String!]!
   apiScopes: [Uuid!]!
-  identityScopes: [Uuid!]!
+  clientIdGenerator: String
   dataConnectors: [DataConnectorOptions!]
   enabledProviders: [EnabledProvider!]
+  id: Uuid!
+  identityScopes: [Uuid!]!
+  name: String!
+  nameTemplate: String
+  postLogoutRedirectUris: [String!]!
+  redirectUris: [String!]!
+  requireClientSecret: Boolean!
+  requirePkce: Boolean!
+  secretGenerator: String
+  secrets: [ClientTemplateSecret!]!
+  tenant: String!
+  tenantInfo: Tenant!
+  urlTemplate: String
 }
 
 type ClientTemplateSecret {
   environment: String!
+  environmentId: Uuid!
   type: String
   value: String
-  environmentId: Uuid!
 }
 
 type CreateApplicationPayload {
@@ -217,20 +217,20 @@ type CreateApplicationPayload {
 }
 
 type CreatePersonalAccessTokenPayload {
-  token: PersonalAccessToken
   errors: [CreatePersonalAccessTokenError!]!
+  token: PersonalAccessToken
 }
 
 type CreatedClientInfo {
-  id: Uuid!
   clientId: String!
+  id: Uuid!
   name: String!
   secretValue: String
 }
 
 type DataConnectorOptions {
-  name: String
   enabled: Boolean!
+  name: String
   profileTypeFilter: [ConnectorProfileType!]
   properties: [DataConnectorProperty!]
 }
@@ -241,9 +241,9 @@ type DataConnectorProperty {
 }
 
 type Dependency {
+  apiResources: [ApiResource!]
   apiScopes: [ApiScope!]
   identityResources: [IdentityResource!]
-  apiResources: [ApiResource!]
 }
 
 type EnabledProvider {
@@ -265,9 +265,9 @@ type ExpiresAtWasInThePast implements Error & CreatePersonalAccessTokenError {
 
 type GrantType {
   id: String!
+  isCustom: Boolean!
   name: String!
   tenants: [String!]!
-  isCustom: Boolean!
 }
 
 type HashAlgorithm {
@@ -280,10 +280,10 @@ type HashAlgorithmNotFound implements Error & CreatePersonalAccessTokenError {
 }
 
 type HashedToken {
+  createdAt: DateTime!
+  expiresAt: DateTime!
   id: Uuid!
   token: String!
-  expiresAt: DateTime!
-  createdAt: DateTime!
 }
 
 type IdOpsClaimExtension {
@@ -292,74 +292,74 @@ type IdOpsClaimExtension {
 }
 
 type IdentityResource implements IResource {
-  identityServerGroup: IdentityServerGroup!
-  isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
-  id: Uuid!
-  tenants: [String!]!
-  required: Boolean!
-  emphasize: Boolean!
-  showInDiscoveryDocument: Boolean!
-  title: String!
-  identityServerGroupId: Uuid!
-  enabled: Boolean!
-  name: String!
-  displayName: String
   description: String
-  userClaims: [String!]
+  displayName: String
+  emphasize: Boolean!
+  enabled: Boolean!
+  id: Uuid!
+  identityServerGroup: IdentityServerGroup!
+  identityServerGroupId: Uuid!
+  isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
+  name: String!
   properties: [KeyValuePairOfStringAndString!]!
+  required: Boolean!
+  showInDiscoveryDocument: Boolean!
+  tenants: [String!]!
+  title: String!
+  userClaims: [String!]
   version: ResourceVersion!
 }
 
 type IdentityServer implements IResource {
-  group: IdentityServerGroup!
-  keys: [IdentityServerKey!]!
   discoveryDocument: String!
-  isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
-  id: Uuid!
   environmentId: Uuid!
-  name: String!
-  url: String!
-  title: String!
+  group: IdentityServerGroup!
   groupId: Uuid!
+  id: Uuid!
+  isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
+  keys: [IdentityServerKey!]!
+  name: String!
+  title: String!
+  url: String!
   version: ResourceVersion!
 }
 
 type IdentityServerEvent {
-  rawData: String!
-  id: Uuid!
-  eventId: Int!
-  message: String
-  environmentName: String!
-  serverGroupName: String!
   activityId: String
-  timeStamp: DateTime!
-  processId: Int!
-  localIpAddress: String
-  remoteIpAddress: String
-  hostname: String!
-  clientId: String
-  subjectId: String
   category: String
-  eventType: String
-  endpoint: String
-  name: String!
-  type: String!
+  clientId: String
   data: [KeyValuePairOfStringAndObject!]
+  endpoint: String
+  environmentName: String!
+  eventId: Int!
+  eventType: String
+  hostname: String!
+  id: Uuid!
+  localIpAddress: String
+  message: String
+  name: String!
+  processId: Int!
+  rawData: String!
+  remoteIpAddress: String
+  serverGroupName: String!
+  subjectId: String
+  timeStamp: DateTime!
+  type: String!
 }
 
 type IdentityServerGroup {
+  color: String
   id: Uuid!
   name: String!
   tenants: [String!]!
-  color: String
 }
 
 type IdentityServerKey {
-  kid: String!
   alg: String!
-  thumbprint: String
+  kid: String!
   serialNumber: String
   subject: String
+  thumbprint: String
   validUntil: DateTime
 }
 
@@ -372,157 +372,155 @@ type KeyValuePairOfStringAndString {
   value: String!
 }
 
-type Mutation @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) {
-  saveApiScope(input: SaveApiScopeInput!): SaveApiScopePayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
-  saveIdentityResource(input: SaveIdentityResourceInput!): SaveIdentityResourcePayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
-  createClient(input: CreateClientInput!): SaveClientPayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
-  updateClient(input: UpdateClientInput!): SaveClientPayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
-  addClientSecret(input: AddClientSecretInput!): AddClientSecretPayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
-  removeClientSecret(input: RemoveClientSecretInput!): SaveClientPayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
-  createApplication(input: CreateApplicationInput!): CreateApplicationPayload!
-  updateApplication(input: UpdateApplicationInput!): UpdateApplicationPayload!
-  removeClientFromApplication(input: RemoveClientInput!): UpdateApplicationPayload!
+type Mutation @authorize(apply: BEFORE_RESOLVER, policy: "ApiAccessPolicy") {
+  addApiSecret(input: AddApiSecretInput!): AddApiSecretPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringEdit")
+  addClientSecret(input: AddClientSecretInput!): AddClientSecretPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringEdit")
   addClientToApplication(input: AddClientInput!): UpdateApplicationPayload!
   addEnvironmentToApplication(input: AddEnvironmentToApplicationInput!): UpdateApplicationPayload!
-  saveTenant(input: SaveTenantInput!): SaveTenantPayload! @authorize(policy: "TenantManage", apply: BEFORE_RESOLVER)
-  publishResource(input: PublishResourceInput!): PublishResourcePayload! @authorize(policy: "ResourceAuthoringPublish", apply: BEFORE_RESOLVER)
-  createPersonalAccessToken(input: CreatePersonalAccessTokenInput!): CreatePersonalAccessTokenPayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "PersonalAccessTokenEdit", apply: BEFORE_RESOLVER)
-  updatePersonalAccessToken(input: UpdatePersonalAccessTokenInput!): SavePersonalAccessTokenPayload! @authorize(policy: "PersonalAccessTokenEdit", apply: BEFORE_RESOLVER)
-  addSecretToPersonalAccessToken(input: AddSecretPersonalAccessTokenInput!): AddSecretPersonalAccessTokenPayload! @authorize(policy: "PersonalAccessTokenEdit", apply: BEFORE_RESOLVER)
-  removeSecretOfPersonalAccessToken(input: RemoveSecretPersonalAccessTokenInput!): RemoveSecretPersonalAccessTokenPayload! @authorize(policy: "PersonalAccessTokenEdit", apply: BEFORE_RESOLVER)
-  saveGrantType(input: SaveGrantTypeInput!): SaveGrantTypePayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
-  saveEnvironment(input: SaveEnvironmentInput!): SaveEnvironmentPayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
-  saveIdentityServer(input: SaveIdentityServerInput!): SaveIdentityServerPayload! @authorize(policy: "IdentityServerManage", apply: BEFORE_RESOLVER)
-  saveIdentityServerGroup(input: SaveIdentityServerGroupInput!): SaveIdentityServerGroupPayload! @authorize(policy: "IdentityServerManage", apply: BEFORE_RESOLVER)
-  saveClientTemplate(input: SaveClientTemplateInput!): SaveClientTemplatePayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
-  saveUserClaimRule(input: SaveUserClaimRuleInput!): SaveUserClaimRulePayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
-  approveResources(input: ApproveResourcesInput!): ApproveResourcesResult! @authorize(policy: "ResourceApproval", apply: BEFORE_RESOLVER)
-  saveApiResource(input: SaveApiResourceInput!): SaveApiResourcePayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
-  addApiSecret(input: AddApiSecretInput!): AddApiSecretPayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
-  removeApiSecret(input: RemoveApiSecretInput!): SaveApiResourcePayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
+  addSecretToPersonalAccessToken(input: AddSecretPersonalAccessTokenInput!): AddSecretPersonalAccessTokenPayload! @authorize(apply: BEFORE_RESOLVER, policy: "PersonalAccessTokenEdit")
+  approveResources(input: ApproveResourcesInput!): ApproveResourcesResult! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceApproval")
+  createApplication(input: CreateApplicationInput!): CreateApplicationPayload!
+  createClient(input: CreateClientInput!): SaveClientPayload! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringEdit")
+  createPersonalAccessToken(input: CreatePersonalAccessTokenInput!): CreatePersonalAccessTokenPayload! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "PersonalAccessTokenEdit")
+  publishResource(input: PublishResourceInput!): PublishResourcePayload! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringPublish")
+  removeApiSecret(input: RemoveApiSecretInput!): SaveApiResourcePayload! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringEdit")
+  removeClientFromApplication(input: RemoveClientInput!): UpdateApplicationPayload!
+  removeClientSecret(input: RemoveClientSecretInput!): SaveClientPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringEdit")
+  removeSecretOfPersonalAccessToken(input: RemoveSecretPersonalAccessTokenInput!): RemoveSecretPersonalAccessTokenPayload! @authorize(apply: BEFORE_RESOLVER, policy: "PersonalAccessTokenEdit")
+  saveApiResource(input: SaveApiResourceInput!): SaveApiResourcePayload! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringEdit")
+  saveApiScope(input: SaveApiScopeInput!): SaveApiScopePayload! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringEdit")
+  saveClientTemplate(input: SaveClientTemplateInput!): SaveClientTemplatePayload! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringEdit")
+  saveEnvironment(input: SaveEnvironmentInput!): SaveEnvironmentPayload! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringEdit")
+  saveGrantType(input: SaveGrantTypeInput!): SaveGrantTypePayload! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringEdit")
+  saveIdentityResource(input: SaveIdentityResourceInput!): SaveIdentityResourcePayload! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringEdit")
+  saveIdentityServer(input: SaveIdentityServerInput!): SaveIdentityServerPayload! @authorize(apply: BEFORE_RESOLVER, policy: "IdentityServerManage")
+  saveIdentityServerGroup(input: SaveIdentityServerGroupInput!): SaveIdentityServerGroupPayload! @authorize(apply: BEFORE_RESOLVER, policy: "IdentityServerManage")
+  saveTenant(input: SaveTenantInput!): SaveTenantPayload! @authorize(apply: BEFORE_RESOLVER, policy: "TenantManage")
+  saveUserClaimRule(input: SaveUserClaimRuleInput!): SaveUserClaimRulePayload! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringEdit")
+  updateApplication(input: UpdateApplicationInput!): UpdateApplicationPayload!
+  updateClient(input: UpdateClientInput!): SaveClientPayload! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringEdit")
+  updatePersonalAccessToken(input: UpdatePersonalAccessTokenInput!): SavePersonalAccessTokenPayload! @authorize(apply: BEFORE_RESOLVER, policy: "PersonalAccessTokenEdit")
 }
 
 type PersonalAccessToken implements IResource {
-  dependencies: [IResource!]!
-  tenantInfo: Tenant!
+  allowedApplicationIds: [Uuid!]!
+  allowedScopes: [String!]!
   applications: [Application!]!
   isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
   environmentIds: [Uuid!]!
-  id: Uuid!
-  title: String!
-  version: ResourceVersion!
-  userName: String!
-  environmentId: Uuid!
-  tokens: [HashedToken!]!
-  createdAt: DateTime!
-  allowedScopes: [String!]!
-  allowedApplicationIds: [Uuid!]!
-  source: String!
   hashAlgorithm: String!
-  claimsExtensions: [IdOpsClaimExtension!]!
+  id: Uuid!
+  isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
+  requiresApproval(id: Uuid!): Boolean!
+  source: String!
   tenant: String!
+  tenantInfo: Tenant!
+  title: String!
+  tokens: [HashedToken!]!
+  userName: String!
+  version: ResourceVersion!
 }
 
 type PublishResourcePayload {
+  errors: [UserError!]
   jobId: Uuid!
   resources: [Uuid!]!
-  errors: [UserError!]
 }
 
 type PublishedResource {
+  currentVersion: ResourceVersion!
+  environments: [PublishedResourceEnvironment!]!
   id: Uuid!
   title: String!
   type: String!
-  currentVersion: ResourceVersion!
-  environments: [PublishedResourceEnvironment!]!
 }
 
 type PublishedResourceEnvironment {
   environment: Environment!
   needsApproval: Boolean!
-  version: Int
   publishedAt: DateTime
   state: String
+  version: Int
 }
 
-type Query @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) {
-  apiScopes(input: GetApiScopesInput): [ApiScope!]! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  clientIdGenerators: [String!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  sharedSecretGenerators: [String!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  client(id: Uuid!): Client! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  searchClients(input: SearchClientsInput!): SearchResultOfClient! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
+type Query @authorize(apply: BEFORE_RESOLVER, policy: "ApiAccessPolicy") {
+  apiResources(input: GetApiResourcesInput): [ApiResource!]! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
+  apiScopes(input: GetApiScopesInput): [ApiScope!]! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
   application(id: Uuid!): Application!
-  searchApplications(input: SearchApplicationsInput!): SearchResultOfApplication!
-  searchUnMappedClients(tenant: String!): [Client!]!
-  tenants: [Tenant!]!
-  environments: [Environment!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  grantTypes: [GrantType!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  publishedResouces(input: PublishedResourcesInput): [PublishedResource!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  searchIdentityServerEvents(input: SearchIdentityServerEventsInput!): SearchResultOfIdentityServerEvent!
-  identityResources(input: GetIdentityResourcesInput): [IdentityResource!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  searchResourceAudits(input: SearchResourceAuditInput!): SearchResultOfResourceAuditEvent! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  me: User!
+  client(id: Uuid!): Client! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
+  clientIdGenerators: [String!]! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
+  clientTemplateById(id: Uuid!): ClientTemplate! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
+  clientTemplates: [ClientTemplate!]! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
+  dependencies(input: GetDependenciesInput!): Dependency! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
+  environments: [Environment!]! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
+  grantTypes: [GrantType!]! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
+  hashAlgorithms: [HashAlgorithm!]!
+  identityResources(input: GetIdentityResourcesInput): [IdentityResource!]! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
+  identityServer(id: Uuid!): IdentityServer!
   identityServers: [IdentityServer!]!
   identityServersGroups: [IdentityServerGroup!]!
-  identityServer(id: Uuid!): IdentityServer!
-  clientTemplates: [ClientTemplate!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  clientTemplateById(id: Uuid!): ClientTemplate! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  secrets: [ClientTemplateSecret!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  userClaimsRules(input: GetUserClaimRulesInput!): [UserClaimRule!]! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  userClaimsRule(id: Uuid!): UserClaimRule! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  personalAccessToken(id: Uuid!): PersonalAccessToken! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "PersonalAccessTokenRead", apply: BEFORE_RESOLVER)
-  personalAccessTokens(input: GetPersonalAccessTokensInput!): [PersonalAccessToken!]! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "PersonalAccessTokenRead", apply: BEFORE_RESOLVER)
-  searchPersonalAccessTokens(input: SearchPersonalAccessTokensInput!): SearchResultOfPersonalAccessToken! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "PersonalAccessTokenRead", apply: BEFORE_RESOLVER)
-  apiResources(input: GetApiResourcesInput): [ApiResource!]! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  hashAlgorithms: [HashAlgorithm!]!
-  resourceApprovals(input: ResourceApprovalInput): [ResourceApproval!]! @authorize(policy: "ResourceApproval", apply: BEFORE_RESOLVER)
-  dependencies(input: GetDependenciesInput!): Dependency! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
+  me: User!
+  personalAccessToken(id: Uuid!): PersonalAccessToken! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "PersonalAccessTokenRead")
+  personalAccessTokens(input: GetPersonalAccessTokensInput!): [PersonalAccessToken!]! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "PersonalAccessTokenRead")
+  publishedResouces(input: PublishedResourcesInput): [PublishedResource!]! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
+  resourceApprovals(input: ResourceApprovalInput): [ResourceApproval!]! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceApproval")
+  searchApplications(input: SearchApplicationsInput!): SearchResultOfApplication!
+  searchClients(input: SearchClientsInput!): SearchResultOfClient! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
+  searchIdentityServerEvents(input: SearchIdentityServerEventsInput!): SearchResultOfIdentityServerEvent!
+  searchPersonalAccessTokens(input: SearchPersonalAccessTokensInput!): SearchResultOfPersonalAccessToken! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "PersonalAccessTokenRead")
+  searchResourceAudits(input: SearchResourceAuditInput!): SearchResultOfResourceAuditEvent! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
+  searchUnMappedClients(tenant: String!): [Client!]!
+  secrets: [ClientTemplateSecret!]! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
+  sharedSecretGenerators: [String!]! @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
+  tenants: [Tenant!]!
+  userClaimsRule(id: Uuid!): UserClaimRule! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
+  userClaimsRules(input: GetUserClaimRulesInput!): [UserClaimRule!]! @authorize(apply: AFTER_RESOLVER, policy: "TenantResourceAccess") @authorize(apply: BEFORE_RESOLVER, policy: "ResourceAuthoringRead")
 }
 
 type RemoveSecretPersonalAccessTokenPayload {
-  token: PersonalAccessToken
   hash: HashedToken
+  token: PersonalAccessToken
 }
 
 type ResourceApproval {
+  currentVersion: ResourceVersion!
+  environments: [ResourceApprovalEnvironment!]!
   id: Uuid!
   title: String!
   type: String!
-  currentVersion: ResourceVersion!
-  environments: [ResourceApprovalEnvironment!]!
 }
 
 type ResourceApprovalEnvironment {
-  environment: Environment!
-  version: Int
   approvedAt: DateTime
+  environment: Environment!
   state: String
+  version: Int
 }
 
 type ResourceAuditEvent {
+  action: String!
+  changes: [ResourceChange!]!
+  id: Uuid!
   resourceId: Uuid!
   resourceType: String!
-  action: String!
   timestamp: DateTime!
-  changes: [ResourceChange!]!
-  version: Int!
-  id: Uuid!
   userId: String!
+  version: Int!
 }
 
 type ResourceChange {
-  property: String!
-  path: String!
-  before: String
   after: String
-  delta: String
   arrayIndex: Int
+  before: String
+  delta: String
+  path: String!
+  property: String!
 }
 
 type ResourceVersion {
-  version: Int!
   createdAt: DateTime!
   createdBy: String!
+  version: Int!
 }
 
 type SaveApiResourcePayload {
@@ -549,13 +547,13 @@ type SaveEnvironmentPayload {
 }
 
 type SaveGrantTypePayload {
-  grantType: GrantType!
   errors: [UserError!]
+  grantType: GrantType!
 }
 
 type SaveIdentityResourcePayload {
-  identityResource: IdentityResource
   errors: [UserError!]
+  identityResource: IdentityResource
 }
 
 type SaveIdentityServerGroupPayload {
@@ -571,8 +569,8 @@ type SavePersonalAccessTokenPayload {
 }
 
 type SaveTenantPayload {
-  tenant: Tenant!
   errors: [UserError!]
+  tenant: Tenant!
 }
 
 type SaveUserClaimRulePayload {
@@ -580,50 +578,50 @@ type SaveUserClaimRulePayload {
 }
 
 type SearchResultOfApplication {
-  items: [Application!]!
   hasMore: Boolean!
+  items: [Application!]!
   totalCount: Int!
 }
 
 type SearchResultOfClient {
-  items: [Client!]!
   hasMore: Boolean!
+  items: [Client!]!
   totalCount: Int!
 }
 
 type SearchResultOfIdentityServerEvent {
-  items: [IdentityServerEvent!]!
   hasMore: Boolean!
+  items: [IdentityServerEvent!]!
   totalCount: Int!
 }
 
 type SearchResultOfPersonalAccessToken {
-  items: [PersonalAccessToken!]!
   hasMore: Boolean!
+  items: [PersonalAccessToken!]!
   totalCount: Int!
 }
 
 type SearchResultOfResourceAuditEvent {
-  items: [ResourceAuditEvent!]!
   hasMore: Boolean!
+  items: [ResourceAuditEvent!]!
   totalCount: Int!
 }
 
 type Secret {
-  id: Uuid!
   description: String
-  value: String!
   expiration: DateTime
+  id: Uuid!
   type: String!
+  value: String!
 }
 
 type Tenant {
-  id: String!
-  description: String!
   color: String
+  description: String!
+  emails: [String!]!
+  id: String!
   modules: [TenantModule!]!
   roleMappings: [TenantRoleMapping!]!
-  emails: [String!]!
 }
 
 type TenantModule {
@@ -632,9 +630,9 @@ type TenantModule {
 }
 
 type TenantRoleMapping {
-  role: String!
   claimValue: String!
   environmentId: Uuid
+  role: String!
 }
 
 type TenantSetting {
@@ -647,9 +645,9 @@ type UpdateApplicationPayload {
 }
 
 type User {
-  permissions: [String!]!
   id: String!
   name: String!
+  permissions: [String!]!
   roles: [String!]!
 }
 
@@ -659,42 +657,42 @@ type UserClaim {
 }
 
 type UserClaimRule implements IResource {
-  tenantInfo: Tenant!
-  isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
-  id: Uuid!
-  name: String!
-  tenant: String!
   applicationId: Uuid
-  version: ResourceVersion!
-  title: String!
-  rules: [ClaimRuleMatch!]!
   claims: [UserClaim!]!
+  id: Uuid!
+  isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
+  name: String!
+  rules: [ClaimRuleMatch!]!
+  tenant: String!
+  tenantInfo: Tenant!
+  title: String!
+  version: ResourceVersion!
 }
 
 type UserError {
-  message: String!
   code: String!
+  message: String!
 }
 
 input AddApiSecretInput {
-  id: Uuid!
   generator: String
-  value: String
+  id: Uuid!
   name: String
   saveValue: Boolean
+  value: String
 }
 
 input AddClientInput {
-  id: Uuid!
   clientId: Uuid!
+  id: Uuid!
 }
 
 input AddClientSecretInput {
-  id: Uuid!
   generator: String
-  value: String
+  id: Uuid!
   name: String
   saveValue: Boolean
+  value: String
 }
 
 input AddEnvironmentToApplicationInput {
@@ -703,14 +701,14 @@ input AddEnvironmentToApplicationInput {
 }
 
 input AddSecretPersonalAccessTokenInput {
-  tokenId: Uuid!
   expiresAt: DateTime!
+  tokenId: Uuid!
 }
 
 input ApproveResourceInput {
+  environmentId: Uuid!
   resourceId: Uuid!
   type: String!
-  environmentId: Uuid!
   version: Int!
 }
 
@@ -719,10 +717,10 @@ input ApproveResourcesInput {
 }
 
 input ClaimRuleMatchInput {
-  environmentId: Uuid
   claimType: String!
-  value: String!
+  environmentId: Uuid
   matchMode: ClaimRuleMatchMode!
+  value: String!
 }
 
 input ClaimsExtensionRequestInput {
@@ -742,47 +740,47 @@ input ClientPropertyInput {
 }
 
 input ClientTemplateSecretInput {
+  environmentId: Uuid!
   type: String
   value: String
-  environmentId: Uuid!
 }
 
 input CreateApplicationInput {
-  name: String!
-  tenant: String!
-  templateId: Uuid!
   allowedGrantTypes: [String!]!
   apiScopes: [Uuid!]!
-  identityScopes: [Uuid!]!
   environments: [Uuid!]!
+  identityScopes: [Uuid!]!
+  name: String!
   redirectUris: [String!]!
+  templateId: Uuid!
+  tenant: String!
 }
 
 input CreateClientInput {
-  name: String!
-  tenant: String!
   allowedGrantTypes: [String!]!
-  environments: [Uuid!]!
   apiScopes: [Uuid!]!
-  identityScopes: [Uuid!]!
   clientId: String
   clientIdGenerator: String
+  environments: [Uuid!]!
+  identityScopes: [Uuid!]!
+  name: String!
+  tenant: String!
 }
 
 input CreatePersonalAccessTokenInput {
-  userName: String!
-  environmentId: Uuid!
-  tenant: String!
-  source: String!
-  hashAlgorithm: String!
   allowedApplicationIds: [Uuid!]!
   allowedScopes: [String!]!
   claimsExtensions: [ClaimsExtensionRequestInput!]!
+  environmentId: Uuid!
+  hashAlgorithm: String!
+  source: String!
+  tenant: String!
+  userName: String!
 }
 
 input DataConnectorOptionsInput {
-  name: String
   enabled: Boolean!
+  name: String
   profileTypeFilter: [ConnectorProfileType!]
   properties: [DataConnectorPropertyInput!]
 }
@@ -829,22 +827,22 @@ input IdOpsClaimExtensionInput {
 }
 
 input IdentityServerGroupInput {
+  color: String
   id: Uuid!
   name: String!
   tenants: [String!]!
-  color: String
 }
 
 input PublishResourceInput {
-  resources: [Uuid!]!
   destinationEnvionmentId: Uuid!
+  resources: [Uuid!]!
 }
 
 input PublishedResourcesInput {
   environment: Uuid
+  identityServerGroupId: Uuid
   resourceId: [Uuid!]
   resourceTypes: [String!]
-  identityServerGroupId: Uuid
   tenants: [String!]!
 }
 
@@ -854,8 +852,8 @@ input RemoveApiSecretInput {
 }
 
 input RemoveClientInput {
-  id: Uuid!
   clientId: Uuid!
+  id: Uuid!
 }
 
 input RemoveClientSecretInput {
@@ -864,163 +862,163 @@ input RemoveClientSecretInput {
 }
 
 input RemoveSecretPersonalAccessTokenInput {
-  tokenId: Uuid!
   secretId: Uuid!
+  tokenId: Uuid!
 }
 
 input ResourceApprovalInput {
-  resourceIds: [Uuid!]
-  resourceTypes: [String!]
   environmentId: Uuid
   identityServerGroupId: Uuid
+  resourceIds: [Uuid!]
+  resourceTypes: [String!]
   tenants: [String!]
 }
 
 input SaveApiResourceInput {
-  name: String!
-  displayName: String
-  tenant: String!
-  scopes: [Uuid!]!
-  id: Uuid
-  enabled: Boolean!
   description: String
+  displayName: String
+  enabled: Boolean!
+  id: Uuid
+  name: String!
+  scopes: [Uuid!]!
+  tenant: String!
 }
 
 input SaveApiScopeInput {
-  name: String!
-  displayName: String!
-  tenant: String!
-  showInDiscoveryDocument: Boolean!
-  id: Uuid
-  enabled: Boolean!
   description: String
+  displayName: String!
+  enabled: Boolean!
+  id: Uuid
+  name: String!
+  showInDiscoveryDocument: Boolean!
+  tenant: String!
 }
 
 input SaveClientTemplateInput {
-  name: String!
-  tenant: String!
-  allowedGrantTypes: [String!]!
-  secrets: [ClientTemplateSecretInput!]!
-  id: Uuid
-  clientIdGenerator: String
-  nameTemplate: String
-  urlTemplate: String
-  secretGenerator: String
-  postLogoutRedirectUris: [String!]
-  requirePkce: Boolean!
-  requireClientSecret: Boolean!
   allowAccessTokensViaBrowser: Boolean!
   allowOfflineAccess: Boolean!
+  allowedGrantTypes: [String!]!
+  apiScopes: [Uuid!]
+  clientIdGenerator: String
   dataConnectors: [DataConnectorOptionsInput!]
   enabledProviders: [EnabledProviderInput!]
-  apiScopes: [Uuid!]
+  id: Uuid
   identityScopes: [Uuid!]
+  name: String!
+  nameTemplate: String
+  postLogoutRedirectUris: [String!]
   redirectUris: [String!]
+  requireClientSecret: Boolean!
+  requirePkce: Boolean!
+  secretGenerator: String
+  secrets: [ClientTemplateSecretInput!]!
+  tenant: String!
+  urlTemplate: String
 }
 
 input SaveEnvironmentInput {
-  name: String!
   id: Uuid
+  name: String!
   order: Int!
 }
 
 input SaveGrantTypeInput {
   id: String!
+  isCustom: Boolean!
   name: String!
   tenants: [String!]!
-  isCustom: Boolean!
 }
 
 input SaveIdentityResourceInput {
-  name: String!
-  displayName: String!
-  identityServerGroupId: Uuid!
-  tenants: [String!]!
-  showInDiscoveryDocument: Boolean!
-  userClaims: [String!]!
-  required: Boolean!
-  emphasize: Boolean!
-  id: Uuid
-  enabled: Boolean!
   description: String
+  displayName: String!
+  emphasize: Boolean!
+  enabled: Boolean!
+  id: Uuid
+  identityServerGroupId: Uuid!
+  name: String!
+  required: Boolean!
+  showInDiscoveryDocument: Boolean!
+  tenants: [String!]!
+  userClaims: [String!]!
 }
 
 input SaveIdentityServerGroupInput {
-  name: String!
-  tenants: [String!]!
   color: String!
   id: Uuid
+  name: String!
+  tenants: [String!]!
 }
 
 input SaveIdentityServerInput {
-  name: String!
   environmentId: Uuid!
   groupId: Uuid!
-  url: String!
   id: Uuid
+  name: String!
+  url: String!
 }
 
 input SaveTenantInput {
-  id: String!
   color: String!
   description: String!
+  emails: [String!]
+  id: String!
   modules: [TenantModuleInput!]
   roleMappings: [TenantRoleMappingInput!]
-  emails: [String!]
 }
 
 input SaveUserClaimRuleInput {
-  name: String!
-  tenant: String!
-  id: Uuid
   applicationId: Uuid
   claims: [UserClaimInput!]!
+  id: Uuid
+  name: String!
   rules: [ClaimRuleMatchInput!]!
+  tenant: String!
 }
 
 input SearchApplicationsInput {
+  pageNr: Int!
+  pageSize: Int!
   searchText: String
   tenants: [String!]!
-  pageSize: Int!
-  pageNr: Int!
 }
 
 input SearchClientsInput {
+  environmentId: Uuid
+  pageNr: Int!
+  pageSize: Int!
   searchText: String
   tenants: [String!]
-  environmentId: Uuid
-  pageSize: Int!
-  pageNr: Int!
 }
 
 input SearchIdentityServerEventsInput {
   clientId: String
   environment: String
   eventTypes: [String!]
-  pageSize: Int!
   pageNr: Int!
+  pageSize: Int!
 }
 
 input SearchPersonalAccessTokensInput {
+  environmentId: Uuid
+  pageNr: Int!
+  pageSize: Int!
   searchText: String
   tenants: [String!]
-  environmentId: Uuid
-  pageSize: Int!
-  pageNr: Int!
 }
 
 input SearchResourceApprovalLogsInput {
-  resourceId: Uuid
   environmentId: Uuid
-  pageSize: Int!
   pageNr: Int!
+  pageSize: Int!
+  resourceId: Uuid
 }
 
 input SearchResourceAuditInput {
+  pageNr: Int!
+  pageSize: Int!
   resourceId: Uuid
   userId: String
-  pageSize: Int!
-  pageNr: Int!
 }
 
 input TenantModuleInput {
@@ -1029,9 +1027,9 @@ input TenantModuleInput {
 }
 
 input TenantRoleMappingInput {
-  role: String!
   claimValue: String!
   environmentId: Uuid
+  role: String!
 }
 
 input TenantSettingInput {
@@ -1040,72 +1038,72 @@ input TenantSettingInput {
 }
 
 input UpdateApplicationInput {
-  id: Uuid!
-  name: String!
   allowedGrantTypes: [String!]!
   apiScopes: [Uuid!]!
+  id: Uuid!
   identityScopes: [Uuid!]!
+  name: String!
   redirectUris: [String!]!
 }
 
 input UpdateClientInput {
-  id: Uuid!
-  name: String!
-  tenant: String!
-  allowedGrantTypes: [String!]!
-  apiScopes: [Uuid!]!
-  identityScopes: [Uuid!]!
-  environments: [Uuid!]!
-  protocolType: String
-  requireClientSecret: Boolean!
-  description: String
-  clientUri: String
-  logoUri: String
-  requireConsent: Boolean!
-  allowRememberConsent: Boolean!
-  requirePkce: Boolean!
-  allowPlainTextPkce: Boolean!
-  requireRequestObject: Boolean!
-  allowAccessTokensViaBrowser: Boolean!
-  redirectUris: [String!]!
-  postLogoutRedirectUris: [String!]!
-  frontChannelLogoutUri: String
-  frontChannelLogoutSessionRequired: Boolean!
-  backChannelLogoutUri: String
-  backChannelLogoutSessionRequired: Boolean!
-  allowOfflineAccess: Boolean!
-  alwaysIncludeUserClaimsInIdToken: Boolean!
-  identityTokenLifetime: Int!
-  allowedIdentityTokenSigningAlgorithms: [String!]!
-  accessTokenLifetime: Int!
-  authorizationCodeLifetime: Int!
   absoluteRefreshTokenLifetime: Int!
-  slidingRefreshTokenLifetime: Int!
-  consentLifetime: Int
-  refreshTokenUsage: TokenUsage!
-  updateAccessTokenClaimsOnRefresh: Boolean!
-  refreshTokenExpiration: TokenExpiration!
+  accessTokenLifetime: Int!
   accessTokenType: AccessTokenType!
-  alwaysSendClientClaims: Boolean!
-  clientClaimsPrefix: String
-  pairWiseSubjectSalt: String
-  userSsoLifetime: Int
-  userCodeType: String
-  deviceCodeLifetime: Int!
+  allowAccessTokensViaBrowser: Boolean!
+  allowOfflineAccess: Boolean!
+  allowPlainTextPkce: Boolean!
+  allowRememberConsent: Boolean!
   allowedCorsOrigins: [String!]!
-  properties: [ClientPropertyInput!]
+  allowedGrantTypes: [String!]!
+  allowedIdentityTokenSigningAlgorithms: [String!]!
+  alwaysIncludeUserClaimsInIdToken: Boolean!
+  alwaysSendClientClaims: Boolean!
+  apiScopes: [Uuid!]!
+  authorizationCodeLifetime: Int!
+  backChannelLogoutSessionRequired: Boolean!
+  backChannelLogoutUri: String
   claims: [ClientClaimInput!]
+  clientClaimsPrefix: String
+  clientUri: String
+  consentLifetime: Int
   dataConnectors: [DataConnectorOptionsInput!]
+  description: String
+  deviceCodeLifetime: Int!
   enabledProviders: [EnabledProviderInput!]
+  environments: [Uuid!]!
+  frontChannelLogoutSessionRequired: Boolean!
+  frontChannelLogoutUri: String
+  id: Uuid!
+  identityScopes: [Uuid!]!
+  identityTokenLifetime: Int!
+  logoUri: String
+  name: String!
+  pairWiseSubjectSalt: String
+  postLogoutRedirectUris: [String!]!
+  properties: [ClientPropertyInput!]
+  protocolType: String
+  redirectUris: [String!]!
+  refreshTokenExpiration: TokenExpiration!
+  refreshTokenUsage: TokenUsage!
+  requireClientSecret: Boolean!
+  requireConsent: Boolean!
+  requirePkce: Boolean!
+  requireRequestObject: Boolean!
+  slidingRefreshTokenLifetime: Int!
+  tenant: String!
+  updateAccessTokenClaimsOnRefresh: Boolean!
+  userCodeType: String
+  userSsoLifetime: Int
 }
 
 input UpdatePersonalAccessTokenInput {
-  id: Uuid!
-  userName: String
-  source: String
-  allowedScopes: [String!]
   allowedApplicationIds: [Uuid!]
+  allowedScopes: [String!]
   claimsExtensions: [IdOpsClaimExtensionInput!]
+  id: Uuid!
+  source: String
+  userName: String
 }
 
 input UserClaimInput {
@@ -1153,16 +1151,16 @@ enum TokenUsage {
   ONE_TIME_ONLY
 }
 
-directive @authorize("The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!] "Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field." apply: ApplyPolicy! = BEFORE_RESOLVER) repeatable on SCHEMA | OBJECT | FIELD_DEFINITION
+directive @authorize("Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field." apply: ApplyPolicy! = BEFORE_RESOLVER "The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!]) repeatable on SCHEMA | OBJECT | FIELD_DEFINITION
 
 "The `@defer` directive may be provided for fragment spreads and inline fragments to inform the executor to delay the execution of the current fragment to indicate deprioritization of the current fragment. A query with `@defer` directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred is delivered in a subsequent response. `@include` and `@skip` take precedence over `@defer`."
-directive @defer("If this argument label has a value other than null, it will be passed on to the result of this defer directive. This label is intended to give client applications a way to identify to which fragment a deferred result belongs to." label: String "Deferred when true." if: Boolean) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+directive @defer("Deferred when true." if: Boolean "If this argument label has a value other than null, it will be passed on to the result of this defer directive. This label is intended to give client applications a way to identify to which fragment a deferred result belongs to." label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 
 "The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
 directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
 
 "The `@stream` directive may be provided for a field of `List` type so that the backend can leverage technology such as asynchronous iterators to provide a partial list in the initial response, and additional list items in subsequent responses. `@include` and `@skip` take precedence over `@stream`."
-directive @stream("If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to." label: String "The initial elements that shall be send down to the consumer." initialCount: Int! "Streamed when true." if: Boolean) on FIELD
+directive @stream("Streamed when true." if: Boolean "The initial elements that shall be send down to the consumer." initialCount: Int! "If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to." label: String) on FIELD
 
 "The `DateTime` scalar represents an ISO-8601 compliant date time type."
 scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time")

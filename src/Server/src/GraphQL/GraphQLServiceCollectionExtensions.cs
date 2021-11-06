@@ -17,7 +17,8 @@ namespace IdOps.GraphQL
             builder
                 .Services
                 .AddGraphQLServer()
-                .AddGraphQLTypes();
+                .AddGraphQLTypes()
+                .ModifyOptions(s => s.SortFieldsByName = true);
 
             builder
                 .Services
