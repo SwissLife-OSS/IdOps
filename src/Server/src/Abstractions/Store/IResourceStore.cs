@@ -17,7 +17,8 @@ namespace IdOps.Server.Storage
             CancellationToken cancellationToken);
 
         Task<IReadOnlyList<IResource>> GetAllAsync(
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken) =>
+            GetAllAsync(null, null, cancellationToken);
 
         Task<IReadOnlyList<IResource>> GetByIdsAsync(
             IEnumerable<Guid>? ids,

@@ -62,10 +62,6 @@ namespace IdOps.Server.Storage.Mongo
             CancellationToken cancellationToken) =>
             await GetByIdAsync(id, cancellationToken);
 
-        async Task<IReadOnlyList<IResource>> IResourceStore.GetAllAsync(
-            CancellationToken cancellationToken) =>
-            await GetAllAsync(cancellationToken);
-
         async Task<IResource> IResourceStore.SaveAsync(
             IResource resource,
             CancellationToken cancellationToken)
