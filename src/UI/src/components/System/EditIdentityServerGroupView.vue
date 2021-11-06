@@ -28,7 +28,7 @@
                 v-model="group.name">
               </v-text-field>
             </v-col>
-          <v-col md="3">
+          <v-col md="6">
             <v-autocomplete
               label="Tenants"
               :rules="[(v) => !!v || 'Required']"
@@ -113,7 +113,7 @@ export default {
   },
   computed: {
     title: function () {
-      return this.isNew ? "Group" : this.group.name;
+      return this.isNew ? "Identity Server Group" : this.group.name;
     },
     isNew: function () {
       return !this.group.id;

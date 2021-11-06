@@ -51,9 +51,13 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col md="12"
-              ><v-text-field label="Url" v-model="server.url"></v-text-field
-            ></v-col>
+            <v-col md="12">
+              <v-text-field
+                label="Url"
+                v-model="server.url"
+                :rules="[(v) => !!v || 'Required']">
+              </v-text-field>
+            </v-col>
           </v-row>
         </v-tab-item>
         <v-tab-item key="discovery">
@@ -191,7 +195,7 @@ export default {
       }
     },
     onTabChange: function (tab) {
-      if (tab === 1 && !this.discovery.issuer) {
+      if (tab === 1 && !this.discovery.issuer && this.server.id) {
         this.loading = true;
         fetch(`/api/discovery/${this.server.id}`, {
           credentials: "same-origin",
