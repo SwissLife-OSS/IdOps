@@ -27,9 +27,6 @@ namespace IdOps.Server.Storage.Mongo
             IEnumerable<string>? tenants,
             CancellationToken cancellationToken);
 
-        public virtual async Task<IReadOnlyList<T>> GetAllAsync(CancellationToken cancellationToken)
-            => await GetAllAsync(null, null, cancellationToken);
-
         async Task<IReadOnlyList<IResource>> IResourceStore.GetByIdsAsync(
             IEnumerable<Guid>? ids,
             CancellationToken cancellationToken) =>
