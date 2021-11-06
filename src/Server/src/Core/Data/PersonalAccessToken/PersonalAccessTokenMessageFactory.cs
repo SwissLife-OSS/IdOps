@@ -36,7 +36,9 @@ namespace IdOps
                     UserName = token.UserName,
                     Source = PublisherHelper.CreateSource(token),
                     AllowedClients =
-                        await context.GetClientIdsOfApplicationsAsync(token.AllowedApplicationIds,
+                        await context.GetClientIdsOfApplicationsAsync(
+                            token.AllowedApplicationIds,
+                            token.EnvironmentId,
                             cancellationToken)
                 }
                 : null;

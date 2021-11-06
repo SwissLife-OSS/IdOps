@@ -64,5 +64,16 @@ namespace IdOps
 
             return result.Resource;
         }
+
+        public override bool IsAllowedToPublish()
+        {
+            return UserContext.HasPermission(
+                Permissions.ClientAuthoring.Publish);
+        }
+
+        public override bool IsAllowedToApprove()
+        {
+            return UserContext.HasPermission(Permissions.ClientAuthoring.Approve);
+        }
     }
 }

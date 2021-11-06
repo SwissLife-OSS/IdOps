@@ -28,7 +28,6 @@ namespace IdOps.Model
         /// </summary>
         public string UserName { get; set; }
 
-
         /// <summary>
         /// The Environment where this token is deployed
         /// </summary>
@@ -71,8 +70,6 @@ namespace IdOps.Model
         public ICollection<IdOpsClaimExtension> ClaimsExtensions { get; set; }
 
         public string Tenant { get; set; }
-
-        public bool RequiresApproval(Guid id) => true;
 
         public ICollection<Guid> GetEnvironmentIds() =>
             _environmentIds ??= new[]

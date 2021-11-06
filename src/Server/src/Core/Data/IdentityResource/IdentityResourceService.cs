@@ -37,12 +37,6 @@ namespace IdOps
             IEnumerable<string>? tenants,
             CancellationToken cancellationToken)
         {
-            // TODO We should move this into the new permission model
-            if (!UserContext.HasPermission(Permissions.ClientAuthoring.IdentityResource.Manage))
-            {
-                return Array.Empty<IdentityResource>();
-            }
-
             IReadOnlyList<string> userTenants =
                 await GetUserMergedTenantsAsync(tenants?.ToArray(), cancellationToken);
 
@@ -71,6 +65,16 @@ namespace IdOps
                 await _resourceManager.SaveAsync(resource, cancellationToken);
 
             return result.Resource;
+        }
+
+        public override bool IsAllowedToPublish()
+        {
+            return UserContext.HasPermission(Permissions.ClientAuthoring.IdentityResource.Manage);
+        }
+
+        public override bool IsAllowedToApprove()
+        {
+            return UserContext.HasPermission(Permissions.ClientAuthoring.IdentityResource.Manage);
         }
     }
 }

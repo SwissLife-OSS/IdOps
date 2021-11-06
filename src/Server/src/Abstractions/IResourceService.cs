@@ -17,6 +17,12 @@ namespace IdOps
 
         string ResourceType { get; }
 
+        // TODO this is temporary
+        bool IsAllowedToPublish();
+
+        // TODO this is temporary
+        bool IsAllowedToApprove();
+
         ValueTask<IResource?> GetResourceByIdAsync(Guid id, CancellationToken cancellationToken);
 
         Task<IReadOnlyList<IResource>> GetByTenantsAsync(
