@@ -411,7 +411,6 @@ type PersonalAccessToken implements IResource {
   hashAlgorithm: String!
   id: Uuid!
   isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
-  requiresApproval(id: Uuid!): Boolean!
   source: String!
   tenant: String!
   tenantInfo: Tenant!
