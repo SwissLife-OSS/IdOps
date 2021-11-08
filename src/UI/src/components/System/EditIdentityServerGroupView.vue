@@ -154,7 +154,6 @@ export default {
         name: null,
         tenants: [],
       };
-      //this.$refs.form.resetValidation();
     },
     async onSave(event) {
       this.$refs.form.validate();
