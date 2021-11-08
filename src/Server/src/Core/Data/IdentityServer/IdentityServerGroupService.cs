@@ -26,7 +26,6 @@ namespace IdOps
         {
             IReadOnlyList<string> userTenants = await GetUserTenantsAsync(cancellationToken);
             IReadOnlyList<IdentityServerGroup> allGroups = await GetAllGroupsAsync(cancellationToken);
-
             return allGroups.Where(group => group.Tenants.Any(userTenants.Contains));
         }
 
