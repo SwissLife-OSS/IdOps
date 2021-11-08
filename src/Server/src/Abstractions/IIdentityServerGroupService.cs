@@ -14,12 +14,4 @@ namespace IdOps
         Task<IEnumerable<IdentityServerGroup>> GetGroupsByUserTenants(CancellationToken cancellationToken);
         Task<IdentityServerGroup> SaveAsync(SaveIdentityServerGroupRequest request, CancellationToken cancellationToken);
     }
-
-    public record SaveIdentityServerGroupRequest(
-        string Name,
-        ICollection<string> Tenants,
-        string Color)
-    {
-        public Guid? Id { get; init; }
-    }
 }

@@ -24,20 +24,10 @@ namespace IdOps
         public async Task<IEnumerable<IdentityServerGroup>> GetGroupsByUserTenants(
             CancellationToken cancellationToken)
         {
-            IReadOnlyList<string> userTenants =await GetUserTenantsAsync(cancellationToken);
-            IEnumerable<IdentityServerGroup>? allGroups = await GetAllGroupsAsync(cancellationToken);
+            IReadOnlyList<string> userTenants = await GetUserTenantsAsync(cancellationToken);
+            IReadOnlyList<IdentityServerGroup> allGroups = await GetAllGroupsAsync(cancellationToken);
     
-            var byTenant = new List<IdentityServerGroup>();
-    
-            foreach (IdentityServerGroup? group in allGroups)
-            {
-                if (group.Tenants.Any(userTenants.Contains))
-                {
-                    byTenant.Add(group);
-                }
-            }
-    
-            return byTenant;
+            return allGroups.Where(group => group.Tenants.Any(userTenants.Contains));
         }
     
         public Task<IReadOnlyList<IdentityServerGroup>> GetAllGroupsAsync(
