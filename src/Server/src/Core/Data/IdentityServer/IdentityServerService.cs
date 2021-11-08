@@ -33,7 +33,7 @@ namespace IdOps
             return _identityServerStore.GetAllAsync(cancellationToken);
         }
 
-        public async Task<Model.IdentityServer> GetByIdAsync(
+        public Task<Model.IdentityServer> GetByIdAsync(
             Guid id,
             CancellationToken cancellationToken)
         {
