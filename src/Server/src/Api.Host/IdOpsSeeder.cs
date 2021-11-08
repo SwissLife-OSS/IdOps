@@ -16,15 +16,22 @@ namespace IdOps.Api
     {
         private readonly User _seedUser = new("admin", "seeder", new[] { "IdOps.Admin" });
 
-        private readonly Dictionary<Guid, string> _environments = new()
+        private record EnvSeed(string EnvName, Guid EnvId, Guid ServerId, string ServerUrl);
+        private readonly IReadOnlyList<EnvSeed> _environments = new[]
         {
-            { Guid.Parse("21b37fad00c341948c20740f8561cea3"), "Development" },
-            { Guid.Parse("f0807e289ff441378cedc1f553697a4b"), "Staging" }
+            new EnvSeed("Development",
+                Guid.Parse("21b37fad00c341948c20740f8561cea3"),
+                Guid.Parse("5cde5ee9dac846ffb04e1079581c08a7"),
+                "http://localhost:5001"),
+            new EnvSeed("Staging",
+                Guid.Parse("f0807e289ff441378cedc1f553697a4b"),
+                Guid.Parse("495d19fbc9fc435382b1bfaf23081369"),
+                "http://localhost:5002")
         };
 
-        private readonly Guid _identityServerId = Guid.Parse("5cde5ee9dac846ffb04e1079581c08a7");
         private readonly Guid _groupId = Guid.Parse("6fa2f06cd0f5498a84dec8605defaebd");
-        private readonly string _tenantName = "Contoso";
+        private readonly string _group = "Contoso";
+        private readonly ICollection<string> _tenants;
         private readonly string _grantType = "client_credentials";
 
         private readonly IUserContextAccessor _userContextAccessor;
@@ -36,6 +43,8 @@ namespace IdOps.Api
         {
             _userContextAccessor = userContextAccessor;
             _idOpsDbContext = idOpsDbContext;
+            _tenants = new[] { "internal", "external" }
+                .Select(tenant => $"{_group}-{tenant}").ToArray();
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -45,53 +54,53 @@ namespace IdOps.Api
                 _userContextAccessor.Context = new DefaultUserContext(_seedUser, default!);
 
                 Environment? checkIfDataIsSeeded = await _idOpsDbContext.Environments
-                    .Find(x => x.Id == _environments.First().Key)
+                    .Find(x => x.Id == _environments.First().EnvId)
                     .FirstOrDefaultAsync(cancellationToken);
                 if (checkIfDataIsSeeded is not null)
                 {
                     return;
                 }
                 await _idOpsDbContext.Environments.InsertManyAsync(
-                    _environments.Select(e => new Model.Environment { Id = e.Key, Name = e.Value }),
+                    _environments.Select(e => new Environment { Id = e.EnvId, Name = e.EnvName }),
                     cancellationToken: cancellationToken);
 
-                await _idOpsDbContext.Tenants.InsertOneAsync(
-                    new Tenant
+                await _idOpsDbContext.Tenants.InsertManyAsync(
+                    _tenants.Select(tenant => new Tenant
                     {
                         Color = "#14299c",
                         Description = "Contoso test tenant",
-                        Id = _tenantName,
-                        RoleMappings = _environments.Keys
-                            .Select(k => new TenantRoleMapping
+                        Id = tenant,
+                        RoleMappings = _environments
+                            .Select(e => new TenantRoleMapping
                             {
-                                EnvironmentId = k,
+                                EnvironmentId = e.EnvId,
                                 ClaimValue = "IdOps.Admin",
                                 Role = "IdOps.Admin"
                             }).ToArray()
-                    }, cancellationToken: cancellationToken);
+                    }), cancellationToken: cancellationToken);
 
                 await _idOpsDbContext.IdentityServerGroups.InsertOneAsync(
                     new IdentityServerGroup
                     {
                         Id = _groupId,
                         Color = "#14299c",
-                        Name = _tenantName,
-                        Tenants = new[] { _tenantName }
+                        Name = _group,
+                        Tenants = _tenants
                     }, cancellationToken: cancellationToken);
 
-                await _idOpsDbContext.IdentityServers.InsertOneAsync(
-                    new Model.IdentityServer
+                await _idOpsDbContext.IdentityServers.InsertManyAsync(
+                    _environments.Select(e => new Model.IdentityServer
                     {
-                        EnvironmentId = _environments.Keys.ElementAt(0),
+                        EnvironmentId = e.EnvId,
                         GroupId = _groupId,
-                        Id = _identityServerId,
-                        Name = _tenantName,
-                        Url = "http://localhost:5001",
+                        Id = e.ServerId,
+                        Name = $"{_group}-{e.EnvName}",
+                        Url = e.ServerUrl,
                         Version = new ResourceVersion
                         {
                             CreatedAt = DateTime.UtcNow, CreatedBy = "seeder", Version = 1
                         }
-                    }, cancellationToken: cancellationToken);
+                    }), cancellationToken: cancellationToken);
 
                 await _idOpsDbContext.GrantTypes.InsertOneAsync(
                     new GrantType
@@ -99,18 +108,18 @@ namespace IdOps.Api
                         Id = _grantType,
                         IsCustom = false,
                         Name = _grantType,
-                        Tenants = new[] { _tenantName },
+                        Tenants = _tenants,
                     }, cancellationToken: cancellationToken);
 
-                await _idOpsDbContext.ClientTemplates.InsertOneAsync(
-                    new ClientTemplate
+                await _idOpsDbContext.ClientTemplates.InsertManyAsync(
+                    _tenants.Select(tenant => new ClientTemplate
                     {
                         Name = "BackendService",
-                        Tenant = _tenantName,
+                        Tenant = tenant,
                         ClientIdGenerator = "GUID",
                         NameTemplate = "{{toUpper environment}}_{{application}}",
-                        UrlTemplate = "https://{{application}}.{{environment}}.foo.local",
-                    }, cancellationToken: cancellationToken);
+                        UrlTemplate = "https://{{application}}.{{environment}}.local",
+                    }), cancellationToken: cancellationToken);
             }
             finally
             {

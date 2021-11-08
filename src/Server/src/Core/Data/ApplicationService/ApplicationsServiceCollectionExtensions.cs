@@ -6,9 +6,9 @@ namespace IdOps
     {
         public static IServiceCollection AddApplications(this IServiceCollection services)
         {
-            services.AddSingleton<IApplicationService, ApplicationService>();
-
-            return services;
+            return services
+                .AddSingleton<IApplicationService, ApplicationService>()
+                .AddSingleton<IResourceDependencyResolver, ApplicationDependencyResolver>();
         }
     }
 }

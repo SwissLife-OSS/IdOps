@@ -31,7 +31,7 @@ namespace IdOps.Model
         /// <summary>
         /// Client secrets - only relevant for flows that require a secret
         /// </summary>
-        public ICollection<Secret>? ClientSecrets { get; set; } = new HashSet<Secret>();
+        public ICollection<Secret> ClientSecrets { get; set; } = new HashSet<Secret>();
 
         /// <summary>
         /// If set to false, no client secret is needed to request tokens at the token endpoint (defaults to <c>true</c>)

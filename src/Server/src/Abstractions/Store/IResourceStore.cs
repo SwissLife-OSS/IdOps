@@ -7,9 +7,7 @@ namespace IdOps.Server.Storage
 {
     public interface IResourceStore
     {
-        bool IsOfType(IResource resource);
-
-        bool IsOfType(string resource);
+        string Type { get; }
 
         Task<IReadOnlyList<IResource>> GetAllAsync(
             IEnumerable<Guid>? ids,

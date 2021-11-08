@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using IdOps.Model;
@@ -20,10 +19,16 @@ namespace IdOps
             Guid id,
             CancellationToken cancellationToken)
         {
-            IEnumerable<IResource> deps = await _resourceAuthoring.ApiResources
-                .GetDependenciesAsync(id, cancellationToken);
+            ApiResource? apiResource = await _resourceAuthoring.ApiResources
+                .GetByIdAsync(id, cancellationToken);
 
-            return deps.ToArray();
+            if (apiResource is { })
+            {
+                return await _resourceAuthoring.ApiScopes
+                    .GetByIdsAsync(apiResource.Scopes, cancellationToken);    
+            }
+
+            return Array.Empty<IResource>();
         }
     }
 }

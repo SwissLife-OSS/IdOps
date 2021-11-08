@@ -14,7 +14,7 @@ namespace IdOps
     {
         private readonly IApplicationStore _applicationStore;
         private readonly IClientStore _clientStore;
-        private readonly IResourceManager<Application> _resourceManager;
+        private readonly IResourceManager _resourceManager;
         private readonly IClientService _clientService;
         private readonly IClientTemplateService _clientTemplateService;
         private readonly IEnvironmentService _environmentService;
@@ -23,7 +23,7 @@ namespace IdOps
             IApplicationStore applicationStore,
             IClientStore clientStore,
             IUserContextAccessor userContextAccessor,
-            IResourceManager<Application> resourceManager,
+            IResourceManager resourceManager,
             IClientService clientService,
             IClientTemplateService clientTemplateService,
             IEnvironmentService environmentService)
@@ -41,25 +41,24 @@ namespace IdOps
             UpdateApplicationRequest request,
             CancellationToken cancellationToken)
         {
-            Application application = await _resourceManager.GetExistingOrCreateNewAsync(
-                request.Id,
-                cancellationToken);
+            ResourceChangeContext<Application> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<Application>(request.Id, cancellationToken);
 
-            application.ApiScopes = request.ApiScopes.ToList();
-            application.IdentityScopes = request.IdentityScopes.ToList();
-            application.AllowedGrantTypes = request.AllowedGrantTypes.ToList();
-            application.Name = request.Name;
-            application.RedirectUris = request.RedirectUris.ToList();
+            context.Resource.ApiScopes = request.ApiScopes.ToList();
+            context.Resource.IdentityScopes = request.IdentityScopes.ToList();
+            context.Resource.AllowedGrantTypes = request.AllowedGrantTypes.ToList();
+            context.Resource.Name = request.Name;
+            context.Resource.RedirectUris = request.RedirectUris.ToList();
 
             SaveResourceResult<Application> result = await _resourceManager
-                .SaveAsync(application, cancellationToken);
+                .SaveAsync(context, cancellationToken);
 
             if (result.Diff is { } d && d.Any())
             {
-                foreach (Guid clientId in application.ClientIds)
+                foreach (Guid clientId in context.Resource.ClientIds)
                 {
                     Client client = await _clientService.GetClientByIdAsync(clientId, cancellationToken);
-                    client = await _clientTemplateService.UpdateClientAsync(client, application, cancellationToken);
+                    client = await _clientTemplateService.UpdateClientAsync(client, context.Resource, cancellationToken);
 
                     await _clientService.UpdateClientAsync(client, cancellationToken);
                 }
@@ -72,20 +71,20 @@ namespace IdOps
             CreateApplicationRequest request,
             CancellationToken cancellationToken)
         {
-            Application application = _resourceManager.CreateNew();
+            ResourceChangeContext<Application> context = _resourceManager.CreateNew<Application>();
             var createdClients = new List<CreatedClientInfo>();
 
-            application.Name = request.Name;
-            application.ApiScopes = request.ApiScopes.ToList();
-            application.IdentityScopes = request.IdentityScopes.ToList();
-            application.Tenant = request.Tenant;
-            application.TemplateId = request.TemplateId;
-            application.AllowedGrantTypes = request.AllowedGrantTypes.ToList();
-            application.RedirectUris = request.RedirectUris.ToList();
+            context.Resource.Name = request.Name;
+            context.Resource.ApiScopes = request.ApiScopes.ToList();
+            context.Resource.IdentityScopes = request.IdentityScopes.ToList();
+            context.Resource.Tenant = request.Tenant;
+            context.Resource.TemplateId = request.TemplateId;
+            context.Resource.AllowedGrantTypes = request.AllowedGrantTypes.ToList();
+            context.Resource.RedirectUris = request.RedirectUris.ToList();
 
             Application createdApplication = await CreateClientByEnvironmentAsync(
                 _resourceManager,
-                application,
+                context, 
                 request.Environments,
                 request.TemplateId,
                 createdClients,
@@ -99,11 +98,9 @@ namespace IdOps
             return _applicationStore.GetByIdsAsync(ids, cancellationToken);
         }
 
-        public async Task<Application> GetByIdAsync(
-            Guid id, CancellationToken cancellationToken)
+        public async Task<Application?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            Application result = await _applicationStore.GetByIdAsync(id, cancellationToken);
-            return result;
+            return await _applicationStore.GetByIdAsync(id, cancellationToken);
         }
 
         public async Task<Application?> GetByClientIdAsync(Guid clientId, CancellationToken cancellationToken)
@@ -124,16 +121,15 @@ namespace IdOps
         public async Task<Application> RemoveClientAsync(
             RemoveClientRequest request, CancellationToken cancellationToken)
         {
-            Application application = await _resourceManager.GetExistingOrCreateNewAsync(
-                    request.Id,
-                    cancellationToken);
+            ResourceChangeContext<Application> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<Application>(request.Id, cancellationToken);
 
-            application.ClientIds = application.ClientIds
+            context.Resource.ClientIds = context.Resource.ClientIds
                     .Where(x => x != request.ClientId)
                     .ToList();
 
             SaveResourceResult<Application> result = await _resourceManager
-                .SaveAsync(application, cancellationToken);
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }
@@ -142,14 +138,13 @@ namespace IdOps
             AddClientRequest request,
             CancellationToken cancellationToken)
         {
-            Application application = await _resourceManager.GetExistingOrCreateNewAsync(
-                    request.Id,
-                    cancellationToken);
+            ResourceChangeContext<Application> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<Application>(request.Id, cancellationToken);
 
-            application.ClientIds.Add(request.ClientId);
+            context.Resource.ClientIds.Add(request.ClientId);
 
             SaveResourceResult<Application> result = await _resourceManager
-                .SaveAsync(application, cancellationToken);
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }
@@ -176,24 +171,23 @@ namespace IdOps
         public async Task<Application> AddEnvironmentToApplicationAsnyc(
             AddEnvironmentToApplicationRequest request, CancellationToken cancellationToken)
         {
-            Application application = await _resourceManager.GetExistingOrCreateNewAsync(
-                request.Id,
-                cancellationToken);
+            ResourceChangeContext<Application> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<Application>(request.Id, cancellationToken);
 
             var createdClients = new List<CreatedClientInfo>();
 
             return await CreateClientByEnvironmentAsync(
                 _resourceManager,
-                application,
+                context,
                 request.Environments,
-                application.TemplateId,
+                context.Resource.TemplateId,
                 createdClients,
                 cancellationToken);
         }
 
         public async Task<Application> CreateClientByEnvironmentAsync(
-            IResourceManager<Application> manager,
-            Application application,
+            IResourceManager manager,
+            ResourceChangeContext<Application> context,
             IEnumerable<Guid> environmentsOfApplication,
             Guid templateId,
             List<CreatedClientInfo> createdClients,
@@ -207,13 +201,13 @@ namespace IdOps
                 Model.Environment env = environments.Single(t => t.Id == envId);
 
                 (Client client, string? secret) clientResult = await _clientTemplateService
-                    .CreateClientAsync(templateId, env, application, cancellationToken);
+                    .CreateClientAsync(templateId, env, context.Resource, cancellationToken);
 
                 clientResult.client.Id = Guid.NewGuid();
 
                 await _clientService.CreateClientAsync(clientResult.client, cancellationToken);
 
-                application.ClientIds.Add(clientResult.client.Id);
+                context.Resource.ClientIds.Add(clientResult.client.Id);
                 createdClients.Add(new CreatedClientInfo(
                     clientResult.client.Id,
                     clientResult.client.ClientId,
@@ -224,7 +218,7 @@ namespace IdOps
             }
 
             SaveResourceResult<Application> result = await manager
-                .SaveAsync(application, cancellationToken);
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }

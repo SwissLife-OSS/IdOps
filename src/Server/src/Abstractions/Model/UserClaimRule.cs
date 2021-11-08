@@ -43,6 +43,8 @@ namespace IdOps.Model
         public string Value { get; set; } = default!;
 
         public ClaimRuleMatchMode MatchMode { get; set; } = ClaimRuleMatchMode.Equals;
+
+        public bool IsGlobal() => !EnvironmentId.HasValue;
     }
 
     public enum ClaimRuleMatchMode

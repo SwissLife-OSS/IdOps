@@ -17,7 +17,8 @@ namespace IdOps.GraphQL
             builder
                 .Services
                 .AddGraphQLServer()
-                .AddGraphQLTypes();
+                .AddGraphQLTypes()
+                .ModifyRequestOptions(o => o.IncludeExceptionDetails = true);
 
             builder
                 .Services

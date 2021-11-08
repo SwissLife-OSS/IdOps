@@ -71,14 +71,15 @@ namespace IdOps
             services.AddSingleton<IApprovalService, ApprovalService>();
             services.AddSingleton<IResourceStores>(p => new ResourceStores(p));
             services.AddSingleton<IResourceAuthoring>(p => new ResourceAuthoring(p));
-            services.AddSingleton<IResourceManager<Application>, ResourceManager<Application>>();
-            services.AddSingleton<IResourceManager<Client>, ResourceManager<Client>>();
-            services.AddSingleton<IResourceManager<IdentityResource>, ResourceManager<IdentityResource>>();
-            services.AddSingleton<IResourceManager<Model.IdentityServer>, ResourceManager<Model.IdentityServer>>();
-            services.AddSingleton<IResourceManager<PersonalAccessToken>, ResourceManager<PersonalAccessToken>>();
-            services.AddSingleton<IResourceManager<UserClaimRule>, ResourceManager<UserClaimRule>>();
-            services.AddSingleton<IResourceManager<ApiResource>, ResourceManager<ApiResource>>();
-            services.AddSingleton<IResourceManager<ApiScope>, ResourceManager<ApiScope>>();
+            services.AddSingleton<IResourceManager, ResourceManager>();
+            //services.AddSingleton<IResourceManager<Application>, ResourceManager<Application>>();
+            //services.AddSingleton<IResourceManager<Client>, ResourceManager<Client>>();
+            //services.AddSingleton<IResourceManager<IdentityResource>, ResourceManager<IdentityResource>>();
+            //services.AddSingleton<IResourceManager<Model.IdentityServer>, ResourceManager<Model.IdentityServer>>();
+            //services.AddSingleton<IResourceManager<PersonalAccessToken>, ResourceManager<PersonalAccessToken>>();
+            //services.AddSingleton<IResourceManager<UserClaimRule>, ResourceManager<UserClaimRule>>();
+            //services.AddSingleton<IResourceManager<ApiResource>, ResourceManager<ApiResource>>();
+            //services.AddSingleton<IResourceManager<ApiScope>, ResourceManager<ApiScope>>();
         }
 
         private static void AddPublishing(this IServiceCollection services)
