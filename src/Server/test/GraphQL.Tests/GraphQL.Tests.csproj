@@ -9,13 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="5.10.3"/>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1"/>
-    <PackageReference Include="MongoDB.Driver" Version="2.13.2"/>
-    <PackageReference Include="Moq" Version="4.16.1"/>
-    <PackageReference Include="Snapshooter.Xunit" Version="0.7.1"/>
-    <PackageReference Include="xunit" Version="2.4.1"/>
-    <PackageReference Include="Squadron.Mongo" Version="0.10.0"/>
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+    <PackageReference Include="MongoDB.Driver" Version="2.13.2" />
+    <PackageReference Include="Moq" Version="4.16.1" />
+    <PackageReference Include="Snapshooter.Xunit" Version="0.7.1" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="Squadron.Mongo" Version="0.10.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -27,13 +27,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Api.Host\Api.Host.csproj"/>
-    <ProjectReference Include="..\..\src\GraphQL\GraphQL.csproj"/>
-    <ProjectReference Include="..\..\src\Store.Mongo\Store.Mongo.csproj"/>
+    <ProjectReference Include="..\..\src\Api.Host\Api.Host.csproj" />
+    <ProjectReference Include="..\..\src\GraphQL\GraphQL.csproj" />
+    <ProjectReference Include="..\..\src\Store.Mongo\Store.Mongo.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="__snapshots__\"/>
+    <Folder Include="__snapshots__\" />
   </ItemGroup>
 
 
