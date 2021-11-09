@@ -127,16 +127,12 @@ namespace IdOps
             }
         }
 
-
         public async Task<ApproveResourcesResult> ApproveResourcesAsync(
             ApproveResourcesRequest request,
             CancellationToken cancellationToken)
         {
-            IUserContext userContext = _userContextAccessor.Context ??
-                throw CouldNotAccessUserContextException.New();
-
             // TODO: Replace with proper permission management once it is in place
-            if (!userContext.HasPermission(Permissions.ClientAuthoring.Approve))
+            if (!UserContext.HasPermission(Permissions.ClientAuthoring.Approve))
             {
                 return ApproveResourcesResult.Empty;
             }
@@ -164,7 +160,7 @@ namespace IdOps
                         ErrorMessage = "",
                         Operation = "Approve",
                         Id = Guid.NewGuid(),
-                        RequestedBy = userContext.User.Name,
+                        RequestedBy = UserContext.User.Name,
                         ResourceId = state.ResourceId,
                         ResourceType = state.ResourceType,
                         Version = state.Version,

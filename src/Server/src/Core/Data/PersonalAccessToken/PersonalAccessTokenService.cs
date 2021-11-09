@@ -48,11 +48,6 @@ namespace IdOps
             return await _store.SearchAsync(request, cancellationToken);
         }
 
-        public Task<PersonalAccessToken> GetByIdAsync(
-            Guid id,
-            CancellationToken cancellationToken) =>
-            _store.GetByIdAsync(id, cancellationToken);
-
         public async Task<AddSecretPersonalAccessTokenResult> AddSecretToTokenAsync(
             DateTime expiresAt,
             Guid id,

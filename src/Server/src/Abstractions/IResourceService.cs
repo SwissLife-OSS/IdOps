@@ -29,6 +29,7 @@ namespace IdOps
         where T : class, IResource, new()
     {
         Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+
         Task<IReadOnlyList<T>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
 
         new Task<IReadOnlyList<T>> GetByTenantsAsync(

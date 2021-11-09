@@ -26,17 +26,6 @@ namespace IdOps
             _resourceManager = resourceManager;
         }
 
-        public override async Task<IReadOnlyList<ApiScope>> GetByTenantsAsync(
-            IEnumerable<Guid>? ids,
-            IEnumerable<string>? tenants,
-            CancellationToken cancellationToken)
-        {
-            IReadOnlyList<string> userTenants =
-                await GetUserMergedTenantsAsync(tenants?.ToArray(), cancellationToken);
-
-            return await _apiScopeStore.GetByTenantsAsync(ids, userTenants, cancellationToken);
-        }
-
         public async Task<IReadOnlyList<ApiScope>> GetManyAsync(
             IEnumerable<Guid> ids,
             CancellationToken cancellationToken)

@@ -12,7 +12,6 @@ namespace IdOps
         where T : class, IResource, new()
     {
         private readonly IdOpsServerOptions _options;
-        private readonly string _resourceName = typeof(T).Name;
         private readonly IResourceStore<T> _store;
 
         protected ResourceService(
@@ -31,11 +30,7 @@ namespace IdOps
             return _options.NeedsApproval.Contains(ResourceType);
         }
 
-        public bool IsOfType(IResource resource) => resource is T;
-
-        public bool IsOfType(string resource) => resource == _resourceName;
-
-        public string ResourceType => _resourceName;
+        public string ResourceType { get; } = typeof(T).Name;
 
         public abstract bool IsAllowedToPublish();
 

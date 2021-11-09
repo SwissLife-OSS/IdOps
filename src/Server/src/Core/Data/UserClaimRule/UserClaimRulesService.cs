@@ -26,8 +26,6 @@ namespace IdOps
             _resourceManager = resourceManager;
         }
 
-        public bool ForcePublish => true;
-
         public Task<IReadOnlyList<UserClaimRule>> GetByApplicationAsync(
             Guid applicationId,
             CancellationToken cancellationToken)
@@ -37,13 +35,6 @@ namespace IdOps
                     applicationId
                 },
                 cancellationToken);
-        }
-
-        public async Task<UserClaimRule> GetByIdAsync(
-            Guid id,
-            CancellationToken cancellationToken)
-        {
-            return await _store.GetByIdAsync(id, cancellationToken);
         }
 
         public async Task<UserClaimRule> SaveAsync(

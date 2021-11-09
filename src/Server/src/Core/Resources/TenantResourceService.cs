@@ -9,7 +9,7 @@ using IdOps.Server.Storage;
 
 namespace IdOps
 {
-    public abstract class TenantResourceService<T> : ResourceService<T>, IResourceService<T>
+    public abstract class TenantResourceService<T> : ResourceService<T>
         where T : class, ITenantResource, new()
     {
         private readonly ITenantResourceStore<T> _store;

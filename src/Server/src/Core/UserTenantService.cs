@@ -9,9 +9,9 @@ namespace IdOps
 {
     public class UserTenantService
     {
-        protected readonly IUserContextAccessor _userContextAccessor;
+        private readonly IUserContextAccessor _userContextAccessor;
 
-        public UserTenantService(IUserContextAccessor userContextAccessor)
+        protected UserTenantService(IUserContextAccessor userContextAccessor)
         {
             _userContextAccessor = userContextAccessor;
         }
