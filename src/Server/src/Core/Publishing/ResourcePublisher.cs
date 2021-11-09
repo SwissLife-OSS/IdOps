@@ -85,12 +85,6 @@ namespace IdOps
                     continue;
                 }
 
-                // Task: Resolve Clients from Application OnSave and not OnPublish (UserClaimRules)
-                if (envState?.State is ResourceStates.Latest && !resourceService.ForcePublish)
-                {
-                    continue;
-                }
-
                 IResource? resource = await resourceService
                     .GetResourceByIdAsync(publishedResource.Id, cancellationToken);
 

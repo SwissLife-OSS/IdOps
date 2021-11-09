@@ -7,13 +7,7 @@ namespace IdOps
 {
     public interface IResourceService
     {
-        bool IsOfType(IResource resource);
-
-        bool IsOfType(string resource);
-
         bool RequiresApproval(Guid id);
-
-        bool ForcePublish => false;
 
         string ResourceType { get; }
 

@@ -92,6 +92,7 @@ type ApproveResourcesResult {
 }
 
 type ClaimRuleMatch {
+  isGlobal: Boolean!
   environmentId: Uuid
   claimType: String!
   value: String!
@@ -111,7 +112,7 @@ type Client implements IResource {
   enabled: Boolean!
   clientId: String!
   protocolType: String
-  clientSecrets: [Secret!]
+  clientSecrets: [Secret!]!
   requireClientSecret: Boolean!
   name: String!
   description: String
