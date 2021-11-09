@@ -49,6 +49,7 @@ namespace IdOps
         {
             // TODO: Why was createNew here?
             resource.Version = ResourceVersion.NewVersion(resource.Version, UserContext.UserId);
+            // TODO: Should we clone here also?
             return ResourceChangeContext<T>.FromNew(resource);
         }
 
