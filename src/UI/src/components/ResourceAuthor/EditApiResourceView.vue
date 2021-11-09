@@ -43,7 +43,7 @@
                   label="Tenant"
                   v-model="resource.tenant"
                   :items="tenants"
-                  item-text="description"
+                  item-text="id"
                   item-value="id"
                 ></v-select>
               </v-col>
