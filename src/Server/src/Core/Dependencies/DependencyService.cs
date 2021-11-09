@@ -10,6 +10,7 @@ using IdOps.Templates;
 
 namespace IdOps
 {
+    // TODO: We could use IResourceDependencyResolver
     public class DependencyService : UserTenantService, IDependencyService
     {
         private readonly IClientService _clientService;

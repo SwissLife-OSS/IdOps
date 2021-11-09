@@ -20,7 +20,9 @@ namespace IdOps
             Guid id,
             CancellationToken cancellationToken)
         {
-            Application? application = await _resourceAuthoring.Applications.GetByIdAsync(id, cancellationToken);
+            Application? application = await _resourceAuthoring.Applications
+                .GetByIdAsync(id, cancellationToken);
+
             if (application is not null)
             {
                 IReadOnlyList<UserClaimRule> userClaimRules = await _resourceAuthoring.UserClaimRules

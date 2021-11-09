@@ -20,11 +20,12 @@ namespace IdOps
             Guid id,
             CancellationToken cancellationToken)
         {
-            var dependencies = new List<IResource>();
+            Client? client = await _resourceAuthoring.Clients
+                .GetByIdAsync(id, cancellationToken);
 
-            Client? client = await _resourceAuthoring.Clients.GetByIdAsync(id, cancellationToken);
             if (client is not null)
             {
+                var dependencies = new List<IResource>();
                 dependencies.AddRange(await GetApiScopesAsync(client.AllowedScopes, cancellationToken));
                 dependencies.AddRange(await GetIdentityScopesAsync(client.AllowedScopes, cancellationToken));
                 dependencies.AddRange(await GetRulesAsync(client, cancellationToken));

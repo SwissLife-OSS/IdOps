@@ -22,7 +22,7 @@ namespace IdOps
             ApiResource? apiResource = await _resourceAuthoring.ApiResources
                 .GetByIdAsync(id, cancellationToken);
 
-            if (apiResource is { })
+            if (apiResource is not null)
             {
                 return await _resourceAuthoring.ApiScopes
                     .GetByIdsAsync(apiResource.Scopes, cancellationToken);    
