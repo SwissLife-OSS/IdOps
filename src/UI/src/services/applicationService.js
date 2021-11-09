@@ -74,7 +74,7 @@ export const getClientTemplateById = async id => {
       variables: { id }
     });
   };
-  
+
   export const saveClientTemplate = async input => {
     return await apollo.mutate({
       mutation: MUTATION_CLIENT_TEMPLATE_SAVE,
@@ -90,11 +90,11 @@ export const getClientTemplateById = async id => {
         variables: {}
     });
 };
-  
+
 
 export const addEnvironmentToApplication= async input => {
-    return await apollo.query({
-      query: MUTATION_ENVIRONMENT_ADDTOAPPLICATION,
+    return await apollo.mutate({
+      mutation: MUTATION_ENVIRONMENT_ADDTOAPPLICATION,
       variables: { input }
     });
   };
