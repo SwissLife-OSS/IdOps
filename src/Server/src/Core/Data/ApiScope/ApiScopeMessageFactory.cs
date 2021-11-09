@@ -7,8 +7,8 @@ namespace IdOps
 {
     public class ApiScopeMessageFactory : TenantResourceMessageFactory<ApiScope>
     {
-        public ApiScopeMessageFactory(IIdentityServerService identityServerService)
-            : base(identityServerService)
+        public ApiScopeMessageFactory(IIdentityServerGroupService identityServerGroupService)
+            : base(identityServerGroupService)
         {
         }
 

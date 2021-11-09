@@ -22,18 +22,10 @@ namespace IdOps.Server.Storage.Mongo
 
         public bool IsOfType(string resource) => resource == _name;
 
-        public abstract Task<IReadOnlyList<T>> GetResourceWithOpenApproval(
-            IEnumerable<Guid>? ids,
-            IEnumerable<string>? tenants,
-            CancellationToken cancellationToken);
-
         public abstract Task<IReadOnlyList<T>> GetAllAsync(
             IEnumerable<Guid>? ids,
             IEnumerable<string>? tenants,
             CancellationToken cancellationToken);
-
-        public virtual async Task<IReadOnlyList<T>> GetAllAsync(CancellationToken cancellationToken)
-            => await GetAllAsync(null, null, cancellationToken);
 
         async Task<IReadOnlyList<IResource>> IResourceStore.GetByIdsAsync(
             IEnumerable<Guid>? ids,
@@ -59,12 +51,6 @@ namespace IdOps.Server.Storage.Mongo
             return resource;
         }
 
-        async Task<IReadOnlyList<IResource>> IResourceStore.GetResourceApprovals(
-            IEnumerable<Guid>? ids,
-            IEnumerable<string>? tenants,
-            CancellationToken cancellationToken) =>
-            await GetResourceWithOpenApproval(ids, tenants, cancellationToken);
-
         async Task<IReadOnlyList<IResource>> IResourceStore.GetAllAsync(
             IEnumerable<Guid>? ids,
             IEnumerable<string>? tenants,
@@ -75,10 +61,6 @@ namespace IdOps.Server.Storage.Mongo
             Guid id,
             CancellationToken cancellationToken) =>
             await GetByIdAsync(id, cancellationToken);
-
-        async Task<IReadOnlyList<IResource>> IResourceStore.GetAllAsync(
-            CancellationToken cancellationToken) =>
-            await GetAllAsync(cancellationToken);
 
         async Task<IResource> IResourceStore.SaveAsync(
             IResource resource,

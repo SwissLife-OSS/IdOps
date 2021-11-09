@@ -8,8 +8,8 @@ namespace IdOps
 {
     public class UserClaimRuleMessageFactory : TenantResourceMessageFactory<Model.UserClaimRule>
     {
-        public UserClaimRuleMessageFactory(IIdentityServerService identityServerService)
-            : base(identityServerService)
+        public UserClaimRuleMessageFactory(IIdentityServerGroupService identityServerGroupService)
+            : base(identityServerGroupService)
         {
         }
 

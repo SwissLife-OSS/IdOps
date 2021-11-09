@@ -15,13 +15,15 @@ import EditClientView from "./components/ResourceAuthor/EditClientView";
 import EditEnvironmentView from "./components/System/EditEnvironmentView";
 import EditGrantTypeView from "./components/ResourceAuthor/EditGrantTypeView";
 import EditIdentityResourceView from "./components/ResourceAuthor/EditIdentityResourceView";
-import EditIdentityServerView from "./components/System/EditIdentityServerView";
 import EditTenantView from "./components/System/EditTenantView";
 import EditUserClaimsRulesView from "./components/UserClaimRules/EditUserClaimsRulesView";
 import EnvironmentView from "./components/System/EnvironmentView";
 import GrantTypeView from "./components/ResourceAuthor/GrantTypeView";
 import IdentityResourceView from "./components/ResourceAuthor/IdentityResourceView";
 import IdentityServerEventsView from "./components/Insights/IdentityServerEventsView";
+import EditIdentityServerGroupView from "./components/System/EditIdentityServerGroupView";
+import IdentityServerGroupView from "./components/System/IdentityServerGroupView";
+import EditIdentityServerView from "./components/System/EditIdentityServerView";
 import IdentityServerView from "./components/System/IdentityServerView";
 import InsightsPage from "./components/Insights/InsightsPage";
 import PublishAllView from "./components/Publish/PublishAllView";
@@ -271,6 +273,24 @@ const routes = [
             path: "edit/:id",
             name: "Environment_Edit",
             component: EditEnvironmentView,
+            props: true
+          }
+        ]
+      },
+      {
+        path: "identityservergroup",
+        name: "IdentityServerGroup",
+        component: IdentityServerGroupView,
+        children: [
+          {
+            path: "new",
+            name: "IdentityServerGroup_New",
+            component: EditIdentityServerGroupView
+          },
+          {
+            path: "edit/:id",
+            name: "IdentityServerGroup_Edit",
+            component: EditIdentityServerGroupView,
             props: true
           }
         ]

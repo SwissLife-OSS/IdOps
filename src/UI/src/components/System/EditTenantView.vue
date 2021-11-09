@@ -35,6 +35,7 @@
               ><v-text-field
                 label="Description"
                 v-model="tenant.description"
+                :rules="[(v) => !!v || 'Required']"
               ></v-text-field
             ></v-col>
           </v-row>

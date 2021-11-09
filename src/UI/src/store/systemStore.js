@@ -2,6 +2,7 @@ import {
   getSystemData,
   saveEnvironment,
   saveIdentityServer,
+  saveIdentityServerGroup,
   saveTenant
 } from "../services/systemService";
 
@@ -64,6 +65,9 @@ const systemStore = {
     IDENTITYSERVER_SAVED(state, server) {
       addOrUpdateResource(state, server, "identityServer");
     },
+    IDENTITYSERVERGROUP_SAVED(state, serverGroup) {
+      addOrUpdateResource(state, serverGroup, "identityServerGroup");
+    },
     TENANT_FILTER_SET(state, tenants) {
       state.tenantFilter = tenants;
     }
@@ -117,6 +121,20 @@ const systemStore = {
         const { server } = result.data.saveIdentityServer;
         commit("IDENTITYSERVER_SAVED", server);
         return server;
+      }
+
+      return null;
+    },
+    async saveIdentityServerGroup({ commit, dispatch }, input) {
+      const result = await excuteGraphQL(
+        () => saveIdentityServerGroup(input),
+        dispatch
+      );
+
+      if (result.success) {
+        const { serverGroup } = result.data.saveIdentityServerGroup;
+        commit("IDENTITYSERVERGROUP_SAVED", serverGroup);
+        return serverGroup;
       }
 
       return null;

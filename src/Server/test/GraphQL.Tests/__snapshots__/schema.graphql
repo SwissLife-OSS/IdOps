@@ -393,6 +393,7 @@ type Mutation @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) {
   saveGrantType(input: SaveGrantTypeInput!): SaveGrantTypePayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
   saveEnvironment(input: SaveEnvironmentInput!): SaveEnvironmentPayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
   saveIdentityServer(input: SaveIdentityServerInput!): SaveIdentityServerPayload! @authorize(policy: "IdentityServerManage", apply: BEFORE_RESOLVER)
+  saveIdentityServerGroup(input: SaveIdentityServerGroupInput!): SaveIdentityServerGroupPayload! @authorize(policy: "IdentityServerManage", apply: BEFORE_RESOLVER)
   saveClientTemplate(input: SaveClientTemplateInput!): SaveClientTemplatePayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
   saveUserClaimRule(input: SaveUserClaimRuleInput!): SaveUserClaimRulePayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
   approveResources(input: ApproveResourcesInput!): ApproveResourcesResult! @authorize(policy: "ResourceApproval", apply: BEFORE_RESOLVER)
@@ -406,7 +407,6 @@ type PersonalAccessToken implements IResource {
   tenantInfo: Tenant!
   applications: [Application!]!
   isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
-  requiresApproval(id: Uuid!): Boolean!
   environmentIds: [Uuid!]!
   id: Uuid!
   title: String!
@@ -556,6 +556,10 @@ type SaveGrantTypePayload {
 type SaveIdentityResourcePayload {
   identityResource: IdentityResource
   errors: [UserError!]
+}
+
+type SaveIdentityServerGroupPayload {
+  serverGroup: IdentityServerGroup!
 }
 
 type SaveIdentityServerPayload {
@@ -939,6 +943,13 @@ input SaveIdentityResourceInput {
   id: Uuid
   enabled: Boolean!
   description: String
+}
+
+input SaveIdentityServerGroupInput {
+  name: String!
+  tenants: [String!]!
+  color: String!
+  id: Uuid
 }
 
 input SaveIdentityServerInput {

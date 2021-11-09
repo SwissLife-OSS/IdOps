@@ -1,5 +1,6 @@
 import MUTATION_ENVIRONMENT_SAVE from "../graphql/Environment/Save.gql";
 import MUTATION_IDENTITY_SERVER_SAVE from "../graphql/IdentityServer/Save.gql";
+import MUTATION_IDENTITY_SERVER_GROUP_SAVE from "../graphql/IdentityServerGroup/Save.gql";
 import MUTATION_TENANT_SAVE from "../graphql/Tenant/Save.gql";
 import QUERY_IDENTITY_SERVER_GET_BYID from "../graphql/IdentityServer/GetById.gql";
 import QUERY_SYSTEM_DATA from "../graphql/SystemData.gql";
@@ -45,6 +46,15 @@ export const saveIdentityServer = async (input) => {
             input
         }
     });
+};
+
+export const saveIdentityServerGroup = async (input) => {
+  return await apollo.mutate({
+      mutation: MUTATION_IDENTITY_SERVER_GROUP_SAVE,
+      variables: {
+          input
+      }
+  });
 };
 
 export const getIdentityServer = async (id) => {

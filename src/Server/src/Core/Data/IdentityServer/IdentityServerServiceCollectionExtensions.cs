@@ -7,6 +7,7 @@ namespace IdOps
         public static IServiceCollection AddIdentityServers(this IServiceCollection services)
         {
             services.AddSingleton<IIdentityServerService, IdentityServerService>();
+            services.AddSingleton<IIdentityServerGroupService, IdentityServerGroupService>();
             return services;
         }
     }

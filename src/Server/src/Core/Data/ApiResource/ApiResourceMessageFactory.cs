@@ -9,8 +9,8 @@ namespace IdOps
 {
     public class ApiResourceMessageFactory : TenantResourceMessageFactory<ApiResource>
     {
-        public ApiResourceMessageFactory(IIdentityServerService identityServerService)
-            : base(identityServerService)
+        public ApiResourceMessageFactory(IIdentityServerGroupService identityServerGroupService)
+            : base(identityServerGroupService)
         {
         }
 

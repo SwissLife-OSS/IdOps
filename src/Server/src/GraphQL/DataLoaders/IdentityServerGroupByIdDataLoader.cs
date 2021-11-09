@@ -10,20 +10,20 @@ namespace IdOps.GraphQL.DataLoaders
 {
     public class IdentityServerGroupByIdDataLoader : BatchDataLoader<Guid, IdentityServerGroup>
     {
-        private readonly IIdentityServerService _identityServerService;
+        private readonly IIdentityServerGroupService _identityServerGroupService;
 
         public IdentityServerGroupByIdDataLoader(
-            IIdentityServerService identityServerService,
+            IIdentityServerGroupService identityServerGroupService,
             IBatchScheduler batchScheduler)
             : base(batchScheduler)
         {
-            _identityServerService = identityServerService;
+            _identityServerGroupService = identityServerGroupService;
         }
 
         protected override async Task<IReadOnlyDictionary<Guid, IdentityServerGroup>> LoadBatchAsync(
             IReadOnlyList<Guid> keys, CancellationToken cancellationToken)
         {
-            IEnumerable<IdentityServerGroup>? groups = await _identityServerService
+            IEnumerable<IdentityServerGroup>? groups = await _identityServerGroupService
                 .GetAllGroupsAsync(cancellationToken);
 
             return groups.ToDictionary(x => x.Id);

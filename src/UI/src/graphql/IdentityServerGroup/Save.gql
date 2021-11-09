@@ -1,0 +1,9 @@
+#import "./Fragments.gql"
+
+mutation saveIdentityServerGroup($input: SaveIdentityServerGroupInput!) {
+  saveIdentityServerGroup(input: $input) {
+    serverGroup {
+      ...IdentityServerGroup
+    }
+  }
+}

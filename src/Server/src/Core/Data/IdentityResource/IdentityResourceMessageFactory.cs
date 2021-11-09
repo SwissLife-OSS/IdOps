@@ -7,11 +7,11 @@ namespace IdOps
 {
     public class IdentityResourceMessageFactory : ResourceMessageFactory<IdentityResource>
     {
-        private readonly IIdentityServerService _identityServerService;
+        private readonly IIdentityServerGroupService _identityServerGroupService;
 
-        public IdentityResourceMessageFactory(IIdentityServerService identityServerService)
+        public IdentityResourceMessageFactory(IIdentityServerGroupService identityServerGroupService)
         {
-            _identityServerService = identityServerService;
+            _identityServerGroupService = identityServerGroupService;
         }
 
         public override ValueTask<IdOpsResource?> BuildPublishMessage(
@@ -34,7 +34,7 @@ namespace IdOps
         public override async ValueTask<IdentityServerGroup?> ResolveServerGroupAsync(
             IdentityResource resource,
             CancellationToken cancellationToken) =>
-            await _identityServerService
+            await _identityServerGroupService
                 .GetGroupByIdAsync(
                     resource.IdentityServerGroupId,
                     cancellationToken);

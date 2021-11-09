@@ -19,6 +19,7 @@ namespace IdOps
         private readonly IResourceApprovalLogStore _resourceApprovalLogStore;
         private readonly IEnvironmentService _environmentService;
         private readonly IIdentityServerService _identityServerService;
+        private readonly IIdentityServerGroupService _identityServerGroupService;
         private readonly IResourceServiceResolver _resourceServiceResolver;
 
         public ApprovalService(
@@ -26,6 +27,7 @@ namespace IdOps
             IResourceApprovalLogStore resourceApprovalLogStore,
             IEnvironmentService environmentService,
             IIdentityServerService identityServerService,
+            IIdentityServerGroupService identityServerGroupService,
             IResourceServiceResolver resourceServiceResolver,
             IUserContextAccessor userContextAccessor)
             : base(userContextAccessor)
@@ -35,6 +37,7 @@ namespace IdOps
             _resourceServiceResolver = resourceServiceResolver;
             _environmentService = environmentService;
             _identityServerService = identityServerService;
+            _identityServerGroupService = identityServerGroupService;
         }
 
         public async IAsyncEnumerable<ResourceApproval> GetResourceApprovals(
@@ -81,7 +84,7 @@ namespace IdOps
             IdentityServerGroup? serverGroup = null;
             if (filter is { IdentityServerGroupId: { } })
             {
-                serverGroup = await _identityServerService
+                serverGroup = await _identityServerGroupService
                     .GetGroupByIdAsync(filter.IdentityServerGroupId.Value, cancellationToken);
             }
 

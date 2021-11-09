@@ -7,17 +7,17 @@ namespace IdOps
     public abstract class TenantResourceMessageFactory<T> : ResourceMessageFactory<T>
         where T : class, IResource, IHasTenant, new()
     {
-        private readonly IIdentityServerService _identityServerService;
+        private readonly IIdentityServerGroupService _identityServerGroupService;
 
-        public TenantResourceMessageFactory(IIdentityServerService identityServerService)
+        public TenantResourceMessageFactory(IIdentityServerGroupService identityServerGroupService)
         {
-            _identityServerService = identityServerService;
+            _identityServerGroupService = identityServerGroupService;
         }
 
         public override async ValueTask<IdentityServerGroup?> ResolveServerGroupAsync(
             T resource,
             CancellationToken cancellationToken) =>
-            await _identityServerService
+            await _identityServerGroupService
                 .GetGroupByTenantAsync(resource.Tenant, cancellationToken);
     }
 }

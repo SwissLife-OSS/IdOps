@@ -1,4 +1,5 @@
 #import "../graphql/IdentityServer/Fragments.gql"
+#import "../graphql/IdentityServerGroup/Fragments.gql"
 
 query system {
   tenants {
@@ -24,10 +25,8 @@ query system {
     ...IdentityServer
   }
 
-  identityServersGroups{
-    id
-    name
-    tenants
+  identityServersGroups {
+    ...IdentityServerGroup
   }
 
   hashAlgorithms {

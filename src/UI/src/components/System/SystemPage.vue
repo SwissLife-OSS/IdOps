@@ -20,6 +20,11 @@ export default {
         },
         { name: "Tenants", route: "Tenant", permission: "TENANT_MANAGE" },
         {
+          name: "Identity Server Group",
+          route: "IdentityServerGroup",
+          permission: "IDSRV_MANAGE",
+        },
+        {
           name: "Identity Servers",
           route: "IdentityServer",
           permission: "IDSRV_MANAGE",

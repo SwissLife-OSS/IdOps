@@ -1,0 +1,6 @@
+fragment IdentityServerGroup on IdentityServerGroup {
+  id
+  name
+  tenants
+  color
+}

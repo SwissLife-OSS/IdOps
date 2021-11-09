@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdentityModel.Client;
 using IdentityModel.Jwk;
-using IdOps.Model;
 using IdOps.Security;
 using IdOps.Server.Storage;
 
@@ -28,35 +27,10 @@ namespace IdOps
             _resourceManager = resourceManager;
         }
 
-        public Task<IEnumerable<Model.IdentityServer>> GetAllAsync(
+        public Task<IReadOnlyList<Model.IdentityServer>> GetAllAsync(
             CancellationToken cancellationToken)
         {
             return _identityServerStore.GetAllAsync(cancellationToken);
-        }
-
-        public Task<IEnumerable<IdentityServerGroup>> GetAllGroupsAsync(
-            CancellationToken cancellationToken)
-        {
-            return _identityServerStore.GetAllGroupsAsync(cancellationToken);
-        }
-
-        public async Task<IEnumerable<IdentityServerGroup>> GetGroupsByUserTenants(
-            CancellationToken cancellationToken)
-        {
-            IReadOnlyList<string> userTenants =await GetUserTenantsAsync(cancellationToken);
-            IEnumerable<IdentityServerGroup>? allGroups = await GetAllGroupsAsync(cancellationToken);
-
-            var byTenant = new List<IdentityServerGroup>();
-
-            foreach (IdentityServerGroup? group in allGroups)
-            {
-                if (group.Tenants.Any(userTenants.Contains))
-                {
-                    byTenant.Add(group);
-                }
-            }
-
-            return byTenant;
         }
 
         public async Task<Model.IdentityServer> GetByIdAsync(
@@ -101,21 +75,6 @@ namespace IdOps
             string json = await httpClient.GetStringAsync(".well-known/openid-configuration");
 
             return json;
-        }
-
-        public async Task<IdentityServerGroup?> GetGroupByTenantAsync(
-            string tenant,
-            CancellationToken cancellationToken)
-        {
-            return await _identityServerStore
-                .GetGroupByTenantAsync(tenant, cancellationToken);
-        }
-
-        public async Task<IdentityServerGroup> GetGroupByIdAsync(
-            Guid id,
-            CancellationToken cancellationToken)
-        {
-            return await _identityServerStore.GetGroupByIdAsync(id, cancellationToken);
         }
 
         public async Task<IEnumerable<IdentityServerKey>> GetKeysAsync(
