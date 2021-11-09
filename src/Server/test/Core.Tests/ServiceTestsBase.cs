@@ -53,15 +53,15 @@ namespace IdOps.Core.Tests
             return mock;
         }
 
-        internal Mock<IResourceManager<Application>> CreateResourceManager_ApplicationMock()
+        internal Mock<IResourceManager> CreateResourceManager_ApplicationMock()
         {
             var app = new Application { Id = Guid.Parse("aa69f6a7-e5bf-48c7-a6e2-3371d2503f53"), Name = "abc" };
             var expected = new SaveResourceResult<Application>(app, SaveResourceAction.Inserted);
-            var mock = new Mock<IResourceManager<Application>>(MockBehavior.Strict);
+            var mock = new Mock<IResourceManager>(MockBehavior.Strict);
 
-            mock.Setup(m => m.CreateNew()).Returns(app);
+            mock.Setup(m => m.CreateNew<Application>()).Returns(ResourceChangeContext<Application>.FromNew(app));
 
-            mock.Setup(m => m.SaveAsync(It.IsAny<Application>(), It.IsAny<CancellationToken>()))
+            mock.Setup(m => m.SaveAsync(It.IsAny<ResourceChangeContext<Application>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(expected);
 
             return mock;

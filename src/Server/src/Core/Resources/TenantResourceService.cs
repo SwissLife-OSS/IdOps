@@ -9,7 +9,7 @@ using IdOps.Server.Storage;
 
 namespace IdOps
 {
-    public abstract class TenantResourceService<T> : ResourceService<T>, IResourceService<T>
+    public abstract class TenantResourceService<T> : ResourceService<T>
         where T : class, ITenantResource, new()
     {
         private readonly ITenantResourceStore<T> _store;
@@ -18,15 +18,10 @@ namespace IdOps
             IdOpsServerOptions options,
             IUserContextAccessor accessor,
             ITenantResourceStore<T> store)
-            : base(options, accessor)
+            : base(options, accessor, store)
         {
             _store = store;
         }
-
-        public override async ValueTask<T?> GetResourceByIdAsync(
-            Guid id,
-            CancellationToken cancellationToken) =>
-            await _store.GetByIdAsync(id, cancellationToken);
 
         public override async Task<IReadOnlyList<T>> GetByTenantsAsync(
             IEnumerable<Guid>? ids,

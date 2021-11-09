@@ -12,82 +12,80 @@ using IdOps.Server.Storage;
 
 namespace IdOps
 {
-    public class ResourceManager<T> : IResourceManager<T> where T : class, IResource, new()
+    public class ResourceManager : IResourceManager
     {
         private readonly IUserContextAccessor _userContextAccessor;
-        private readonly IResouceAuditStore _resouceAuditStore;
+        private readonly IResouceAuditStore _resourceAuditStore;
+        private readonly IPublishedResourceDependencyResolver _dependencyResolver;
+
+        private readonly IDictionary<string, IResourceStore> _stores;
 
         public ResourceManager(
             IUserContextAccessor userContextAccessor,
-            IResouceAuditStore resouceAuditStore,
-            IResourceStore<T> store)
+            IResouceAuditStore resourceAuditStore,
+            IEnumerable<IResourceStore> stores,
+            IPublishedResourceDependencyResolver dependencyResolver)
         {
-            Store = store;
+            _stores = stores.ToDictionary(x => x.Type);
             _userContextAccessor = userContextAccessor;
-            _resouceAuditStore = resouceAuditStore;
-        }
-        public IResource? Original { get; private set; }
-
-        public IResourceStore<T>? Store { get; }
-
-        public IUserContext UserContext
-        {
-            get
-            {
-                return _userContextAccessor.Context ??
-                       throw CouldNotAccessUserContextException.New();
-            }
+            _resourceAuditStore = resourceAuditStore;
+            _dependencyResolver = dependencyResolver;
         }
 
-        public T CreateNew()
+        private IUserContext UserContext =>
+            _userContextAccessor.Context ?? throw CouldNotAccessUserContextException.New();
+
+        public ResourceChangeContext<T> CreateNew<T>() where T : IResource, new()
         {
             var resource = new T();
             resource.Version = ResourceVersion.CreateNew(UserContext.UserId);
             resource.Id = Guid.NewGuid();
 
-            return resource;
+            return ResourceChangeContext<T>.FromNew(resource);
         }
 
-        public void SetNewVersion(T resource)
+        public ResourceChangeContext<T> SetNewVersion<T>(T resource)
+            where T : class, IResource, new()
         {
             // TODO: Why was createNew here?
             resource.Version = ResourceVersion.NewVersion(resource.Version, UserContext.UserId);
+            // TODO: Should we clone here also?
+            return ResourceChangeContext<T>.FromNew(resource);
         }
 
-        public async Task<T> GetExistingOrCreateNewAsync(
-        Guid? id,
-        CancellationToken cancellationToken)
+        public async Task<ResourceChangeContext<T>> GetExistingOrCreateNewAsync<T>(
+            Guid? id,
+            CancellationToken cancellationToken)
+            where T : class, IResource, new()
         {
-            IResource resource;
+            T? resource, original = default;
 
             if (id.HasValue)
             {
-                resource = await Store!.GetByIdAsync(id.Value, cancellationToken);
-                Original = resource.Clone();
+                resource = await GetStore<T>().GetByIdAsync(id.Value, cancellationToken);
+                original = resource.Clone();
             }
             else
             {
-                resource = CreateNew();
+                resource = CreateNew<T>().Resource;
             }
 
-            return (T)resource;
+            return new ResourceChangeContext<T>(resource, original);
         }
 
-        public async Task<SaveResourceResult<T>> SaveAsync(
-            T resource,
+        public async Task<SaveResourceResult<T>> SaveAsync<T>(
+            ResourceChangeContext<T> context,
             CancellationToken cancellationToken)
+            where T : class, IResource, new()
         {
-            ICollection<Difference>? diff = null;
             SaveResourceAction action = SaveResourceAction.Inserted;
 
-            if (Original is { })
+            if (context.HasExistingResource)
             {
-                diff = Original.Diff(resource);
-
-                if (diff.Any())
+                if (context.Diff.Any())
                 {
-                    resource.Version = ResourceVersion.NewVersion(
-                        resource.Version,
+                    context.Resource.Version = ResourceVersion.NewVersion(
+                        context.Resource.Version,
                         UserContext.UserId);
                     action = SaveResourceAction.Updated;
                 }
@@ -99,7 +97,46 @@ namespace IdOps
 
             if (action != SaveResourceAction.UnChanged)
             {
-                await Store!.SaveAsync(resource, cancellationToken);
+                await GetStore<T>().SaveAsync(context.Resource, cancellationToken);
+
+                var audit = new ResourceAuditEvent
+                {
+                    Id = Guid.NewGuid(),
+                    ResourceId = context.Resource.Id,
+                    Version = context.Resource.Version.Version,
+                    ResourceType = context.Resource.GetType().Name,
+                    UserId = UserContext.UserId,
+                    Timestamp = DateTime.UtcNow,
+                    Action = action.ToString(),
+                    Changes = CreateChanges(context.Diff)
+                };
+
+                await _resourceAuditStore.CreateAsync(audit, cancellationToken);
+            }
+
+            await InvalidateDependencies(context.Resource, typeof(T).Name, cancellationToken);
+
+            return new SaveResourceResult<T>(context.Resource, action)
+            {
+                Diff = context.Diff
+            };
+        }
+
+        private async Task InvalidateDependencies(
+            IResource parentResource,
+            string resourceType,
+            CancellationToken cancellationToken)
+        {
+            IReadOnlyList<IResource> dependencies = await _dependencyResolver
+                .ResolveDependenciesAsync(parentResource.Id, resourceType, cancellationToken);
+
+            foreach (IResource resource in dependencies)
+            {
+                resource.Version = ResourceVersion
+                    .NewVersion(resource.Version, UserContext.UserId);
+
+                IResourceStore store = GetStore(resource.GetType().Name);
+                await store!.SaveAsync(resource, cancellationToken);
 
                 var audit = new ResourceAuditEvent
                 {
@@ -109,17 +146,26 @@ namespace IdOps
                     ResourceType = resource.GetType().Name,
                     UserId = UserContext.UserId,
                     Timestamp = DateTime.UtcNow,
-                    Action = action.ToString(),
-                    Changes = CreateChanges(diff)
+                    Action = SaveResourceAction.Updated.ToString()
                 };
 
-                await _resouceAuditStore.CreateAsync(audit, cancellationToken);
+                await _resourceAuditStore.CreateAsync(audit, cancellationToken);
+
+                await InvalidateDependencies(resource, resource.GetType().Name, cancellationToken);
+            }
+        }
+
+        private IResourceStore<T> GetStore<T>() where T : class, IResource, new() =>
+            (IResourceStore<T>)GetStore(typeof(T).Name);
+
+        private IResourceStore GetStore(string resourceType)
+        {
+            if (_stores.TryGetValue(resourceType, out IResourceStore? store))
+            {
+                return store;
             }
 
-            return new SaveResourceResult<T>(resource, action)
-            {
-                Diff = diff
-            };
+            throw new InvalidOperationException($"Unknown resource store for type {resourceType}");
         }
 
         private IEnumerable<ResourceChange> CreateChanges(ICollection<Difference>? diffs)
@@ -147,7 +193,7 @@ namespace IdOps
     }
 
     public record SaveResourceResult<T>(T Resource, SaveResourceAction Action)
-         where T : IResource, new()
+        where T : IResource, new()
     {
         public ICollection<Difference>? Diff { get; init; }
     }

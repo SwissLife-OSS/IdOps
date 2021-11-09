@@ -33,7 +33,7 @@ namespace IdOps.GraphQL
         [AuthorizeClientAuthoring(AccessMode.Read, includeTenantAuth: true)]
         public async Task<Client> GetClientAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _clientService.GetClientByIdAsync(id, cancellationToken);
+            return await _clientService.GetByIdAsync(id, cancellationToken);
         }
 
         [AuthorizeClientAuthoring(AccessMode.Read, includeTenantAuth: true)]

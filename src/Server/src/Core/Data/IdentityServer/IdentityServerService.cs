@@ -15,11 +15,11 @@ namespace IdOps
     public class IdentityServerService : UserTenantService , IIdentityServerService
     {
         private readonly IIdentityServerStore _identityServerStore;
-        private readonly IResourceManager<Model.IdentityServer> _resourceManager;
+        private readonly IResourceManager _resourceManager;
 
         public IdentityServerService(
             IIdentityServerStore identityServerStore,
-            IResourceManager<Model.IdentityServer> resourceManager,
+            IResourceManager resourceManager,
             IUserContextAccessor userContextAccessor)
             : base(userContextAccessor)
         {
@@ -33,29 +33,27 @@ namespace IdOps
             return _identityServerStore.GetAllAsync(cancellationToken);
         }
 
-        public async Task<Model.IdentityServer> GetByIdAsync(
+        public Task<Model.IdentityServer> GetByIdAsync(
             Guid id,
             CancellationToken cancellationToken)
         {
-            return await _identityServerStore.GetByIdAsync(id, cancellationToken);
+            return _identityServerStore.GetByIdAsync(id, cancellationToken);
         }
 
         public async Task<Model.IdentityServer> SaveAsync(
             SaveIdentityServerRequest request,
             CancellationToken cancellationToken)
         {
-            Model.IdentityServer resource = await _resourceManager.GetExistingOrCreateNewAsync(
-                request.Id,
-                cancellationToken);
+            ResourceChangeContext<Model.IdentityServer> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<Model.IdentityServer>(request.Id, cancellationToken);
 
-            resource.Name = request.Name;
-            resource.GroupId = request.GroupId;
-            resource.EnvironmentId = request.EnvironmentId;
-            resource.Url = request.Url;
+            context.Resource.Name = request.Name;
+            context.Resource.GroupId = request.GroupId;
+            context.Resource.EnvironmentId = request.EnvironmentId;
+            context.Resource.Url = request.Url;
 
-            SaveResourceResult<Model.IdentityServer> result = await _resourceManager.SaveAsync(
-                resource,
-                cancellationToken);
+            SaveResourceResult<Model.IdentityServer> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }

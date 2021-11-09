@@ -92,6 +92,7 @@ type ApproveResourcesResult {
 }
 
 type ClaimRuleMatch {
+  isGlobal: Boolean!
   environmentId: Uuid
   claimType: String!
   value: String!

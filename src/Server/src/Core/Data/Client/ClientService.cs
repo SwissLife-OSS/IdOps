@@ -13,7 +13,7 @@ namespace IdOps
     public class ClientService : TenantResourceService<Client>, IClientService
     {
         private readonly IClientStore _clientStore;
-        private readonly IResourceManager<Client> _resourceManager;
+        private readonly IResourceManager _resourceManager;
         private readonly ISecretService _secretService;
         private readonly IDictionary<string, IClientIdGenerator> _clientIdGenerators;
         private readonly string[] _clientIdGeneratorsNames;
@@ -23,7 +23,7 @@ namespace IdOps
             IdOpsServerOptions options,
             IClientStore clientStore,
             IUserContextAccessor userContextAccessor,
-            IResourceManager<Client> resourceManager,
+            IResourceManager resourceManager,
             IEnumerable<IClientIdGenerator> clientIdGenerators,
             ISecretService secretService,
             IEnumerable<ISharedSecretGenerator> sharedSecretGenerators)
@@ -35,18 +35,6 @@ namespace IdOps
             _clientIdGenerators = clientIdGenerators.ToDictionary(x => x.Name);
             _clientIdGeneratorsNames = _clientIdGenerators.Keys.ToArray();
             _sharedSecretGeneratorNames = sharedSecretGenerators.Select(x => x.Name).ToArray();
-        }
-
-        public async Task<Client> GetClientByIdAsync(Guid id, CancellationToken cancellationToken)
-        {
-            return await _clientStore.GetByIdAsync(id, cancellationToken);
-        }
-
-        public async Task<IReadOnlyList<Client>> GetManyAsync(
-            IReadOnlyList<Guid> ids,
-            CancellationToken cancellationToken)
-        {
-            return await _clientStore.GetByIdsAsync(ids, cancellationToken);
         }
 
         public async Task<SearchResult<Client>> SearchClientsAsync(
@@ -65,10 +53,10 @@ namespace IdOps
             Client client,
             CancellationToken cancellationToken)
         {
-            _resourceManager.SetNewVersion(client);
+            ResourceChangeContext<Client> context = _resourceManager.SetNewVersion(client);
 
             SaveResourceResult<Client> result = await _resourceManager
-                .SaveAsync(client, cancellationToken);
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }
@@ -77,22 +65,22 @@ namespace IdOps
             CreateClientRequest request,
             CancellationToken cancellationToken)
         {
-            Client client = _resourceManager.CreateNew();
+            ResourceChangeContext<Client> context = _resourceManager.CreateNew<Client>();
 
-            client.Tenant = request.Tenant;
-            client.Environments = request.Environments.ToList();
-            client.Name = request.Name;
-            client.AllowedGrantTypes = request.AllowedGrantTypes?.ToList();
-            client.AllowedScopes = BuildScopes(request.ApiScopes, request.IdentityScopes);
+            context.Resource.Tenant = request.Tenant;
+            context.Resource.Environments = request.Environments.ToList();
+            context.Resource.Name = request.Name;
+            context.Resource.AllowedGrantTypes = request.AllowedGrantTypes?.ToList();
+            context.Resource.AllowedScopes = BuildScopes(request.ApiScopes, request.IdentityScopes);
 
             if (request.ClientId is { })
             {
-                client.ClientId = request.ClientId;
+                context.Resource.ClientId = request.ClientId;
             }
             else if (request.ClientIdGenerator is { } generatorId &&
                 _clientIdGenerators.TryGetValue(generatorId, out IClientIdGenerator? generator))
             {
-                client.ClientId = generator.CreateClientId();
+                context.Resource.ClientId = generator.CreateClientId();
             }
             else
             {
@@ -100,7 +88,7 @@ namespace IdOps
             }
 
             SaveResourceResult<Client> result =
-                await _resourceManager.SaveAsync(client, cancellationToken);
+                await _resourceManager.SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }
@@ -109,9 +97,11 @@ namespace IdOps
             Client client,
             CancellationToken cancellationToken)
         {
-            await _resourceManager.GetExistingOrCreateNewAsync(client.Id, cancellationToken);
+            ResourceChangeContext<Client> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<Client>(client.Id, cancellationToken);
 
-            SaveResourceResult<Client> result = await _resourceManager.SaveAsync(client, cancellationToken);
+            SaveResourceResult<Client> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }
@@ -120,55 +110,56 @@ namespace IdOps
             UpdateClientRequest request,
             CancellationToken cancellationToken)
         {
-            Client client =
-                await _resourceManager.GetExistingOrCreateNewAsync(request.Id, cancellationToken);
+            ResourceChangeContext<Client> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<Client>(request.Id, cancellationToken);
 
-            client.Name = request.Name;
-            client.AllowedGrantTypes = request.AllowedGrantTypes.ToList();
-            client.Environments = request.Environments?.ToList() ?? new List<Guid>();
-            client.AllowedScopes = BuildScopes(request.ApiScopes, request.IdentityScopes);
-            client.AllowedCorsOrigins = request.AllowedCorsOrigins;
-            client.RedirectUris = request.RedirectUris;
-            client.Tenant = request.Tenant;
-            client.RequirePkce = request.RequirePkce;
-            client.RequireClientSecret = request.RequireClientSecret;
-            client.AllowPlainTextPkce = request.AllowPlainTextPkce;
-            client.AllowOfflineAccess = request.AllowOfflineAccess;
-            client.AllowAccessTokensViaBrowser = request.AllowAccessTokensViaBrowser;
+            context.Resource.Name = request.Name;
+            context.Resource.AllowedGrantTypes = request.AllowedGrantTypes.ToList();
+            context.Resource.Environments = request.Environments?.ToList() ?? new List<Guid>();
+            context.Resource.AllowedScopes = BuildScopes(request.ApiScopes, request.IdentityScopes);
+            context.Resource.AllowedCorsOrigins = request.AllowedCorsOrigins;
+            context.Resource.RedirectUris = request.RedirectUris;
+            context.Resource.Tenant = request.Tenant;
+            context.Resource.RequirePkce = request.RequirePkce;
+            context.Resource.RequireClientSecret = request.RequireClientSecret;
+            context.Resource.AllowPlainTextPkce = request.AllowPlainTextPkce;
+            context.Resource.AllowOfflineAccess = request.AllowOfflineAccess;
+            context.Resource.AllowAccessTokensViaBrowser = request.AllowAccessTokensViaBrowser;
 
-            client.IdentityTokenLifetime = request.IdentityTokenLifetime;
-            client.AccessTokenLifetime = request.AccessTokenLifetime;
-            client.AuthorizationCodeLifetime = request.AuthorizationCodeLifetime;
-            client.AbsoluteRefreshTokenLifetime = request.AbsoluteRefreshTokenLifetime;
-            client.SlidingRefreshTokenLifetime = request.SlidingRefreshTokenLifetime;
-            client.ConsentLifetime = request.ConsentLifetime;
-            client.RefreshTokenExpiration = request.RefreshTokenExpiration;
-            client.UserSsoLifetime = request.UserSsoLifetime;
-            client.DeviceCodeLifetime = request.DeviceCodeLifetime;
-            client.AccessTokenType = request.AccessTokenType;
+            context.Resource.IdentityTokenLifetime = request.IdentityTokenLifetime;
+            context.Resource.AccessTokenLifetime = request.AccessTokenLifetime;
+            context.Resource.AuthorizationCodeLifetime = request.AuthorizationCodeLifetime;
+            context.Resource.AbsoluteRefreshTokenLifetime = request.AbsoluteRefreshTokenLifetime;
+            context.Resource.SlidingRefreshTokenLifetime = request.SlidingRefreshTokenLifetime;
+            context.Resource.ConsentLifetime = request.ConsentLifetime;
+            context.Resource.RefreshTokenExpiration = request.RefreshTokenExpiration;
+            context.Resource.UserSsoLifetime = request.UserSsoLifetime;
+            context.Resource.DeviceCodeLifetime = request.DeviceCodeLifetime;
+            context.Resource.AccessTokenType = request.AccessTokenType;
 
-            client.Description = request.Description;
-            client.ClientUri = request.ClientUri;
-            client.LogoUri = request.LogoUri;
-            client.RequireConsent = request.RequireConsent;
-            client.AllowRememberConsent = request.AllowRememberConsent;
-            client.RequireRequestObject = request.RequireRequestObject;
-            client.AlwaysIncludeUserClaimsInIdToken = request.AlwaysIncludeUserClaimsInIdToken;
-            client.UpdateAccessTokenClaimsOnRefresh = request.UpdateAccessTokenClaimsOnRefresh;
-            client.AlwaysSendClientClaims = request.AlwaysSendClientClaims;
-            client.ClientClaimsPrefix = request.ClientClaimsPrefix;
+            context.Resource.Description = request.Description;
+            context.Resource.ClientUri = request.ClientUri;
+            context.Resource.LogoUri = request.LogoUri;
+            context.Resource.RequireConsent = request.RequireConsent;
+            context.Resource.AllowRememberConsent = request.AllowRememberConsent;
+            context.Resource.RequireRequestObject = request.RequireRequestObject;
+            context.Resource.AlwaysIncludeUserClaimsInIdToken = request.AlwaysIncludeUserClaimsInIdToken;
+            context.Resource.UpdateAccessTokenClaimsOnRefresh = request.UpdateAccessTokenClaimsOnRefresh;
+            context.Resource.AlwaysSendClientClaims = request.AlwaysSendClientClaims;
+            context.Resource.ClientClaimsPrefix = request.ClientClaimsPrefix;
 
-            client.PostLogoutRedirectUris = request.PostLogoutRedirectUris;
-            client.FrontChannelLogoutUri = request.FrontChannelLogoutUri;
-            client.FrontChannelLogoutSessionRequired = request.FrontChannelLogoutSessionRequired;
-            client.BackChannelLogoutUri = request.BackChannelLogoutUri;
-            client.BackChannelLogoutSessionRequired = request.BackChannelLogoutSessionRequired;
-            client.Properties = request.Properties?.ToDictionary(k => k.Key, v => v.Value);
-            client.Claims = request.Claims ?? new List<ClientClaim>();
-            client.DataConnectors = request.DataConnectors?.ToList();
-            client.EnabledProviders = request.EnabledProviders?.ToList();
+            context.Resource.PostLogoutRedirectUris = request.PostLogoutRedirectUris;
+            context.Resource.FrontChannelLogoutUri = request.FrontChannelLogoutUri;
+            context.Resource.FrontChannelLogoutSessionRequired = request.FrontChannelLogoutSessionRequired;
+            context.Resource.BackChannelLogoutUri = request.BackChannelLogoutUri;
+            context.Resource.BackChannelLogoutSessionRequired = request.BackChannelLogoutSessionRequired;
+            context.Resource.Properties = request.Properties?.ToDictionary(k => k.Key, v => v.Value);
+            context.Resource.Claims = request.Claims ?? new List<ClientClaim>();
+            context.Resource.DataConnectors = request.DataConnectors?.ToList();
+            context.Resource.EnabledProviders = request.EnabledProviders?.ToList();
 
-            SaveResourceResult<Client> result = await _resourceManager.SaveAsync(client, cancellationToken);
+            SaveResourceResult<Client> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }
@@ -177,14 +168,15 @@ namespace IdOps
             AddClientSecretRequest request,
             CancellationToken cancellationToken)
         {
-            Client client =
-                await _resourceManager.GetExistingOrCreateNewAsync( request.Id, cancellationToken);
+            ResourceChangeContext<Client> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<Client>(request.Id, cancellationToken);
 
             (Secret secret, string secretValue) = await _secretService.CreateSecretAsync(request);
 
-            client.ClientSecrets.Add(secret);
+            context.Resource.ClientSecrets.Add(secret);
 
-            SaveResourceResult<Client> result = await _resourceManager.SaveAsync(client, cancellationToken);
+            SaveResourceResult<Client> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
 
             return (result.Resource, secretValue);
         }
@@ -193,14 +185,15 @@ namespace IdOps
             RemoveClientSecretRequest request,
             CancellationToken cancellationToken)
         {
-            Client client =
-                await _resourceManager.GetExistingOrCreateNewAsync(request.ClientId, cancellationToken);
+            ResourceChangeContext<Client> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<Client>(request.ClientId, cancellationToken);
 
-            client.ClientSecrets = client.ClientSecrets?
+            context.Resource.ClientSecrets = context.Resource.ClientSecrets
                 .Where(x => x.Id != request.Id)
                 .ToList();
 
-            SaveResourceResult<Client> result = await _resourceManager.SaveAsync(client, cancellationToken);
+            SaveResourceResult<Client> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }

@@ -12,24 +12,21 @@ namespace IdOps
 {
     public class ApiResourceService : TenantResourceService<ApiResource>, IApiResourceService
     {
-        private readonly IResourceManager<ApiResource> _resourceManager;
+        private readonly IResourceManager _resourceManager;
         private readonly ISecretService _secretService;
         private readonly IApiResourceStore _apiResourceStore;
-        private readonly IApiScopeStore _apiScopeStore;
 
         public ApiResourceService(
             IdOpsServerOptions options,
             IUserContextAccessor userContextAccessor,
-            IResourceManager<ApiResource> resourceManager,
+            IResourceManager resourceManager,
             ISecretService secretService,
-            IApiResourceStore apiResourceStore,
-            IApiScopeStore apiScopeStore)
+            IApiResourceStore apiResourceStore)
                 : base(options, userContextAccessor, apiResourceStore)
         {
             _resourceManager = resourceManager;
             _secretService = secretService;
             _apiResourceStore = apiResourceStore;
-            _apiScopeStore = apiScopeStore;
         }
 
         public async Task<IReadOnlyList<ApiResource>> GetByTenantAsync(
@@ -44,20 +41,18 @@ namespace IdOps
             SaveApiResourceRequest request,
             CancellationToken cancellationToken)
         {
-            ApiResource resource = await _resourceManager.GetExistingOrCreateNewAsync(
-                request.Id,
-                cancellationToken);
+            ResourceChangeContext<ApiResource> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<ApiResource>(request.Id, cancellationToken);
 
-            resource.Tenant = request.Tenant;
-            resource.Name = request.Name;
-            resource.DisplayName = request.DisplayName;
-            resource.Enabled = request.Enabled;
-            resource.Description = request.Description;
-            resource.Scopes = request.Scopes.ToList();
+            context.Resource.Tenant = request.Tenant;
+            context.Resource.Name = request.Name;
+            context.Resource.DisplayName = request.DisplayName;
+            context.Resource.Enabled = request.Enabled;
+            context.Resource.Description = request.Description;
+            context.Resource.Scopes = request.Scopes.ToList();
 
-            SaveResourceResult<ApiResource> result = await _resourceManager.SaveAsync(
-                resource,
-                cancellationToken);
+            SaveResourceResult<ApiResource> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }
@@ -66,16 +61,15 @@ namespace IdOps
             AddApiSecretRequest request,
             CancellationToken cancellationToken)
         {
-            ApiResource apiResource = await _resourceManager.GetExistingOrCreateNewAsync(
-                request.Id,
-                cancellationToken);
+            ResourceChangeContext<ApiResource> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<ApiResource>(request.Id, cancellationToken);
 
             (Secret secret, string secretValue) = await _secretService.CreateSecretAsync(request);
 
-            apiResource.ApiSecrets.Add(secret);
+            context.Resource.ApiSecrets.Add(secret);
 
             SaveResourceResult<ApiResource> result = await _resourceManager
-                .SaveAsync(apiResource, cancellationToken);
+                .SaveAsync(context, cancellationToken);
 
             return (result.Resource, secretValue);
         }
@@ -84,41 +78,17 @@ namespace IdOps
             RemoveApiSecretRequest request,
             CancellationToken cancellationToken)
         {
-            ApiResource apiResource = await _resourceManager.GetExistingOrCreateNewAsync(
-                request.ApiResourceId,
-                cancellationToken);
+            ResourceChangeContext<ApiResource> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<ApiResource>(request.ApiResourceId, cancellationToken);
 
-            apiResource.ApiSecrets = apiResource.ApiSecrets
+            context.Resource.ApiSecrets = context.Resource.ApiSecrets
                 .Where(x => x.Id != request.Id)
                 .ToList();
 
             SaveResourceResult<ApiResource> result = await _resourceManager
-                .SaveAsync(apiResource, cancellationToken);
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
-        }
-
-        public async Task<IReadOnlyList<IResource>> GetDependenciesAsync(
-            Guid id,
-            CancellationToken cancellationToken)
-        {
-            ApiResource resource = await _apiResourceStore.GetByIdAsync(id, cancellationToken);
-
-            return await GetDependenciesAsync(resource, cancellationToken);
-        }
-
-        public async Task<IReadOnlyList<IResource>> GetDependenciesAsync(
-            ApiResource apiResource,
-            CancellationToken cancellationToken)
-        {
-            var dependencies = new List<IResource>();
-
-            IReadOnlyList<ApiScope> scopes =
-                await _apiScopeStore.GetByIdsAsync(apiResource.Scopes, cancellationToken);
-
-            dependencies.AddRange(scopes);
-
-            return dependencies;
         }
 
         public override bool IsAllowedToPublish()

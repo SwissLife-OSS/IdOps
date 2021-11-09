@@ -25,7 +25,7 @@ namespace IdOps.Core.Tests
                     new Model.Environment { Id = envId, Name = "TestEnv", Order = 0 }
                 };
 
-            Mock<IResourceManager<Application>> resourceManagerMock = CreateResourceManager_ApplicationMock();
+            Mock<IResourceManager> resourceManagerMock = CreateResourceManager_ApplicationMock();
 
             Mock<IEnvironmentService> environmentServiceMock = CreateEnvironmentServiceMock(
                 environments,

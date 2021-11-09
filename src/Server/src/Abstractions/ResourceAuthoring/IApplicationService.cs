@@ -11,7 +11,7 @@ namespace IdOps
         Task<CreateAplicationResult> CreateAsync(CreateApplicationRequest request, CancellationToken cancellationToken);
         Task<Application?> GetByClientIdAsync(Guid clientId, CancellationToken cancellationToken);
         Task<IReadOnlyList<Application>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
-        Task<Application> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<Application?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<SearchResult<Application>> SearchAsync(SearchApplicationsRequest request, CancellationToken cancellationToken);
         Task<Application> UpdateAsync(UpdateApplicationRequest request, CancellationToken cancellationToken);
         Task<Application> RemoveClientAsync(RemoveClientRequest input, CancellationToken cancellationToken);

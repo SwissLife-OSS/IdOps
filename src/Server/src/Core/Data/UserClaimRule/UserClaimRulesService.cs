@@ -13,20 +13,18 @@ namespace IdOps
         : TenantResourceService<UserClaimRule>, IUserClaimRulesService
     {
         private readonly IUserClaimRuleStore _store;
-        private readonly IResourceManager<UserClaimRule> _resourceManager;
+        private readonly IResourceManager _resourceManager;
 
         public UserClaimRulesService(
             IdOpsServerOptions options,
             IUserClaimRuleStore store,
-            IResourceManager<UserClaimRule> resourceManager,
+            IResourceManager resourceManager,
             IUserContextAccessor userContextAccessor)
             : base(options, userContextAccessor, store)
         {
             _store = store;
             _resourceManager = resourceManager;
         }
-
-        public bool ForcePublish => true;
 
         public Task<IReadOnlyList<UserClaimRule>> GetByApplicationAsync(
             Guid applicationId,
@@ -39,28 +37,21 @@ namespace IdOps
                 cancellationToken);
         }
 
-        public async Task<UserClaimRule> GetByIdAsync(
-            Guid id,
-            CancellationToken cancellationToken)
-        {
-            return await _store.GetByIdAsync(id, cancellationToken);
-        }
-
         public async Task<UserClaimRule> SaveAsync(
             SaveUserClaimRuleRequest request,
             CancellationToken cancellationToken)
         {
-            UserClaimRule rule =
-                await _resourceManager.GetExistingOrCreateNewAsync(request.Id, cancellationToken);
+            ResourceChangeContext<UserClaimRule> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<UserClaimRule>(request.Id, cancellationToken);
 
-            rule.Tenant = request.Tenant;
-            rule.Name = request.Name;
-            rule.Claims = request.Claims;
-            rule.Rules = request.Rules;
-            rule.ApplicationId = request.ApplicationId;
+            context.Resource.Tenant = request.Tenant;
+            context.Resource.Name = request.Name;
+            context.Resource.Claims = request.Claims;
+            context.Resource.Rules = request.Rules;
+            context.Resource.ApplicationId = request.ApplicationId;
 
-            SaveResourceResult<UserClaimRule> result =
-                await _resourceManager.SaveAsync(rule, cancellationToken);
+            SaveResourceResult<UserClaimRule> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }

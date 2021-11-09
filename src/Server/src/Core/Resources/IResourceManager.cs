@@ -1,20 +1,24 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using IdOps.Security;
-using IdOps.Server.Storage;
 
 namespace IdOps
 {
-    public interface IResourceManager<T> where T : class, IResource, new()
+    public interface IResourceManager
     {
-        IResource? Original { get; }
-        IResourceStore<T>? Store { get; }
-        IUserContext UserContext { get; }
+        ResourceChangeContext<T> CreateNew<T>() where T : IResource, new();
 
-        T CreateNew();
-        Task<T> GetExistingOrCreateNewAsync(Guid? id, CancellationToken cancellationToken);
-        Task<SaveResourceResult<T>> SaveAsync(T resource, CancellationToken cancellationToken);
-        void SetNewVersion(T resource);
+        Task<ResourceChangeContext<T>> GetExistingOrCreateNewAsync<T>(
+            Guid? id,
+            CancellationToken cancellationToken)
+            where T : class, IResource, new();
+
+        Task<SaveResourceResult<T>> SaveAsync<T>(
+            ResourceChangeContext<T> context,
+            CancellationToken cancellationToken)
+            where T : class, IResource, new();
+
+        ResourceChangeContext<T> SetNewVersion<T>(T resource)
+            where T : class, IResource, new();
     }
 }

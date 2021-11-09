@@ -37,10 +37,6 @@ namespace IdOps
             SearchPersonalAccessTokensRequest request,
             CancellationToken cancellationToken);
 
-        Task<PersonalAccessToken> GetByIdAsync(
-            Guid id,
-            CancellationToken cancellationToken);
-
         Task<AddSecretPersonalAccessTokenResult> AddSecretToTokenAsync(
             DateTime expiresAt,
             Guid id,

@@ -10,6 +10,7 @@ using IdOps.Templates;
 
 namespace IdOps
 {
+    // TODO: We could use IResourceDependencyResolver
     public class DependencyService : UserTenantService, IDependencyService
     {
         private readonly IClientService _clientService;
@@ -58,7 +59,7 @@ namespace IdOps
 
         public async Task<Dependency> GetAllClientDependencies(Guid id, CancellationToken cancellationToken)
         {
-            Client client = await _clientService.GetClientByIdAsync(id, cancellationToken);
+            Client? client = await _clientService.GetByIdAsync(id, cancellationToken);
 
             Dependency allDependencies = await GetScopeDependencies(
                 client.AllowedScopes.Where(x => x.Type == ScopeType.Resource).Select(x => x.Id),

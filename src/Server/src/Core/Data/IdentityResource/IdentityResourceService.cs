@@ -14,23 +14,18 @@ namespace IdOps
         : ResourceService<IdentityResource>, IIdentityResourceService
     {
         private readonly IIdentityResourceStore _identityResourceStore;
-        private readonly IResourceManager<IdentityResource> _resourceManager;
+        private readonly IResourceManager _resourceManager;
 
         public IdentityResourceService(
             IdOpsServerOptions options,
             IIdentityResourceStore identityResourceStore,
-            IResourceManager<IdentityResource> resourceManager,
+            IResourceManager resourceManager,
             IUserContextAccessor userContextAccessor)
-            : base(options, userContextAccessor)
+            : base(options, userContextAccessor, identityResourceStore)
         {
             _identityResourceStore = identityResourceStore;
             _resourceManager = resourceManager;
         }
-
-        public override async ValueTask<IdentityResource?> GetResourceByIdAsync(
-            Guid id,
-            CancellationToken cancellationToken) =>
-            await _identityResourceStore.GetByIdAsync(id, cancellationToken);
 
         public override async Task<IReadOnlyList<IdentityResource>> GetByTenantsAsync(
             IEnumerable<Guid>? ids,
@@ -48,21 +43,21 @@ namespace IdOps
             SaveIdentityResourceRequest request,
             CancellationToken cancellationToken)
         {
-            IdentityResource resource =
-                await _resourceManager.GetExistingOrCreateNewAsync(request.Id, cancellationToken);
+            ResourceChangeContext<IdentityResource> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<IdentityResource>(request.Id, cancellationToken);
 
-            resource.IdentityServerGroupId = request.IdentityServerGroupId;
-            resource.Tenants = request.Tenants.ToList();
-            resource.Name = request.Name;
-            resource.DisplayName = request.DisplayName;
-            resource.Enabled = request.Enabled;
-            resource.Description = request.Description;
-            resource.UserClaims = request.UserClaims.ToList();
-            resource.Required = request.Required;
-            resource.Emphasize = request.Emphasize;
+            context.Resource.IdentityServerGroupId = request.IdentityServerGroupId;
+            context.Resource.Tenants = request.Tenants.ToList();
+            context.Resource.Name = request.Name;
+            context.Resource.DisplayName = request.DisplayName;
+            context.Resource.Enabled = request.Enabled;
+            context.Resource.Description = request.Description;
+            context.Resource.UserClaims = request.UserClaims.ToList();
+            context.Resource.Required = request.Required;
+            context.Resource.Emphasize = request.Emphasize;
 
-            SaveResourceResult<IdentityResource> result =
-                await _resourceManager.SaveAsync(resource, cancellationToken);
+            SaveResourceResult<IdentityResource> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }

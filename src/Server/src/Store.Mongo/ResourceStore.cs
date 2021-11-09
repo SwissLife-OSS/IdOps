@@ -9,18 +9,15 @@ namespace IdOps.Server.Storage.Mongo
     public abstract class ResourceStore<T> : IResourceStore<T>
         where T : class, IResource, new()
     {
-        private static readonly string _name = typeof(T).Name;
-
         protected ResourceStore(IMongoCollection<T> collection)
         {
             Collection = collection;
+            Type = typeof(T).Name;
         }
 
         protected IMongoCollection<T> Collection { get; }
 
-        public bool IsOfType(IResource resource) => resource is T;
-
-        public bool IsOfType(string resource) => resource == _name;
+        public string Type { get; }
 
         public abstract Task<IReadOnlyList<T>> GetAllAsync(
             IEnumerable<Guid>? ids,
@@ -68,7 +65,7 @@ namespace IdOps.Server.Storage.Mongo
         {
             if (resource is not T resourceOfT)
             {
-                throw new ArgumentException($"Resource was not of type {_name}", nameof(resource));
+                throw new ArgumentException($"Resource was not of type {Type}", nameof(resource));
             }
 
             return await SaveAsync(resourceOfT, cancellationToken);

@@ -15,6 +15,15 @@ namespace IdOps
         public IClientService Clients
             => _serviceProvider.GetRequiredService<IClientService>();
 
+        public IApiScopeService ApiScopes
+            => _serviceProvider.GetRequiredService<IApiScopeService>();
+
+        public IIdentityResourceService IdentityResources
+            => _serviceProvider.GetRequiredService<IIdentityResourceService>();
+
+        public IUserClaimRulesService UserClaimRules
+            => _serviceProvider.GetRequiredService<IUserClaimRulesService>();
+
         public IApplicationService Applications
             => _serviceProvider.GetRequiredService<IApplicationService>();
 

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using IdOps.Configuration;
-using IdOps.Model;
 using IdOps.Security;
+using IdOps.Server.Storage;
 
 namespace IdOps
 {
@@ -12,14 +12,16 @@ namespace IdOps
         where T : class, IResource, new()
     {
         private readonly IdOpsServerOptions _options;
-        private readonly string _resourceName = typeof(T).Name;
+        private readonly IResourceStore<T> _store;
 
         protected ResourceService(
             IdOpsServerOptions options,
-            IUserContextAccessor userContextAccessor)
+            IUserContextAccessor userContextAccessor,
+            IResourceStore<T> store)
             : base(userContextAccessor)
         {
             _options = options;
+            _store = store;
         }
 
         public bool RequiresApproval(Guid id)
@@ -28,24 +30,26 @@ namespace IdOps
             return _options.NeedsApproval.Contains(ResourceType);
         }
 
-        public bool IsOfType(IResource resource) => resource is T;
-
-        public bool IsOfType(string resource) => resource == _resourceName;
-
-        public string ResourceType => _resourceName;
+        public string ResourceType { get; } = typeof(T).Name;
 
         public abstract bool IsAllowedToPublish();
 
         public abstract bool IsAllowedToApprove();
 
-        async ValueTask<IResource?> IResourceService.GetResourceByIdAsync(
+        async ValueTask<IResource?> IResourceService.GetByIdAsync(
             Guid id,
             CancellationToken cancellationToken) =>
-            await GetResourceByIdAsync(id, cancellationToken);
+            await GetByIdAsync(id, cancellationToken);
 
-        public abstract ValueTask<T?> GetResourceByIdAsync(
+        public Task<T?> GetByIdAsync(
             Guid id,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken) =>
+            _store.GetByIdAsync(id, cancellationToken);
+
+        public Task<IReadOnlyList<T>> GetByIdsAsync(
+            IEnumerable<Guid> ids,
+            CancellationToken cancellationToken) =>
+            _store.GetByIdsAsync(ids, cancellationToken);
 
         public abstract Task<IReadOnlyList<T>> GetByTenantsAsync(
             IEnumerable<Guid>? ids,

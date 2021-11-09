@@ -12,7 +12,7 @@ namespace IdOps
     public class IdentityServerGroupService : UserTenantService, IIdentityServerGroupService
     {
         private readonly IIdentityServerGroupStore _store;
-    
+
         public IdentityServerGroupService(
             IUserContextAccessor userContextAccessor,
             IIdentityServerGroupStore store)
@@ -20,22 +20,21 @@ namespace IdOps
         {
             _store = store;
         }
-    
+
         public async Task<IEnumerable<IdentityServerGroup>> GetGroupsByUserTenants(
             CancellationToken cancellationToken)
         {
             IReadOnlyList<string> userTenants = await GetUserTenantsAsync(cancellationToken);
             IReadOnlyList<IdentityServerGroup> allGroups = await GetAllGroupsAsync(cancellationToken);
-    
             return allGroups.Where(group => group.Tenants.Any(userTenants.Contains));
         }
-    
+
         public Task<IReadOnlyList<IdentityServerGroup>> GetAllGroupsAsync(
             CancellationToken cancellationToken)
         {
             return _store.GetAllAsync(cancellationToken);
         }
-    
+
         public async Task<IdentityServerGroup> SaveAsync(
             SaveIdentityServerGroupRequest request,
             CancellationToken cancellationToken)
@@ -50,7 +49,7 @@ namespace IdOps
 
             return await _store.SaveAsync(identityServerGroup, cancellationToken);
         }
-    
+
         public async Task<IdentityServerGroup?> GetGroupByTenantAsync(
             string tenant,
             CancellationToken cancellationToken)
@@ -58,7 +57,7 @@ namespace IdOps
             return await _store
                 .GetGroupByTenantAsync(tenant, cancellationToken);
         }
-    
+
         public async Task<IdentityServerGroup?> GetGroupByIdAsync(
             Guid id,
             CancellationToken cancellationToken)

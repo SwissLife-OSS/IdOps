@@ -18,7 +18,7 @@ namespace IdOps
     {
         private readonly IHashAlgorithmResolver _resolver;
         private readonly IPasswordProvider _passwordProvider;
-        private readonly IResourceManager<PersonalAccessToken> _resourceManager;
+        private readonly IResourceManager _resourceManager;
         private readonly IPersonalAccessTokenStore _store;
 
         public PersonalAccessTokenService(
@@ -26,7 +26,7 @@ namespace IdOps
             IPersonalAccessTokenStore store,
             IHashAlgorithmResolver resolver,
             IPasswordProvider passwordProvider,
-            IResourceManager<PersonalAccessToken> resourceManager,
+            IResourceManager resourceManager,
             IUserContextAccessor userContextAccessor)
             : base(options, userContextAccessor, store)
         {
@@ -48,37 +48,32 @@ namespace IdOps
             return await _store.SearchAsync(request, cancellationToken);
         }
 
-        public Task<PersonalAccessToken> GetByIdAsync(
-            Guid id,
-            CancellationToken cancellationToken) =>
-            _store.GetByIdAsync(id, cancellationToken);
-
         public async Task<AddSecretPersonalAccessTokenResult> AddSecretToTokenAsync(
             DateTime expiresAt,
             Guid id,
             CancellationToken cancellationToken)
         {
-            PersonalAccessToken token =
-                await _resourceManager.GetExistingOrCreateNewAsync(id, cancellationToken);
+            ResourceChangeContext<PersonalAccessToken> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<PersonalAccessToken>(id, cancellationToken);
 
-            await ValidateTenantAccess(token, cancellationToken);
+            await ValidateTenantAccess(context.Resource, cancellationToken);
 
             if (DateTime.UtcNow >= expiresAt)
             {
                 ErrorException.Throw(new ExpiresAtWasInThePast(expiresAt));
             }
 
-            if (!_resolver.TryResolve(token.HashAlgorithm, out IHashAlgorithm? encryptor))
+            if (!_resolver.TryResolve(context.Resource.HashAlgorithm, out IHashAlgorithm? encryptor))
             {
-                ErrorException.Throw(new HashAlgorithmNotFound(token.HashAlgorithm));
+                ErrorException.Throw(new HashAlgorithmNotFound(context.Resource.HashAlgorithm));
             }
 
             string secret = _passwordProvider.GenerateRandomPassword(64);
             string hash = encryptor.ComputeHash(secret);
-            token.Tokens.Add(new(Guid.NewGuid(), hash, expiresAt, DateTime.UtcNow));
+            context.Resource.Tokens.Add(new(Guid.NewGuid(), hash, expiresAt, DateTime.UtcNow));
 
             SaveResourceResult<PersonalAccessToken> result =
-                await _resourceManager.SaveAsync(token, cancellationToken);
+                await _resourceManager.SaveAsync(context, cancellationToken);
 
             return new AddSecretPersonalAccessTokenResult(result.Resource, secret);
         }
@@ -88,21 +83,21 @@ namespace IdOps
             Guid tokenId,
             CancellationToken cancellationToken)
         {
-            PersonalAccessToken tokenResource =
-                await _resourceManager.GetExistingOrCreateNewAsync(id, cancellationToken);
+            ResourceChangeContext<PersonalAccessToken> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<PersonalAccessToken>(id, cancellationToken);
 
-            await ValidateTenantAccess(tokenResource, cancellationToken);
+            await ValidateTenantAccess(context.Resource, cancellationToken);
 
-            HashedToken? token = tokenResource.Tokens.FirstOrDefault(x => x.Id == tokenId);
+            HashedToken? token = context.Resource.Tokens.FirstOrDefault(x => x.Id == tokenId);
             if (token is null)
             {
                 return new RemoveSecretPersonalAccessTokenResult(null, null);
             }
 
-            tokenResource.Tokens.Remove(token);
+            context.Resource.Tokens.Remove(token);
 
             SaveResourceResult<PersonalAccessToken> result =
-                await _resourceManager.SaveAsync(tokenResource, cancellationToken);
+                await _resourceManager.SaveAsync(context, cancellationToken);
 
             return new RemoveSecretPersonalAccessTokenResult(result.Resource, token);
         }
@@ -130,10 +125,11 @@ namespace IdOps
 
             await ValidateTenantAccess(token, cancellationToken);
 
-            _resourceManager.SetNewVersion(token);
+            ResourceChangeContext<PersonalAccessToken> context = _resourceManager
+                .SetNewVersion(token);
 
-            SaveResourceResult<PersonalAccessToken> result =
-                await _resourceManager.SaveAsync(token, cancellationToken);
+            SaveResourceResult<PersonalAccessToken> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
 
             return new CreatePersonalAccessTokenResult(result.Resource);
         }
@@ -142,20 +138,19 @@ namespace IdOps
             UpdatePersonalAccessTokenRequest request,
             CancellationToken cancellationToken)
         {
-            PersonalAccessToken token =
-                await _resourceManager.GetExistingOrCreateNewAsync(request.Id, cancellationToken);
+            ResourceChangeContext<PersonalAccessToken> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<PersonalAccessToken>(request.Id, cancellationToken);
 
-            await ValidateTenantAccess(token, cancellationToken);
+            await ValidateTenantAccess(context.Resource, cancellationToken);
 
-            token.UserName = request.UserName ?? token.UserName;
-            token.AllowedScopes = request.AllowedScopes ?? token.AllowedScopes;
-            token.AllowedApplicationIds =
-                request.AllowedApplicationIds ?? token.AllowedApplicationIds;
-            token.ClaimsExtensions = request.ClaimsExtensions ?? token.ClaimsExtensions;
-            token.Source = request.Source ?? token.Source;
+            context.Resource.UserName = request.UserName ?? context.Resource.UserName;
+            context.Resource.AllowedScopes = request.AllowedScopes ?? context.Resource.AllowedScopes;
+            context.Resource.AllowedApplicationIds = request.AllowedApplicationIds ?? context.Resource.AllowedApplicationIds;
+            context.Resource.ClaimsExtensions = request.ClaimsExtensions ?? context.Resource.ClaimsExtensions;
+            context.Resource.Source = request.Source ?? context.Resource.Source;
 
             SaveResourceResult<PersonalAccessToken> result = await _resourceManager
-                .SaveAsync(token, cancellationToken);
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }
