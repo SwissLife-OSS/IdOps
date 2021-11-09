@@ -52,8 +52,6 @@ namespace IdOps
             return ResourceChangeContext<T>.FromNew(resource);
         }
 
-        
-
         public async Task<ResourceChangeContext<T>> GetExistingOrCreateNewAsync<T>(
             Guid? id,
             CancellationToken cancellationToken)
@@ -63,7 +61,7 @@ namespace IdOps
 
             if (id.HasValue)
             {
-                resource = await Store<T>().GetByIdAsync(id.Value, cancellationToken);
+                resource = await GetStore<T>().GetByIdAsync(id.Value, cancellationToken);
                 original = resource.Clone();
             }
             else
@@ -73,16 +71,6 @@ namespace IdOps
 
             return new ResourceChangeContext<T>(resource, original);
         }
-
-        //public async Task InvalidateAsync(
-        //    IResource resource,
-        //    CancellationToken cancellationToken)
-        //{
-        //    
-
-        //    await _dependencyResolver
-        //        .InvalidateDependenciesAsync(resource.Id, ResourceType, cancellationToken);
-        //}
 
         public async Task<SaveResourceResult<T>> SaveAsync<T>(
             ResourceChangeContext<T> context,
@@ -108,7 +96,7 @@ namespace IdOps
 
             if (action != SaveResourceAction.UnChanged)
             {
-                await Store<T>().SaveAsync(context.Resource, cancellationToken);
+                await GetStore<T>().SaveAsync(context.Resource, cancellationToken);
 
                 var audit = new ResourceAuditEvent
                 {
@@ -146,7 +134,7 @@ namespace IdOps
                 resource.Version = ResourceVersion
                     .NewVersion(resource.Version, UserContext.UserId);
 
-                IResourceStore store = Store(resource.GetType().Name);
+                IResourceStore store = GetStore(resource.GetType().Name);
                 await store!.SaveAsync(resource, cancellationToken);
 
                 var audit = new ResourceAuditEvent
@@ -157,7 +145,7 @@ namespace IdOps
                     ResourceType = resource.GetType().Name,
                     UserId = UserContext.UserId,
                     Timestamp = DateTime.UtcNow,
-                    Action = SaveResourceAction.Updated.ToString(),
+                    Action = SaveResourceAction.Updated.ToString()
                 };
 
                 await _resourceAuditStore.CreateAsync(audit, cancellationToken);
@@ -166,10 +154,10 @@ namespace IdOps
             }
         }
 
-        private IResourceStore<T> Store<T>() where T : class, IResource, new() =>
-            (IResourceStore<T>)Store(typeof(T).Name);
+        private IResourceStore<T> GetStore<T>() where T : class, IResource, new() =>
+            (IResourceStore<T>)GetStore(typeof(T).Name);
 
-        private IResourceStore Store(string resourceType)
+        private IResourceStore GetStore(string resourceType)
         {
             if (_stores.TryGetValue(resourceType, out IResourceStore? store))
             {

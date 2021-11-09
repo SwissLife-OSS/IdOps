@@ -403,8 +403,8 @@ type Mutation @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) {
 }
 
 type PersonalAccessToken implements IResource {
-  allowedApplicationIds: [Uuid!]!
-  allowedScopes: [String!]!
+  dependencies: [IResource!]!
+  tenantInfo: Tenant!
   applications: [Application!]!
   isInServerGroup(serverGroup: IdentityServerGroupInput!): Boolean!
   environmentIds: [Uuid!]!

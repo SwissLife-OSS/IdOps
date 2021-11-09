@@ -12,11 +12,9 @@ namespace IdOps.GraphQL
     {
         public async Task<IEnumerable<Tenant>> GetTenantsAsync(
             [Service] ITenantService tenantService,
-            [Service] IEnumerable<IResourceManager> rm,
             CancellationToken cancellationToken)
         {
-            IEnumerable<Tenant> tenants = await tenantService.GetAllAsync(cancellationToken);
-            return tenants;
+            return await tenantService.GetAllAsync(cancellationToken);
         }
     }
 }

@@ -12,9 +12,9 @@ namespace IdOps
         private readonly IDictionary<string, IResourceDependencyResolver> _lookup;
 
         public PublishedResourceDependencyResolver(
-            IEnumerable<IResourceDependencyResolver> resources)
+            IEnumerable<IResourceDependencyResolver> resolvers)
         {
-            _lookup = resources.ToDictionary(x => x.ResourceType);
+            _lookup = resolvers.ToDictionary(x => x.ResourceType);
         }
 
         public ValueTask<IReadOnlyList<IResource>> ResolveDependenciesAsync(

@@ -23,11 +23,11 @@ namespace IdOps
 
         private static IServiceCollection AddStores(this IServiceCollection services)
         {
-            services.AddStore<IResourceStore<ApiResource>, IApiResourceStore, ApiResourceStore>();
-            services.AddStore<IResourceStore<ApiScope>, IApiScopeStore, ApiScopeStore>();
-            services.AddStore<IResourceStore<IdentityResource>, IIdentityResourceStore, IdentityResourceStore>();
-            services.AddStore<IResourceStore<Client>, IClientStore, ClientStore>();
-            services.AddStore<IResourceStore<Application>, IApplicationStore, ApplicationStore>();
+            services.AddResourceStore<IResourceStore<ApiResource>, IApiResourceStore, ApiResourceStore>();
+            services.AddResourceStore<IResourceStore<ApiScope>, IApiScopeStore, ApiScopeStore>();
+            services.AddResourceStore<IResourceStore<IdentityResource>, IIdentityResourceStore, IdentityResourceStore>();
+            services.AddResourceStore<IResourceStore<Client>, IClientStore, ClientStore>();
+            services.AddResourceStore<IResourceStore<Application>, IApplicationStore, ApplicationStore>();
             services.AddSingleton<ITenantStore, TenantStore>();
             services.AddSingleton<IEnvironmentStore, EnvironmentStore>();
             services.AddSingleton<IGrantTypeStore, GrantTypeStore>();
@@ -37,17 +37,17 @@ namespace IdOps
             services.AddSingleton<IResourceApprovalStateStore, ResourceApprovalStateStore>();
             services.AddSingleton<IResourceApprovalLogStore, ResourceApprovalLogStore>();
             services.AddSingleton<IIdentityServerEventStore, IdentityServerEventStore>();
-            services.AddStore<IResourceStore<Model.IdentityServer>, IIdentityServerStore, IdentityServerStore>();
+            services.AddResourceStore<IResourceStore<Model.IdentityServer>, IIdentityServerStore, IdentityServerStore>();
             services.AddSingleton<IIdentityServerGroupStore, IdentityServerGroupStore>();
             services.AddSingleton<IClientTemplateStore, ClientTemplateStore>();
-            services.AddStore<IResourceStore<UserClaimRule>, IUserClaimRuleStore, UserClaimRulesStore>();
-            services.AddStore<IResourceStore<PersonalAccessToken>, IPersonalAccessTokenStore, PersonalAccessTokenStore>();
+            services.AddResourceStore<IResourceStore<UserClaimRule>, IUserClaimRuleStore, UserClaimRulesStore>();
+            services.AddResourceStore<IResourceStore<PersonalAccessToken>, IPersonalAccessTokenStore, PersonalAccessTokenStore>();
 
 
             return services;
         }
 
-        private static IServiceCollection AddStore<TService1, TService2, TImplementation>(
+        private static IServiceCollection AddResourceStore<TService1, TService2, TImplementation>(
             this IServiceCollection services)
             where TService1 : class, IResourceStore
             where TService2 : class, TService1
