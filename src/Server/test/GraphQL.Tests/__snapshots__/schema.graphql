@@ -112,7 +112,7 @@ type Client implements IResource {
   enabled: Boolean!
   clientId: String!
   protocolType: String
-  clientSecrets: [Secret!]!
+  clientSecrets: [Secret!]
   requireClientSecret: Boolean!
   name: String!
   description: String
