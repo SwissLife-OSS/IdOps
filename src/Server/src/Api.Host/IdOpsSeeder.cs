@@ -68,7 +68,7 @@ namespace IdOps.Api
                     _tenants.Select(tenant => new Tenant
                     {
                         Color = "#14299c",
-                        Description = "Contoso test tenant",
+                        Description = $"{tenant} tenant",
                         Id = tenant,
                         RoleMappings = _environments
                             .Select(e => new TenantRoleMapping
