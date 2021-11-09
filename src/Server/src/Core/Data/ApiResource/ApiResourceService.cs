@@ -79,9 +79,7 @@ namespace IdOps
             CancellationToken cancellationToken)
         {
             ResourceChangeContext<ApiResource> context = await _resourceManager
-                .GetExistingOrCreateNewAsync<ApiResource>(
-                request.ApiResourceId,
-                cancellationToken);
+                .GetExistingOrCreateNewAsync<ApiResource>(request.ApiResourceId, cancellationToken);
 
             context.Resource.ApiSecrets = context.Resource.ApiSecrets
                 .Where(x => x.Id != request.Id)

@@ -57,7 +57,7 @@ namespace IdOps
             {
                 foreach (Guid clientId in context.Resource.ClientIds)
                 {
-                    Client client = await _clientService.GetClientByIdAsync(clientId, cancellationToken);
+                    Client? client = await _clientService.GetByIdAsync(clientId, cancellationToken);
                     client = await _clientTemplateService.UpdateClientAsync(client, context.Resource, cancellationToken);
 
                     await _clientService.UpdateClientAsync(client, cancellationToken);

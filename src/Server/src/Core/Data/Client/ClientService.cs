@@ -37,18 +37,6 @@ namespace IdOps
             _sharedSecretGeneratorNames = sharedSecretGenerators.Select(x => x.Name).ToArray();
         }
 
-        public async Task<Client> GetClientByIdAsync(Guid id, CancellationToken cancellationToken)
-        {
-            return await _clientStore.GetByIdAsync(id, cancellationToken);
-        }
-
-        public async Task<IReadOnlyList<Client>> GetManyAsync(
-            IEnumerable<Guid> ids,
-            CancellationToken cancellationToken)
-        {
-            return await _clientStore.GetByIdsAsync(ids, cancellationToken);
-        }
-
         public async Task<SearchResult<Client>> SearchClientsAsync(
             SearchClientsRequest request,
             CancellationToken cancellationToken)
@@ -170,7 +158,8 @@ namespace IdOps
             context.Resource.DataConnectors = request.DataConnectors?.ToList();
             context.Resource.EnabledProviders = request.EnabledProviders?.ToList();
 
-            SaveResourceResult<Client> result = await _resourceManager.SaveAsync(context, cancellationToken);
+            SaveResourceResult<Client> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }
@@ -186,7 +175,8 @@ namespace IdOps
 
             context.Resource.ClientSecrets.Add(secret);
 
-            SaveResourceResult<Client> result = await _resourceManager.SaveAsync(context, cancellationToken);
+            SaveResourceResult<Client> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
 
             return (result.Resource, secretValue);
         }
@@ -202,7 +192,8 @@ namespace IdOps
                 .Where(x => x.Id != request.Id)
                 .ToList();
 
-            SaveResourceResult<Client> result = await _resourceManager.SaveAsync(context, cancellationToken);
+            SaveResourceResult<Client> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }

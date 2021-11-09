@@ -128,8 +128,8 @@ namespace IdOps
             ResourceChangeContext<PersonalAccessToken> context = _resourceManager
                 .SetNewVersion(token);
 
-            SaveResourceResult<PersonalAccessToken> result =
-                await _resourceManager.SaveAsync(context, cancellationToken);
+            SaveResourceResult<PersonalAccessToken> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
 
             return new CreatePersonalAccessTokenResult(result.Resource);
         }
@@ -139,7 +139,7 @@ namespace IdOps
             CancellationToken cancellationToken)
         {
             ResourceChangeContext<PersonalAccessToken> context = await _resourceManager
-                    .GetExistingOrCreateNewAsync<PersonalAccessToken>(request.Id, cancellationToken);
+                .GetExistingOrCreateNewAsync<PersonalAccessToken>(request.Id, cancellationToken);
 
             await ValidateTenantAccess(context.Resource, cancellationToken);
 

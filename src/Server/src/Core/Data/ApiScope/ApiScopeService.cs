@@ -37,9 +37,8 @@ namespace IdOps
             SaveApiScopeRequest request,
             CancellationToken cancellationToken)
         {
-            ResourceChangeContext<ApiScope> context = await _resourceManager.GetExistingOrCreateNewAsync<ApiScope>(
-                request.Id,
-                cancellationToken);
+            ResourceChangeContext<ApiScope> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<ApiScope>(request.Id, cancellationToken);
 
             context.Resource.Tenant = request.Tenant;
             context.Resource.Name = request.Name;
@@ -53,11 +52,6 @@ namespace IdOps
 
             return result.Resource;
         }
-
-        public Task<IReadOnlyList<IResource>> GetDependenciesAsync(
-            ApiScope client,
-            CancellationToken cancellationToken) =>
-            Task.FromResult((IReadOnlyList<IResource>)Array.Empty<IResource>());
 
         public override bool IsAllowedToPublish()
         {

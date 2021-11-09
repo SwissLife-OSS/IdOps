@@ -86,7 +86,7 @@ namespace IdOps
                 }
 
                 IResource? resource = await resourceService
-                    .GetResourceByIdAsync(publishedResource.Id, cancellationToken);
+                    .GetByIdAsync(publishedResource.Id, cancellationToken);
 
                 if (resource is null)
                 {

@@ -29,7 +29,7 @@ namespace IdOps
                     .GetByApplicationAsync(application.Id, cancellationToken);
 
                 IReadOnlyList<Client> clients = await _resourceAuthoring.Clients
-                    .GetManyAsync(application.ClientIds, cancellationToken);
+                    .GetByIdsAsync(application.ClientIds, cancellationToken);
 
                 return userClaimRules
                     .Where(userClaimRule => userClaimRule.Rules.Any(rule =>

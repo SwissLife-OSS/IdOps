@@ -36,7 +36,7 @@ namespace IdOps
 
         public abstract bool IsAllowedToApprove();
 
-        async ValueTask<IResource?> IResourceService.GetResourceByIdAsync(
+        async ValueTask<IResource?> IResourceService.GetByIdAsync(
             Guid id,
             CancellationToken cancellationToken) =>
             await GetByIdAsync(id, cancellationToken);

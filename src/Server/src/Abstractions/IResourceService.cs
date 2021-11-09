@@ -17,7 +17,7 @@ namespace IdOps
         // TODO this is temporary
         bool IsAllowedToApprove();
 
-        ValueTask<IResource?> GetResourceByIdAsync(Guid id, CancellationToken cancellationToken);
+        ValueTask<IResource?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
         Task<IReadOnlyList<IResource>> GetByTenantsAsync(
             IEnumerable<Guid>? ids,
@@ -28,7 +28,7 @@ namespace IdOps
     public interface IResourceService<T> : IResourceService
         where T : class, IResource, new()
     {
-        Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        new Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
         Task<IReadOnlyList<T>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
 

@@ -52,9 +52,8 @@ namespace IdOps
             context.Resource.EnvironmentId = request.EnvironmentId;
             context.Resource.Url = request.Url;
 
-            SaveResourceResult<Model.IdentityServer> result = await _resourceManager.SaveAsync(
-                context,
-                cancellationToken);
+            SaveResourceResult<Model.IdentityServer> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }

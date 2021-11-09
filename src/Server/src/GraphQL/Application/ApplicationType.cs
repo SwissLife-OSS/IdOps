@@ -36,9 +36,8 @@ namespace IdOps.GraphQL
                 [Service] IClientService clientService,
                 CancellationToken cancellationToken)
             {
-                return await clientService.GetManyAsync(
-                    application.ClientIds.ToArray(),
-                    cancellationToken);
+                return await clientService
+                    .GetByIdsAsync(application.ClientIds, cancellationToken);
             }
 
             public Task<Tenant> GetTenantAsync(

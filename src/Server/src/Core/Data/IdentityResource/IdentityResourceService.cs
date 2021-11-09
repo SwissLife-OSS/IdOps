@@ -43,8 +43,8 @@ namespace IdOps
             SaveIdentityResourceRequest request,
             CancellationToken cancellationToken)
         {
-            ResourceChangeContext<IdentityResource> context =
-                await _resourceManager.GetExistingOrCreateNewAsync<IdentityResource>(request.Id, cancellationToken);
+            ResourceChangeContext<IdentityResource> context = await _resourceManager
+                .GetExistingOrCreateNewAsync<IdentityResource>(request.Id, cancellationToken);
 
             context.Resource.IdentityServerGroupId = request.IdentityServerGroupId;
             context.Resource.Tenants = request.Tenants.ToList();
@@ -56,8 +56,8 @@ namespace IdOps
             context.Resource.Required = request.Required;
             context.Resource.Emphasize = request.Emphasize;
 
-            SaveResourceResult<IdentityResource> result =
-                await _resourceManager.SaveAsync(context, cancellationToken);
+            SaveResourceResult<IdentityResource> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
 
             return result.Resource;
         }
