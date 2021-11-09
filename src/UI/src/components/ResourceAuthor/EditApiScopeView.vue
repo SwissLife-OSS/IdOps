@@ -25,7 +25,7 @@
             :disabled="!isNew"
             v-model="scope.tenant"
             :items="tenants"
-            item-text="description"
+            item-text="id"
             item-value="id"
           ></v-select>
         </v-col>
