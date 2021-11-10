@@ -114,7 +114,7 @@ namespace IdOps.Api
                 await _idOpsDbContext.ClientTemplates.InsertManyAsync(
                     _tenants.Select(tenant => new ClientTemplate
                     {
-                        Name = "BackendService",
+                        Name = $"Backend-{tenant}",
                         Tenant = tenant,
                         ClientIdGenerator = "GUID",
                         NameTemplate = "{{toUpper environment}}_{{application}}",

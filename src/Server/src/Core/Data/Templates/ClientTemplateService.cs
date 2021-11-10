@@ -58,7 +58,7 @@ namespace IdOps.Templates
             client.ClientUri = GetUri(template, application, environment)?.ToLower();
             client.RedirectUris = GetRedirectUris(template, application, client, environment);
             client.AllowedGrantTypes = GetGrantTypes(template, application);
-            client.AllowedScopes = BuildScopes(application);
+            client.AllowedScopes = BuildScopes(application, new List<ClientScope>());
             client.AllowAccessTokensViaBrowser = template.AllowAccessTokensViaBrowser;
             client.AllowOfflineAccess = template.AllowOfflineAccess;
             client.EnabledProviders = template.EnabledProviders;
@@ -93,7 +93,7 @@ namespace IdOps.Templates
                 .GetByIdAsync(client.Environments.Single(), cancellationToken);
 
             client.AllowedGrantTypes = GetGrantTypes(template, application);
-            client.AllowedScopes = BuildScopes(application);
+            client.AllowedScopes = BuildScopes(application, client.AllowedScopes);
             client.AllowAccessTokensViaBrowser = template.AllowAccessTokensViaBrowser;
             client.RedirectUris = GetRedirectUris(template, application, client, environment);
 
@@ -320,23 +320,15 @@ namespace IdOps.Templates
         }
 
         private ICollection<ClientScope> BuildScopes(
-            Application application)
+            Application application,
+            ICollection<ClientScope> clientScopes)
         {
-            List<ClientScope>? scopes = new List<ClientScope>();
-
-            scopes.AddRange(application.ApiScopes.Select(x => new ClientScope
-            {
-                Type = ScopeType.Resource,
-                Id = x
-            }));
-
-            scopes.AddRange(application.IdentityScopes.Select(x => new ClientScope
-            {
-                Type = ScopeType.Identity,
-                Id = x
-            }));
-
-            return scopes;
+            return clientScopes
+                .Union(application.ApiScopes.Select(scope =>
+                    new ClientScope { Type = ScopeType.Resource, Id = scope }))
+                .Union(application.IdentityScopes.Select(scope =>
+                    new ClientScope { Type = ScopeType.Identity, Id = scope }))
+                .ToArray();
         }
     }
 }
