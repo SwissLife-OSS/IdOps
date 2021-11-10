@@ -57,8 +57,8 @@ namespace IdOps.Templates
             client.Name = GetName(template, application, environment);
             client.ClientUri = GetUri(template, application, environment)?.ToLower();
             client.RedirectUris = GetRedirectUris(template, application, client, environment);
-            client.AllowedGrantTypes = GetGrantTypes(template, application);
-            client.AllowedScopes = BuildScopes(application, new List<ClientScope>());
+            client.AllowedGrantTypes = GetGrantTypes(template, application, client);
+            client.AllowedScopes = BuildScopes(application, client);
             client.AllowAccessTokensViaBrowser = template.AllowAccessTokensViaBrowser;
             client.AllowOfflineAccess = template.AllowOfflineAccess;
             client.EnabledProviders = template.EnabledProviders;
@@ -92,8 +92,8 @@ namespace IdOps.Templates
             Model.Environment environment = await _environmentService
                 .GetByIdAsync(client.Environments.Single(), cancellationToken);
 
-            client.AllowedGrantTypes = GetGrantTypes(template, application);
-            client.AllowedScopes = BuildScopes(application, client.AllowedScopes);
+            client.AllowedGrantTypes = GetGrantTypes(template, application, client);
+            client.AllowedScopes = BuildScopes(application, client);
             client.AllowAccessTokensViaBrowser = template.AllowAccessTokensViaBrowser;
             client.RedirectUris = GetRedirectUris(template, application, client, environment);
 
@@ -106,21 +106,20 @@ namespace IdOps.Templates
             Client client,
             Model.Environment environment)
         {
-            var uris = new HashSet<string>();
-
-            foreach (var uri in template.RedirectUris.Concat(application.RedirectUris))
-            {
-                uris.Add(RenderTemplate(uri, application, environment, client));
-            }
-
-            return uris.ToList();
+            return client.RedirectUris
+                .Union(template.RedirectUris.Select(t => RenderTemplate(t, application, environment, client)))
+                .Union(application.RedirectUris.Select(t => RenderTemplate(t, application, environment, client)))
+                .ToList();
         }
 
-        private IList<string> GetGrantTypes(ClientTemplate template, Application application)
+        private ICollection<string> GetGrantTypes(
+            ClientTemplate template,
+            Application application,
+            Client client)
         {
-            return template.AllowedGrantTypes
-                .Concat(application.AllowedGrantTypes)
-                .Distinct()
+            return client.AllowedGrantTypes
+                .Union(template.AllowedGrantTypes)
+                .Union(application.AllowedGrantTypes)
                 .ToList();
         }
 
@@ -321,14 +320,14 @@ namespace IdOps.Templates
 
         private ICollection<ClientScope> BuildScopes(
             Application application,
-            ICollection<ClientScope> clientScopes)
+            Client client)
         {
-            return clientScopes
+            return client.AllowedScopes
                 .Union(application.ApiScopes.Select(scope =>
                     new ClientScope { Type = ScopeType.Resource, Id = scope }))
                 .Union(application.IdentityScopes.Select(scope =>
                     new ClientScope { Type = ScopeType.Identity, Id = scope }))
-                .ToArray();
+                .ToList();
         }
     }
 }
