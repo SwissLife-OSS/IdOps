@@ -94,7 +94,8 @@ namespace IdOps.Templates
 
             client.AllowedGrantTypes = GetGrantTypes(template, application, client);
             client.AllowedScopes = BuildScopes(application, client);
-            client.AllowAccessTokensViaBrowser = template.AllowAccessTokensViaBrowser;
+            client.AllowAccessTokensViaBrowser = template.AllowAccessTokensViaBrowser != client.AllowAccessTokensViaBrowser
+                ? client.AllowAccessTokensViaBrowser : template.AllowAccessTokensViaBrowser;
             client.RedirectUris = GetRedirectUris(template, application, client, environment);
 
             return client;
