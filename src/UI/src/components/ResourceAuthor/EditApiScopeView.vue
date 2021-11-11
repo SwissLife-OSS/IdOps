@@ -41,7 +41,7 @@
             v-model="scope.displayName"
             :rules="[
               (v) => !!v || ' Required',
-              (v) => (v && v.length > 2) || 'Must be at least 3 characters',
+              (v) => (v && v.length > 4) || 'Must be at least 5 characters',
             ]"
           ></v-text-field
         ></v-col>
