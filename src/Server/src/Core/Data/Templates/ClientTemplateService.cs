@@ -92,12 +92,11 @@ namespace IdOps.Templates
             Model.Environment environment = await _environmentService
                 .GetByIdAsync(client.Environments.Single(), cancellationToken);
 
-            client.AllowedGrantTypes = new HashSet<string>(client.AllowedGrantTypes.Concat(application.AllowedGrantTypes));
-            client.AllowedScopes = BuildScopes(application); // TODO:
-            client.AllowAccessTokensViaBrowser = template.AllowAccessTokensViaBrowser != client.AllowAccessTokensViaBrowser
-                ? client.AllowAccessTokensViaBrowser : template.AllowAccessTokensViaBrowser;
-            client.RedirectUris = new HashSet<string>(client.RedirectUris.Concat(application.RedirectUris)
-                .Select(uri => RenderTemplate(uri, application, environment, client)));
+            // TODO: merge with client
+            client.AllowedGrantTypes = GetGrantTypes(template, application);
+            client.AllowedScopes = BuildScopes(application);
+            client.AllowAccessTokensViaBrowser = template.AllowAccessTokensViaBrowser;
+            client.RedirectUris = GetRedirectUris(template, application, client, environment);
 
             return client;
         }
