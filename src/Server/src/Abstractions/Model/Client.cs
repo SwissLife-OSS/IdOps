@@ -71,7 +71,7 @@ namespace IdOps.Model
         /// <summary>
         /// Specifies the allowed grant types (legal combinations of AuthorizationCode, Implicit, Hybrid, ResourceOwner, ClientCredentials).
         /// </summary>
-        public ICollection<string> AllowedGrantTypes { get; set; } = new HashSet<string>();
+        public ICollection<string>? AllowedGrantTypes { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// Specifies whether a proof key is required for authorization code based token requests (defaults to <c>true</c>).
