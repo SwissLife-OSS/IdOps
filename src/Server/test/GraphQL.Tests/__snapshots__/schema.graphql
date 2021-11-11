@@ -120,7 +120,7 @@ type Client implements IResource {
   logoUri: String
   requireConsent: Boolean!
   allowRememberConsent: Boolean!
-  allowedGrantTypes: [String!]
+  allowedGrantTypes: [String!]!
   requirePkce: Boolean!
   allowPlainTextPkce: Boolean!
   requireRequestObject: Boolean!

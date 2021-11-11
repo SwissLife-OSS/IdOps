@@ -112,7 +112,13 @@ namespace IdOps.GraphQL
                 .AddType<IdentityServerEventType>()
                 .AddType<ClientTemplateType>()
                 .AddType<UserClaimRuleType>()
-                .AddType<ClientTemplateSecretType>();
+                .AddType<ClientTemplateSecretType>()
+                .AddTypeExtension(new ObjectTypeExtension(t =>
+                {
+                    t.Name("equatableIgnore");
+                    t.Field("hashCode").Ignore();
+                    t.Field("equals").Ignore();
+                }));
 
             return builder;
         }
