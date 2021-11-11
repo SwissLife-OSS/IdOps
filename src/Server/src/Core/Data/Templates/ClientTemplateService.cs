@@ -56,10 +56,9 @@ namespace IdOps.Templates
             client.ClientId = GetClientId(template);
             client.Name = GetName(template, application, environment);
             client.ClientUri = GetUri(template, application, environment)?.ToLower();
-            client.RedirectUris = template.RedirectUris.Union(application.RedirectUris)
-                .Select(uri => RenderTemplate(uri, application, environment, client)).ToList();
-            client.AllowedGrantTypes = template.AllowedGrantTypes.Union(application.AllowedGrantTypes).ToList();
-            client.AllowedScopes = BuildScopes(application, client);
+            client.RedirectUris = GetRedirectUris(template, application, client, environment);
+            client.AllowedGrantTypes = GetGrantTypes(template, application);
+            client.AllowedScopes = BuildScopes(application);
             client.AllowAccessTokensViaBrowser = template.AllowAccessTokensViaBrowser;
             client.AllowOfflineAccess = template.AllowOfflineAccess;
             client.EnabledProviders = template.EnabledProviders;
@@ -93,14 +92,38 @@ namespace IdOps.Templates
             Model.Environment environment = await _environmentService
                 .GetByIdAsync(client.Environments.Single(), cancellationToken);
 
-            client.AllowedGrantTypes = client.AllowedGrantTypes.Union(application.AllowedGrantTypes).ToList();
-            client.AllowedScopes = BuildScopes(application, client);
+            client.AllowedGrantTypes = new HashSet<string>(client.AllowedGrantTypes.Concat(application.AllowedGrantTypes));
+            client.AllowedScopes = BuildScopes(application); // TODO:
             client.AllowAccessTokensViaBrowser = template.AllowAccessTokensViaBrowser != client.AllowAccessTokensViaBrowser
                 ? client.AllowAccessTokensViaBrowser : template.AllowAccessTokensViaBrowser;
-            client.RedirectUris = client.RedirectUris.Union(application.RedirectUris)
-                .Select(uri => RenderTemplate(uri, application, environment, client)).ToList();
+            client.RedirectUris = new HashSet<string>(client.RedirectUris.Concat(application.RedirectUris)
+                .Select(uri => RenderTemplate(uri, application, environment, client)));
 
             return client;
+        }
+
+        private IList<string> GetRedirectUris(
+            ClientTemplate template,
+            Application application,
+            Client client,
+            Model.Environment environment)
+        {
+            var uris = new HashSet<string>();
+
+            foreach (var uri in template.RedirectUris.Concat(application.RedirectUris))
+            {
+                uris.Add(RenderTemplate(uri, application, environment, client));
+            }
+
+            return uris.ToList();
+        }
+
+        private IList<string> GetGrantTypes(ClientTemplate template, Application application)
+        {
+            return template.AllowedGrantTypes
+                .Concat(application.AllowedGrantTypes)
+                .Distinct()
+                .ToList();
         }
 
         private async Task<(Secret, string?)> GetSecretAsync(
@@ -299,15 +322,23 @@ namespace IdOps.Templates
         }
 
         private ICollection<ClientScope> BuildScopes(
-            Application application,
-            Client client)
+            Application application)
         {
-            return client.AllowedScopes
-                .Union(application.ApiScopes.Select(scope =>
-                    new ClientScope { Type = ScopeType.Resource, Id = scope }))
-                .Union(application.IdentityScopes.Select(scope =>
-                    new ClientScope { Type = ScopeType.Identity, Id = scope }))
-                .ToList();
+            List<ClientScope>? scopes = new List<ClientScope>();
+
+            scopes.AddRange(application.ApiScopes.Select(x => new ClientScope
+            {
+                Type = ScopeType.Resource,
+                Id = x
+            }));
+
+            scopes.AddRange(application.IdentityScopes.Select(x => new ClientScope
+            {
+                Type = ScopeType.Identity,
+                Id = x
+            }));
+
+            return scopes;
         }
     }
 }
