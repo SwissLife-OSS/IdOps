@@ -88,15 +88,15 @@ namespace IdOps.Templates
             Application application,
             CancellationToken cancellationToken)
         {
-            ClientTemplate? template = await GetByIdAsync(application.TemplateId, cancellationToken);
             Model.Environment environment = await _environmentService
                 .GetByIdAsync(client.Environments.Single(), cancellationToken);
 
-            // TODO: merge with client
-            client.AllowedGrantTypes = GetGrantTypes(template, application);
-            client.AllowedScopes = BuildScopes(application);
-            client.AllowAccessTokensViaBrowser = template.AllowAccessTokensViaBrowser;
-            client.RedirectUris = GetRedirectUris(template, application, client, environment);
+            client.AllowedGrantTypes = new HashSet<string>(application.AllowedGrantTypes.Concat(client.AllowedGrantTypes));
+            client.AllowedScopes = new HashSet<ClientScope>(BuildScopes(application).Concat(client.AllowedScopes), new ClientScopeComparer());
+            client.AllowAccessTokensViaBrowser = client.AllowAccessTokensViaBrowser;
+            client.RedirectUris = new HashSet<string>(application.RedirectUris
+                .Concat(client.RedirectUris)
+                .Select(uri => RenderTemplate(uri, application, environment, client)));
 
             return client;
         }
@@ -338,6 +338,39 @@ namespace IdOps.Templates
             }));
 
             return scopes;
+        }
+
+        private class ClientScopeComparer : IEqualityComparer<ClientScope>
+        {
+            public bool Equals(ClientScope? first, ClientScope? second)
+            {
+                if (ReferenceEquals(first, second))
+                {
+                    return true;
+                }
+
+                if (ReferenceEquals(first, null))
+                {
+                    return false;
+                }
+
+                if (ReferenceEquals(second, null))
+                {
+                    return false;
+                }
+
+                if (first.GetType() != second.GetType())
+                {
+                    return false;
+                }
+
+                return first.Id.Equals(second.Id);
+            }
+
+            public int GetHashCode(ClientScope obj)
+            {
+                return obj.Id.GetHashCode();
+            }
         }
     }
 }
