@@ -56,8 +56,12 @@ namespace IdOps.Templates
             client.ClientId = GetClientId(template);
             client.Name = GetName(template, application, environment);
             client.ClientUri = GetUri(template, application, environment)?.ToLower();
-            client.RedirectUris = GetRedirectUris(template, application, client, environment);
-            client.AllowedGrantTypes = GetGrantTypes(template, application, client);
+            client.RedirectUris = template.RedirectUris.Select(t => RenderTemplate(t, application, environment, client))
+                .Union(application.RedirectUris.Select(t => RenderTemplate(t, application, environment, client)))
+                .ToList();
+            client.AllowedGrantTypes = template.AllowedGrantTypes
+                .Union(application.AllowedGrantTypes)
+                .ToList();
             client.AllowedScopes = BuildScopes(application, client);
             client.AllowAccessTokensViaBrowser = template.AllowAccessTokensViaBrowser;
             client.AllowOfflineAccess = template.AllowOfflineAccess;
@@ -92,36 +96,18 @@ namespace IdOps.Templates
             Model.Environment environment = await _environmentService
                 .GetByIdAsync(client.Environments.Single(), cancellationToken);
 
-            client.AllowedGrantTypes = GetGrantTypes(template, application, client);
-            client.AllowedScopes = BuildScopes(application, client);
-            client.AllowAccessTokensViaBrowser = template.AllowAccessTokensViaBrowser != client.AllowAccessTokensViaBrowser
-                ? client.AllowAccessTokensViaBrowser : template.AllowAccessTokensViaBrowser;
-            client.RedirectUris = GetRedirectUris(template, application, client, environment);
-
-            return client;
-        }
-
-        private IList<string> GetRedirectUris(
-            ClientTemplate template,
-            Application application,
-            Client client,
-            Model.Environment environment)
-        {
-            return client.RedirectUris
-                .Union(template.RedirectUris.Select(t => RenderTemplate(t, application, environment, client)))
-                .Union(application.RedirectUris.Select(t => RenderTemplate(t, application, environment, client)))
-                .ToList();
-        }
-
-        private ICollection<string> GetGrantTypes(
-            ClientTemplate template,
-            Application application,
-            Client client)
-        {
-            return client.AllowedGrantTypes
-                .Union(template.AllowedGrantTypes)
+            client.AllowedGrantTypes = client.AllowedGrantTypes
                 .Union(application.AllowedGrantTypes)
                 .ToList();
+            client.AllowedScopes = BuildScopes(application, client);
+            client.AllowAccessTokensViaBrowser = template.AllowAccessTokensViaBrowser != client.AllowAccessTokensViaBrowser
+                ? client.AllowAccessTokensViaBrowser
+                : template.AllowAccessTokensViaBrowser;
+            client.RedirectUris = client.RedirectUris
+                .Union(application.RedirectUris.Select(t => RenderTemplate(t, application, environment, client)))
+                .ToList();
+
+            return client;
         }
 
         private async Task<(Secret, string?)> GetSecretAsync(
