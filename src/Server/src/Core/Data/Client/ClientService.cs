@@ -100,6 +100,11 @@ namespace IdOps
             ResourceChangeContext<Client> context = await _resourceManager
                 .GetExistingOrCreateNewAsync<Client>(client.Id, cancellationToken);
 
+            context.Resource.AllowedGrantTypes = client.AllowedGrantTypes;
+            context.Resource.AllowedScopes = client.AllowedScopes;
+            context.Resource.AllowAccessTokensViaBrowser = client.AllowAccessTokensViaBrowser;
+            context.Resource.RedirectUris = client.RedirectUris;
+
             SaveResourceResult<Client> result = await _resourceManager
                 .SaveAsync(context, cancellationToken);
 
