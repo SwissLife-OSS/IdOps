@@ -72,7 +72,6 @@ namespace IdOps
             CancellationToken cancellationToken)
         {
             ResourceChangeContext<Application> context = _resourceManager.CreateNew<Application>();
-            var createdClients = new List<CreatedClientInfo>();
 
             context.Resource.Name = request.Name;
             context.Resource.ApiScopes = request.ApiScopes.ToList();
@@ -82,11 +81,10 @@ namespace IdOps
             context.Resource.AllowedGrantTypes = request.AllowedGrantTypes.ToList();
             context.Resource.RedirectUris = request.RedirectUris.ToList();
 
-            await CreateClientByEnvironmentAsync(
+            var createdClients = await CreateClientByEnvironmentAsync(
                 context, 
                 request.Environments,
                 request.TemplateId,
-                createdClients,
                 cancellationToken);
 
             SaveResourceResult<Application> result = await _resourceManager
@@ -176,13 +174,10 @@ namespace IdOps
             ResourceChangeContext<Application> context = await _resourceManager
                 .GetExistingOrCreateNewAsync<Application>(request.Id, cancellationToken);
 
-            var createdClients = new List<CreatedClientInfo>();
-
-            await CreateClientByEnvironmentAsync(
+            var createdClients = await CreateClientByEnvironmentAsync(
                 context,
                 request.Environments,
                 context.Resource.TemplateId,
-                createdClients,
                 cancellationToken);
 
             SaveResourceResult<Application> result = await _resourceManager
@@ -191,13 +186,14 @@ namespace IdOps
             return new ApplicationWithClients(result.Resource, createdClients);
         }
 
-        private async Task CreateClientByEnvironmentAsync(
+        private async Task<IReadOnlyList<CreatedClientInfo>> CreateClientByEnvironmentAsync(
             ResourceChangeContext<Application> context,
             IEnumerable<Guid> environmentsOfApplication,
             Guid templateId,
-            List<CreatedClientInfo> createdClients,
             CancellationToken cancellationToken)
         {
+            var createdClients = new List<CreatedClientInfo>();
+
             IReadOnlyList<Model.Environment> environments =
                 await _environmentService.GetAllAsync(cancellationToken);
 
@@ -221,6 +217,8 @@ namespace IdOps
                     SecretValue = clientResult.secret
                 });
             }
+
+            return createdClients;
         }
     }
 }
