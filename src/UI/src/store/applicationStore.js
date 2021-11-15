@@ -45,6 +45,13 @@ const applicationStore = {
       state.list.items.push(result.application);
       state.lastCreated = result;
     },
+    APPLICATION_ENVIRONMENT_CREATED(state, result) {
+      const index = state.list.items.findIndex(x => x.id === result.application.id);
+      if (index > -1) {
+        Vue.set(state.list.items, index, result.application);
+      }
+      state.lastCreated = result;
+    },
     APPLICATION_UPDATED(state, application) {
       const index = state.list.items.findIndex(x => x.id === application.id);
       if (index > -1) {
@@ -149,9 +156,9 @@ const applicationStore = {
       );
 
       if (result.success) {
-        const { application } = result.data.addEnvironmentToApplication;
-        commit("APPLICATION_UPDATED", application);
-        return application;
+        commit("APPLICATION_ENVIRONMENT_CREATED", result.data.addEnvironmentToApplication);
+
+        return result.data.addEnvironmentToApplication;
       }
       return null;
     },

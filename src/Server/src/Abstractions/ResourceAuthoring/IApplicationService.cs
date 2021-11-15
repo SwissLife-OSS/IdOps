@@ -8,7 +8,7 @@ namespace IdOps
 {
     public interface IApplicationService
     {
-        Task<CreateAplicationResult> CreateAsync(CreateApplicationRequest request, CancellationToken cancellationToken);
+        Task<ApplicationWithClients> CreateAsync(CreateApplicationRequest request, CancellationToken cancellationToken);
         Task<Application?> GetByClientIdAsync(Guid clientId, CancellationToken cancellationToken);
         Task<IReadOnlyList<Application>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
         Task<Application?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
@@ -17,10 +17,10 @@ namespace IdOps
         Task<Application> RemoveClientAsync(RemoveClientRequest input, CancellationToken cancellationToken);
         Task<Application> AddClientAsync(AddClientRequest input, CancellationToken cancellationToken);
         Task<IEnumerable<Client>> SearchUnMappedClientsAsync(string tenant, CancellationToken cancellationToken);
-        Task<Application> AddEnvironmentToApplicationAsnyc(AddEnvironmentToApplicationRequest request, CancellationToken cancellationToken);
+        Task<ApplicationWithClients> AddEnvironmentToApplicationAsnyc(AddEnvironmentToApplicationRequest request, CancellationToken cancellationToken);
     }
 
-    public record CreateAplicationResult(
+    public record ApplicationWithClients(
         Application Application,
         IEnumerable<CreatedClientInfo> Clients);
 

@@ -27,5 +27,5 @@ fragment Application on Application {
   tenantInfo{
     color
     id
-  }   
+  }
 }

@@ -1,4 +1,5 @@
-#import "./Fragments.gql"
+#import "./ApplicationFragment.gql"
+#import "./ClientInfoFragment.gql"
 
 mutation CreateApplication($input: CreateApplicationInput!) {
   createApplication(input: $input) {
@@ -6,10 +7,7 @@ mutation CreateApplication($input: CreateApplicationInput!) {
       ...Application
     }
     clients {
-      id
-      clientId
-      name
-      secretValue
+      ...ClientInfo
     }
   }
 }

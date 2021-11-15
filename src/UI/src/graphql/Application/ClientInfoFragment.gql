@@ -1,0 +1,6 @@
+fragment ClientInfo on CreatedClientInfo {
+  id
+  clientId
+  name
+  secretValue
+}

@@ -67,7 +67,7 @@ namespace IdOps
             return result.Resource;
         }
 
-        public async Task<CreateAplicationResult> CreateAsync(
+        public async Task<ApplicationWithClients> CreateAsync(
             CreateApplicationRequest request,
             CancellationToken cancellationToken)
         {
@@ -82,15 +82,17 @@ namespace IdOps
             context.Resource.AllowedGrantTypes = request.AllowedGrantTypes.ToList();
             context.Resource.RedirectUris = request.RedirectUris.ToList();
 
-            Application createdApplication = await CreateClientByEnvironmentAsync(
-                _resourceManager,
+            await CreateClientByEnvironmentAsync(
                 context, 
                 request.Environments,
                 request.TemplateId,
                 createdClients,
                 cancellationToken);
 
-            return new CreateAplicationResult(createdApplication, createdClients);
+            SaveResourceResult<Application> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
+
+            return new ApplicationWithClients(result.Resource, createdClients);
         }
 
         public Task<IReadOnlyList<Application>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
@@ -168,7 +170,7 @@ namespace IdOps
             return clients.ToArray();
         }
 
-        public async Task<Application> AddEnvironmentToApplicationAsnyc(
+        public async Task<ApplicationWithClients> AddEnvironmentToApplicationAsnyc(
             AddEnvironmentToApplicationRequest request, CancellationToken cancellationToken)
         {
             ResourceChangeContext<Application> context = await _resourceManager
@@ -176,24 +178,27 @@ namespace IdOps
 
             var createdClients = new List<CreatedClientInfo>();
 
-            return await CreateClientByEnvironmentAsync(
-                _resourceManager,
+            await CreateClientByEnvironmentAsync(
                 context,
                 request.Environments,
                 context.Resource.TemplateId,
                 createdClients,
                 cancellationToken);
+
+            SaveResourceResult<Application> result = await _resourceManager
+                .SaveAsync(context, cancellationToken);
+
+            return new ApplicationWithClients(result.Resource, createdClients);
         }
 
-        public async Task<Application> CreateClientByEnvironmentAsync(
-            IResourceManager manager,
+        private async Task CreateClientByEnvironmentAsync(
             ResourceChangeContext<Application> context,
             IEnumerable<Guid> environmentsOfApplication,
             Guid templateId,
             List<CreatedClientInfo> createdClients,
             CancellationToken cancellationToken)
         {
-            IReadOnlyList<Model.Environment>? environments =
+            IReadOnlyList<Model.Environment> environments =
                 await _environmentService.GetAllAsync(cancellationToken);
 
             foreach (Guid envId in environmentsOfApplication)
@@ -216,11 +221,6 @@ namespace IdOps
                     SecretValue = clientResult.secret
                 });
             }
-
-            SaveResourceResult<Application> result = await manager
-                .SaveAsync(context, cancellationToken);
-
-            return result.Resource;
         }
     }
 }

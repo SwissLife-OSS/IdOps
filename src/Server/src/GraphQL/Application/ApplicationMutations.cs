@@ -20,7 +20,7 @@ namespace IdOps.GraphQL
             CreateApplicationRequest input,
             CancellationToken cancellationToken)
         {
-            CreateAplicationResult? result = await _applicationService.CreateAsync(
+            ApplicationWithClients? result = await _applicationService.CreateAsync(
                 input,
                 cancellationToken);
 
@@ -62,14 +62,14 @@ namespace IdOps.GraphQL
             return new UpdateApplicationPayload(application);
         }
 
-        public async Task<UpdateApplicationPayload> AddEnvironmentToApplicationAsync(
+        public async Task<AddEnvironmentToApplicationPayload> AddEnvironmentToApplicationAsync(
             AddEnvironmentToApplicationRequest input, CancellationToken cancellationToken)
         {
-            Application application = await _applicationService.AddEnvironmentToApplicationAsnyc(
+            ApplicationWithClients? result = await _applicationService.AddEnvironmentToApplicationAsnyc(
                 input,
                 cancellationToken);
 
-            return new UpdateApplicationPayload(application);
+            return new AddEnvironmentToApplicationPayload(result.Application, result.Clients);
         }
     }
 }

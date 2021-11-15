@@ -65,7 +65,7 @@ namespace IdOps.Core.Tests
                 RedirectUris: redirectUris.ToArray());
 
             // Act
-            CreateAplicationResult application = await service.CreateAsync(request, default);
+            ApplicationWithClients application = await service.CreateAsync(request, default);
 
             // Assert
             environmentServiceMock.Verify(m => m.GetAllAsync(It.IsAny<CancellationToken>()),

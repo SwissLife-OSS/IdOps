@@ -1,9 +1,13 @@
-#import "./Fragments.gql"
+#import "./ApplicationFragment.gql"
+#import "./ClientInfoFragment.gql"
 
 mutation addEnvironmentToApplication($input: AddEnvironmentToApplicationInput!) {
   addEnvironmentToApplication(input: $input) {
     application {
       ...Application
+    }
+    clients {
+      ...ClientInfo
     }
   }
 }
