@@ -170,7 +170,7 @@ namespace IdOps
             return clients.ToArray();
         }
 
-        public async Task<ApplicationWithClients> AddEnvironmentToApplicationAsnyc(
+        public async Task<ApplicationWithClients> AddEnvironmentToApplicationAsync(
             AddEnvironmentToApplicationRequest request, CancellationToken cancellationToken)
         {
             ResourceChangeContext<Application> context = await _resourceManager

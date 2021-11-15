@@ -17,7 +17,7 @@ namespace IdOps
         Task<Application> RemoveClientAsync(RemoveClientRequest input, CancellationToken cancellationToken);
         Task<Application> AddClientAsync(AddClientRequest input, CancellationToken cancellationToken);
         Task<IEnumerable<Client>> SearchUnMappedClientsAsync(string tenant, CancellationToken cancellationToken);
-        Task<ApplicationWithClients> AddEnvironmentToApplicationAsnyc(AddEnvironmentToApplicationRequest request, CancellationToken cancellationToken);
+        Task<ApplicationWithClients> AddEnvironmentToApplicationAsync(AddEnvironmentToApplicationRequest request, CancellationToken cancellationToken);
     }
 
     public record ApplicationWithClients(

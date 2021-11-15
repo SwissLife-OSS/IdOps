@@ -65,7 +65,7 @@ namespace IdOps.GraphQL
         public async Task<AddEnvironmentToApplicationPayload> AddEnvironmentToApplicationAsync(
             AddEnvironmentToApplicationRequest input, CancellationToken cancellationToken)
         {
-            ApplicationWithClients? result = await _applicationService.AddEnvironmentToApplicationAsnyc(
+            ApplicationWithClients? result = await _applicationService.AddEnvironmentToApplicationAsync(
                 input,
                 cancellationToken);
 
