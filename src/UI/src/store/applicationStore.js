@@ -46,10 +46,7 @@ const applicationStore = {
       state.lastCreated = result;
     },
     APPLICATION_ENVIRONMENT_CREATED(state, result) {
-      const index = state.list.items.findIndex(x => x.id === result.application.id);
-      if (index > -1) {
-        Vue.set(state.list.items, index, result.application);
-      }
+      this.APPLICATION_UPDATED(state, result.application)
       state.lastCreated = result;
     },
     APPLICATION_UPDATED(state, application) {
