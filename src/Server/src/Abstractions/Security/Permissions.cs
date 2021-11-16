@@ -86,6 +86,7 @@ namespace IdOps.Security
                     ClientAuthoring.Publish,
                     ClientAuthoring.PersonalAccessToken.Read,
                     ClientAuthoring.PersonalAccessToken.Edit,
+                    ClientAuthoring.PersonalAccessToken.Publish,
                 }
             };
         }
