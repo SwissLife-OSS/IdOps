@@ -1,4 +1,4 @@
-#import "./Fragments.gql"
+#import "./ApplicationFragment.gql"
 
 query getApplication($id: Uuid!) {
   application(id: $id) {

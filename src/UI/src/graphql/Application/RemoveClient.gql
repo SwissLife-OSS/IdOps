@@ -1,4 +1,4 @@
-#import "./Fragments.gql"
+#import "./ApplicationFragment.gql"
 
 mutation removeClientFromApplication($input: RemoveClientInput!) {
   removeClientFromApplication(input: $input) {

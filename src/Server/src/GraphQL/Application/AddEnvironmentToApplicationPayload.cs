@@ -1,11 +1,11 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using IdOps.Model;
 
 namespace IdOps.GraphQL
 {
-    public class CreateApplicationPayload
+    public class AddEnvironmentToApplicationPayload
     {
-        public CreateApplicationPayload(
+        public AddEnvironmentToApplicationPayload(
             Application application, IEnumerable<CreatedClientInfo> clients)
         {
             Application = application;

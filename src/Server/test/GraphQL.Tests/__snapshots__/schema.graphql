@@ -27,6 +27,11 @@ type AddClientSecretPayload {
   secret: String
 }
 
+type AddEnvironmentToApplicationPayload {
+  application: Application
+  clients: [CreatedClientInfo!]!
+}
+
 type AddSecretPersonalAccessTokenPayload {
   token: PersonalAccessToken
   secret: String
@@ -384,7 +389,7 @@ type Mutation @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) {
   updateApplication(input: UpdateApplicationInput!): UpdateApplicationPayload!
   removeClientFromApplication(input: RemoveClientInput!): UpdateApplicationPayload!
   addClientToApplication(input: AddClientInput!): UpdateApplicationPayload!
-  addEnvironmentToApplication(input: AddEnvironmentToApplicationInput!): UpdateApplicationPayload!
+  addEnvironmentToApplication(input: AddEnvironmentToApplicationInput!): AddEnvironmentToApplicationPayload!
   saveTenant(input: SaveTenantInput!): SaveTenantPayload! @authorize(policy: "TenantManage", apply: BEFORE_RESOLVER)
   publishResource(input: PublishResourceInput!): PublishResourcePayload! @authorize(policy: "ResourceAuthoringPublish", apply: BEFORE_RESOLVER)
   createPersonalAccessToken(input: CreatePersonalAccessTokenInput!): CreatePersonalAccessTokenPayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "PersonalAccessTokenEdit", apply: BEFORE_RESOLVER)

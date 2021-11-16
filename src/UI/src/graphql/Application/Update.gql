@@ -1,4 +1,4 @@
-#import "./Fragments.gql"
+#import "./ApplicationFragment.gql"
 
 mutation CreateApplication($input: UpdateApplicationInput!) {
   updateApplication(input: $input) {

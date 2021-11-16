@@ -5,6 +5,8 @@
     :items="items"
     single-expand
     :expanded.sync="expanded"
+    :sort-by.sync="sortBy"
+    :sort-desc.sync="sortDesc"
     item-key="id"
     show-expand
   >
@@ -56,6 +58,8 @@ export default {
   },
   data() {
     return {
+      sortBy: 'version',
+      sortDesc: true,
       expanded: [],
       singleExpand: true,
       headers: [

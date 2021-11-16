@@ -383,11 +383,14 @@ export default {
       });
     },
     async onAddEnvironment(environmentId) {
-      const application = await this.addEnvironmentToApplication({
+      await this.addEnvironmentToApplication({
         id: this.id,
         environments: [environmentId],
       });
-      this.setApplication(application);
+
+      this.$router.replace({
+        name: "Application_Created",
+      });
     },
   },
 };
