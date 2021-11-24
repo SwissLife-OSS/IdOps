@@ -25,8 +25,7 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                         $"{nameof(PersonalAccessToken.Tokens)}.{nameof(HashedToken.Token)}";
 
                     CreateIndexModel<PersonalAccessToken> tokenIndex = new(
-                        IndexKeys.Ascending(tokenIndexSelector),
-                        new CreateIndexOptions { Unique = true });
+                        IndexKeys.Ascending(tokenIndexSelector));
 
                     collection.Indexes.CreateOne(tokenIndex);
                 });
