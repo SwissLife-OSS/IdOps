@@ -1,6 +1,7 @@
 using IdOps.Model;
 using MongoDB.Driver;
 using MongoDB.Extensions.Context;
+using static MongoDB.Driver.Builders<IdOps.Model.PersonalAccessToken>;
 
 namespace IdOps.Server.Storage.Mongo.Configuration
 {
