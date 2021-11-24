@@ -17,7 +17,17 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                     cm.MapIdMember(c => c.Id);
                 })
                 .WithCollectionSettings(s => s.ReadConcern = ReadConcern.Majority)
-                .WithCollectionSettings(s => s.ReadPreference = ReadPreference.Nearest);
+                .WithCollectionSettings(s => s.ReadPreference = ReadPreference.Nearest)
+                .WithCollectionConfiguration(collection =>
+                {
+                    string tokenIndexSelector =
+                        $"{nameof(PersonalAccessToken.Tokens)}.{nameof(HashedToken.Token)}";
+
+                    CreateIndexModel<PersonalAccessToken> tokenIndex = new(
+                        IndexKeys.Ascending(tokenIndexSelector));
+
+                    collection.Indexes.CreateOne(tokenIndex);
+                });
         }
     }
 }
