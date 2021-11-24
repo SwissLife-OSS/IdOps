@@ -1,7 +1,6 @@
 using IdOps.Model;
 using MongoDB.Driver;
 using MongoDB.Extensions.Context;
-using static MongoDB.Driver.Builders<IdOps.Model.PersonalAccessToken>;
 
 namespace IdOps.Server.Storage.Mongo.Configuration
 {
@@ -18,18 +17,7 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                     cm.MapIdMember(c => c.Id);
                 })
                 .WithCollectionSettings(s => s.ReadConcern = ReadConcern.Majority)
-                .WithCollectionSettings(s => s.ReadPreference = ReadPreference.Nearest)
-                .WithCollectionConfiguration(collection =>
-                {
-                    string tokenIndexSelector =
-                        $"{nameof(PersonalAccessToken.Tokens)}.{nameof(HashedToken.Token)}";
-
-                    CreateIndexModel<PersonalAccessToken> tokenIndex = new(
-                        IndexKeys.Ascending(tokenIndexSelector),
-                        new CreateIndexOptions { Unique = true });
-
-                    collection.Indexes.CreateOne(tokenIndex);
-                });
+                .WithCollectionSettings(s => s.ReadPreference = ReadPreference.Nearest);
         }
     }
 }
