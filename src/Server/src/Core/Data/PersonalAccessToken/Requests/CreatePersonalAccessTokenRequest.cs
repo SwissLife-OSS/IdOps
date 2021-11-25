@@ -29,6 +29,6 @@ namespace IdOps
         string Source,
         string HashAlgorithm,
         IReadOnlyList<Guid> AllowedApplicationIds,
-        IReadOnlyList<string> AllowedScopes,
+        IReadOnlyList<Guid> AllowedScopes,
         IReadOnlyList<ClaimsExtensionRequest> ClaimsExtensions) : ITenantInput;
 }

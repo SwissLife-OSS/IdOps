@@ -8,7 +8,7 @@ namespace IdOps
         Guid Id,
         string? UserName,
         string? Source,
-        ICollection<string>? AllowedScopes,
+        ICollection<Guid>? AllowedScopes,
         ICollection<Guid>? AllowedApplicationIds,
         ICollection<IdOpsClaimExtension>? ClaimsExtensions)
     {

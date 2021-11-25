@@ -64,10 +64,11 @@ namespace IdOps.Api
                     _environments.Select(e => new Environment { Id = e.EnvId, Name = e.EnvName }),
                     cancellationToken: cancellationToken);
 
+                var colorRandomize = new Random();
                 await _idOpsDbContext.Tenants.InsertManyAsync(
                     _tenants.Select(tenant => new Tenant
                     {
-                        Color = "#14299c",
+                        Color = $"#{colorRandomize.Next(0x1000000):X6}",
                         Description = $"{tenant} tenant",
                         Id = tenant,
                         RoleMappings = _environments
@@ -76,7 +77,15 @@ namespace IdOps.Api
                                 EnvironmentId = e.EnvId,
                                 ClaimValue = "IdOps.Admin",
                                 Role = "IdOps.Admin"
-                            }).ToArray()
+                            }).ToArray(),
+                        Modules = new List<TenantModule>
+                        {
+                            new()
+                            {
+                                Name = "PersonalAccessTokens",
+                                Settings = new []{ new TenantSetting { Name = "Sources", Value = "Local" } }
+                            }
+                        }
                     }), cancellationToken: cancellationToken);
 
                 await _idOpsDbContext.IdentityServerGroups.InsertOneAsync(
@@ -110,6 +119,28 @@ namespace IdOps.Api
                         Name = _grantType,
                         Tenants = _tenants,
                     }, cancellationToken: cancellationToken);
+
+                await _idOpsDbContext.IdentityResources.InsertOneAsync(
+                    new IdentityResource
+                    {
+                        Name = "openid",
+                        DisplayName = "Your user identifier",
+                        UserClaims = new[] {"sub"},
+                        IdentityServerGroupId = _groupId,
+                        Tenants = _tenants,
+                        ShowInDiscoveryDocument = true,
+                        Enabled = true,
+                        Required = true,
+                    }, cancellationToken: cancellationToken);
+
+                await _idOpsDbContext.ApiScopes.InsertManyAsync(
+                    _tenants.Select(tenant => new ApiScope
+                    {
+                        Name = "api.read",
+                        Tenant = tenant,
+                        DisplayName = "Read access",
+                        Enabled = true
+                    }), cancellationToken: cancellationToken);
 
                 await _idOpsDbContext.ClientTemplates.InsertManyAsync(
                     _tenants.Select(tenant => new ClientTemplate

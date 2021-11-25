@@ -8,7 +8,7 @@ namespace IdOps.Builder
     public class PersonalAccessTokenBuilder
     {
         private readonly List<HashedToken> _tokens = new();
-        private readonly HashSet<string> _allowedScopes = new();
+        private readonly HashSet<Guid> _allowedScopes = new();
         private readonly HashSet<Guid> _allowedApplications = new();
         private readonly List<IdOpsClaimExtension> _claimExtensions = new();
 
@@ -67,7 +67,7 @@ namespace IdOps.Builder
             return this;
         }
 
-        public PersonalAccessTokenBuilder SetAllowedScopes(IEnumerable<string> allowedScopes)
+        public PersonalAccessTokenBuilder SetAllowedScopes(IEnumerable<Guid> allowedScopes)
         {
             foreach (var allowedClient in allowedScopes)
             {

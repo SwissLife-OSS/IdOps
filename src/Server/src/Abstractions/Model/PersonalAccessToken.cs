@@ -46,7 +46,7 @@ namespace IdOps.Model
         /// <summary>
         /// The scoped that are allowed to be requested with the access token
         /// </summary>
-        public ICollection<string> AllowedScopes { get; set; }
+        public ICollection<Guid> AllowedScopes { get; set; }
 
         /// <summary>
         /// The clients that are allowed to request this access token
