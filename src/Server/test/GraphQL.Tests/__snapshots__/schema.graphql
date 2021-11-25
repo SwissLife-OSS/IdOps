@@ -421,7 +421,7 @@ type PersonalAccessToken implements IResource {
   environmentId: Uuid!
   tokens: [HashedToken!]!
   createdAt: DateTime!
-  allowedScopes: [String!]!
+  allowedScopes: [Uuid!]!
   allowedApplicationIds: [Uuid!]!
   source: String!
   hashAlgorithm: String!
@@ -782,7 +782,7 @@ input CreatePersonalAccessTokenInput {
   source: String!
   hashAlgorithm: String!
   allowedApplicationIds: [Uuid!]!
-  allowedScopes: [String!]!
+  allowedScopes: [Uuid!]!
   claimsExtensions: [ClaimsExtensionRequestInput!]!
 }
 
@@ -1109,7 +1109,7 @@ input UpdatePersonalAccessTokenInput {
   id: Uuid!
   userName: String
   source: String
-  allowedScopes: [String!]
+  allowedScopes: [Uuid!]
   allowedApplicationIds: [Uuid!]
   claimsExtensions: [IdOpsClaimExtensionInput!]
 }
