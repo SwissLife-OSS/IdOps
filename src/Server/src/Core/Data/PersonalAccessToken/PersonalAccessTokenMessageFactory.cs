@@ -27,7 +27,7 @@ namespace IdOps
                             new IdOpsHashedToken(x.Id, x.Token, x.ExpiresAt, x.CreatedAt, false))
                         .ToList(),
                     CreatedAt = token.CreatedAt,
-                    AllowedScopes = token.AllowedScopes,
+                    AllowedScopes = context.GetAllowedScopes(token.AllowedScopes),
                     ClaimExtensions = token.ClaimsExtensions
                         .Select(x => new ClaimExtension(x.Type, x.Value))
                         .ToArray(),
