@@ -23,8 +23,8 @@
           </template>
           <v-date-picker
             v-model="addSecret.expiresAt"
-            :min="nowDate"
-            :max="getMaxDate"
+            :min="minExpiration"
+            :max="maxExpiration"
             @input="expiresAtIsOpen = false"
           ></v-date-picker>
         </v-menu>
@@ -81,7 +81,6 @@ export default {
   },
   data() {
     return {
-      nowDate: new Date().toISOString().slice(0,10),
       expiresAtIsOpen: false,
       plainTextSecret: null,
       secretDialog: false,
@@ -96,10 +95,17 @@ export default {
     secretGenerators: function() {
       return ["DEFAULT"];
     },
-    getMaxDate: function() {
+    minExpiration: function() {
       var now = new Date();
-      var endDate = new Date(now.getFullYear() + 2, now.getMonth(), now.getDate());
-      return endDate.toISOString().slice(0,10)
+      var tzOffset = now.getTimezoneOffset() * 60000;
+      var value = new Date(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - tzOffset);
+      return value.toISOString().slice(0,10);
+    },
+    maxExpiration: function() {
+      var now = new Date();
+      var tzOffset = now.getTimezoneOffset() * 60000;
+      var value = new Date(new Date(now.getFullYear() + 2, now.getMonth(), now.getDate()) - tzOffset);
+      return value.toISOString().slice(0,10);
     }
   },
   methods: {

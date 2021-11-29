@@ -58,9 +58,9 @@ namespace IdOps
 
             await ValidateTenantAccess(context.Resource, cancellationToken);
 
-            if (DateTime.UtcNow >= expiresAt)
+            if (expiresAt <= DateTime.UtcNow || expiresAt > DateTime.UtcNow.AddYears(2).AddDays(1))
             {
-                ErrorException.Throw(new ExpiresAtWasInThePast(expiresAt));
+                ErrorException.Throw(new ExpiresAtInvalid(expiresAt));
             }
 
             if (!_resolver.TryResolve(context.Resource.HashAlgorithm, out IHashAlgorithm? encryptor))

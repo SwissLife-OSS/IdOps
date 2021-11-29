@@ -123,7 +123,7 @@ namespace IdOps.GraphQL
                 .AddInterfaceType<IError>(x => x.Name("Error"))
                 .AddInterfaceType<ICreatePersonalAccessTokenError>(
                     x => x.Name("CreatePersonalAccessTokenError"))
-                .AddType<ExpiresAtWasInThePast>()
+                .AddType<ExpiresAtInvalid>()
                 .AddType<HashAlgorithmNotFound>();
 
             return builder;
