@@ -102,15 +102,10 @@ namespace IdOps
                     continue;
                 }
 
-                if (!service.IsAllowedToApprove())
-                {
-                    continue;
-                }
-
                 IReadOnlyList<IResource> resources =
                     await service.GetByTenantsAsync(ids, tenants, cancellationToken);
 
-                foreach (var resource in resources)
+                foreach (IResource resource in resources)
                 {
                     if (service.RequiresApproval(resource.Id) &&
                         TryMatchOpenResourceApprovals(
@@ -203,8 +198,8 @@ namespace IdOps
                 ResourceApprovalEnvironment approval;
                 Guid id = resource.Id;
 
-                if (approvalStateLookup
-                    .TryGetEnvironment(id, environment, out ResourceApprovalState? state))
+                if (approvalStateLookup.TryGetEnvironment(id, environment, out ResourceApprovalState? state) &&
+                    resourceService.IsAllowedToApprove())
                 {
                     approval =
                         ResourceApprovalEnvironment.From(
