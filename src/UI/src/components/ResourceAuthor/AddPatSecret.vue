@@ -1,4 +1,4 @@
-<template>
+  <template>
   <v-row>
     <v-col md="12" :loading="saving">
       <v-toolbar elevation="0">
@@ -23,16 +23,18 @@
           </template>
           <v-date-picker
             v-model="addSecret.expiresAt"
+            :min="minExpiration"
+            :max="maxExpiration"
             @input="expiresAtIsOpen = false"
           ></v-date-picker>
         </v-menu>
-        <v-btn :disabled="saving" text color="primary" @click="onAddSecret">
+        <v-btn :disabled="saving || !addSecret.expiresAt" text color="primary" @click="onAddSecret">
           Add Secret<v-icon>mdi-pencil-plus</v-icon></v-btn
         >
       </v-toolbar>
     </v-col>
     <v-dialog width="600" v-model="secretDialog" hide-overlay>
-      <v-card height="300">
+      <v-card height="310">
         <v-toolbar height="40" dark color="grey darken-3">Secret</v-toolbar>
         <v-card-text>
           <br />
@@ -40,14 +42,20 @@
             Please copy this secret, you will not be able to retrieve this
             secret again.
           </v-alert>
-          <v-text-field
-            class="mt-4"
-            :value="plainTextSecret"
-            label="Plain text secret"
-            append-outer-icon="mdi-clipboard"
-            @click:append-outer="onCopyToClip"
-            v-clipboard
-          ></v-text-field>
+          <div class="d-flex">
+            <v-text-field
+              :value="plainTextSecret"
+              readonly
+              v-on:focus="$event.target.select()"
+              label="Plain text secret"
+            ></v-text-field>
+            <v-btn
+              color="primary"
+              width="100"
+              height="50"
+              class="ml-4"
+              v-clipboard="() => this.plainTextSecret">Copy</v-btn>
+          </div>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -86,6 +94,18 @@ export default {
   computed: {
     secretGenerators: function() {
       return ["DEFAULT"];
+    },
+    minExpiration: function() {
+      var now = new Date();
+      var tzOffset = now.getTimezoneOffset() * 60000;
+      var value = new Date(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - tzOffset);
+      return value.toISOString().slice(0,10);
+    },
+    maxExpiration: function() {
+      var now = new Date();
+      var tzOffset = now.getTimezoneOffset() * 60000;
+      var value = new Date(new Date(now.getFullYear() + 2, now.getMonth(), now.getDate()) - tzOffset);
+      return value.toISOString().slice(0,10);
     }
   },
   methods: {
@@ -97,9 +117,6 @@ export default {
         this.addSecret.expiresAt = null;
         this.saving = false;
       });
-    },
-    onCopyToClip: function() {
-      this.$clipboard(this.plainTextSecret);
     }
   }
 };

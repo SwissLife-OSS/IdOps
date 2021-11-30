@@ -264,7 +264,7 @@ type Environment {
   order: Int!
 }
 
-type ExpiresAtWasInThePast implements Error & CreatePersonalAccessTokenError {
+type ExpiresAtInvalid implements Error & CreatePersonalAccessTokenError {
   expiresAt: DateTime!
   message: String!
 }
