@@ -28,8 +28,6 @@ import IdentityServerView from "./components/System/IdentityServerView";
 import InsightsPage from "./components/Insights/InsightsPage";
 import PublishAllView from "./components/Publish/PublishAllView";
 import PublishPage from "./components/Publish/PublishPage";
-import ApproveAllView from "./components/Approval/ApproveAllView";
-import ApprovalPage from "./components/Approval/ApprovalPage";
 import ResourceAuthorPage from "./components/ResourceAuthor/ResourceAuthorPage";
 import SessionExpired from "./components/Common/SessionExpired";
 import SystemPage from "./components/System/SystemPage";
@@ -337,18 +335,6 @@ const routes = [
         path: "/resources",
         name: "Publish",
         component: PublishAllView
-      }
-    ]
-  },
-  {
-    path: "/publish",
-    name: "Approval",
-    component: ApprovalPage,
-    children: [
-      {
-        path: "/resources",
-        name: "Approval",
-        component: ApproveAllView
       }
     ]
   },
