@@ -70,21 +70,29 @@
         <v-spacer></v-spacer>
         <v-col md="2" style="text-align: right">
           <v-progress-linear
-            v-if="publishStarted"
+            v-if="processing"
             color="purple"
             stream
             reverse
             buffer-value="0"
           ></v-progress-linear>
-          <v-btn
-            @click="onPublish"
-            class="mr-4"
-            color="primary"
-            :disabled="selected.length === 0"
-            v-else
-            >Publish selected</v-btn
-          ></v-col
-        >
+          <span v-else>
+            <v-btn
+              @click="onPublish"
+              class="mr-4"
+              color="primary"
+              :disabled="selected.length === 0 || !selected.some(publishable)"
+              >Publish
+            </v-btn>
+            <v-btn
+              @click="onApprove"
+              class="mr-4"
+              color="primary"
+              :disabled="selected.length === 0 || !selected.some(aprovable)">
+              Approve
+            </v-btn>
+          </span>
+        </v-col>
         <v-col></v-col>
       </v-row>
     </template>
@@ -102,9 +110,12 @@
     <template v-slot:item.publishedAt="{ item }">
       {{ item.publishedAt | dateformat }}
     </template>
+    <template v-slot:item.approvedAt="{ item }">
+      {{ item.approvedAt | dateformat }}
+    </template>
     <template v-slot:item.state="{ item }">
       <v-progress-circular
-        v-if="item.state === 'Publishing'"
+        v-if="item.state === 'Publishing' || item.state === 'Approving'"
         indeterminate
         :size="22"
         color="blue"
@@ -125,15 +136,17 @@
     <template v-slot:item.actions="{ item }">
       <v-icon
         @click="onPublishItem(item)"
-        v-if="
-          item.state !== 'Latest' &&
-            item.state !== 'Publishing' &&
-            item.state !== 'NotApproved' &&
-            !publishStarted
-        "
+        v-if="publishable(item) && !processing"
         color="blue"
         >mdi-cloud-upload-outline</v-icon
       >
+      <v-btn
+        @click="onApproveItem(item)"
+        v-if="aprovable(item) && !processing"
+        color="primary"
+      >
+        Approve
+      </v-btn>
     </template>
   </v-data-table>
 </template>
@@ -147,7 +160,7 @@ export default {
   },
   data() {
     return {
-      publishStarted: false,
+      processing: false,
       items: [],
       selected: [],
       filter: {
@@ -201,6 +214,7 @@ export default {
         },
         { text: "Version", value: "version" },
         { text: "Published at", value: "publishedAt" },
+        { text: "Approved at", value: "approvedAt" },
         { text: "Actions", value: "actions" }
       ]
     };
@@ -229,7 +243,8 @@ export default {
               environment: env.environment,
               state: env.state,
               version: env.version,
-              publishedAt: env.publishedAt
+              publishedAt: env.publishedAt,
+              approvedAt: env.approvedAt
             });
           }
         }
@@ -248,27 +263,73 @@ export default {
     }
   },
   methods: {
-    ...mapActions("idResource", ["getPublishedByFilter", "publishResources"]),
+    ...mapActions("idResource", ["getPublishedByFilter", "publishResources", "approveResources"]),
     async onPublish() {
-      this.publishStarted = true;
+      this.processing = true;
 
       const input = {
         destinationEnvionmentId: this.filter.environment,
         resources: this.selected.map(x => x.id)
       };
       await this.publishResources(input);
+      this.onRefresh();
 
       this.selected = [];
-      this.publishStarted = false;
+      this.processing = false;
     },
     async onPublishItem(item) {
-      this.publishStarted = true;
+      this.processing = true;
 
       await this.publishResources({
         destinationEnvionmentId: item.environment.id,
         resources: [item.id]
       });
-      this.publishStarted = false;
+
+      this.onRefresh();
+      this.processing = false;
+    },
+    async onApprove() {
+      this.processing = true;
+
+      const input = {
+        resources: this.selected.map(x => ({
+          resourceId: x.id,
+          environmentId: x.environment.id,
+          type: x.type,
+          version: x.currentVersion.version
+        }))
+      };
+      await this.approveResources(input);
+      this.onRefresh();
+
+      this.selected = [];
+      this.processing = false;
+    },
+    async onApproveItem(item) {
+      this.processing = true;
+
+      await this.approveResources({
+        resources: [
+          {
+            resourceId: item.id,
+            environmentId: item.environment.id,
+            type: item.type,
+            version: item.currentVersion.version
+          }
+        ]
+      });
+      this.onRefresh();
+      this.processing = false;
+    },
+    publishable(item) {
+      return item.state !== 'Latest' &&
+        item.state !== 'Publishing' &&
+        item.state !== 'NotApproved';
+    },
+    aprovable(item) {
+      return item.state !== 'Latest' &&
+        item.state !== 'Approving' &&
+        item.state !== 'NotDeployed';
     },
     onRefresh: function() {
       this.getPublishedByFilter({

@@ -16,6 +16,7 @@ query PublishedResources($input: PublishedResourcesInput) {
       }
       version
       publishedAt
+      approvedAt
       state
     }
   }

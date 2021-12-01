@@ -16,7 +16,7 @@ namespace IdOps
 
     public record PublishedResourceEnvironment(Guid EnvironmentId)
     {
-        public bool NeedsApproval { get; init; }
+        public DateTime? ApprovedAt { get; init; }
         public int? Version { get; init; }
         public DateTime? PublishedAt { get; init; }
         public string? State { get; set; }
