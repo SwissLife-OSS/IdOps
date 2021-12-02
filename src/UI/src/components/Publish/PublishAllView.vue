@@ -97,6 +97,10 @@
       </v-row>
     </template>
 
+    <template v-slot:item.data-table-select="{ isSelected, select, item }">
+      <v-simple-checkbox :value="isSelected" @input="select($event)" :disabled="item.state == 'Latest'"/>
+    </template>
+
     <template v-slot:item.title="{ item }">
       <router-link
         :to="{ name: item.type + '_Edit', params: { id: item.id } }"
