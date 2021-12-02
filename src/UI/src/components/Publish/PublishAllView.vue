@@ -71,7 +71,7 @@
         <v-spacer></v-spacer>
         <v-col md="2" style="text-align: right">
           <v-progress-linear
-            v-if="processing"
+            v-if="isLoading"
             color="purple"
             stream
             reverse
@@ -89,7 +89,7 @@
               @click="onApprove"
               class="mr-4"
               color="primary"
-              :disabled="selected.length === 0 || !selected.some(aprovable)">
+              :disabled="selected.length === 0 || !selected.some(aprovable) || !canApprove()">
               Approve
             </v-btn>
           </span>
@@ -144,13 +144,14 @@
     <template v-slot:item.actions="{ item }">
       <v-btn
         @click="onPublishItem(item)"
-        v-if="publishable(item) && !processing"
+        v-if="publishable(item) && !isLoading"
         color="success"
         >Publish</v-btn
       >
       <v-btn
         @click="onApproveItem(item)"
-        v-if="aprovable(item) && !processing"
+        v-if="aprovable(item) && !isLoading"
+        :disabled="!canApprove()"
         color="primary"
       >
         Approve
@@ -160,7 +161,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   created() {
     this.filter.identityServerGroupId = this.identityServerGroups[0].id;
@@ -168,7 +169,7 @@ export default {
   },
   data() {
     return {
-      processing: false,
+      isLoading: false,
       items: [],
       selected: [],
       filter: {
@@ -272,8 +273,9 @@ export default {
   },
   methods: {
     ...mapActions("idResource", ["getPublishedByFilter", "publishResources", "approveResources"]),
+    ...mapGetters("user", ["hasPermission"]),
     async onPublish() {
-      this.processing = true;
+      this.isLoading = true;
 
       const input = {
         destinationEnvionmentId: this.filter.environment,
@@ -283,10 +285,10 @@ export default {
       this.onRefresh();
 
       this.selected = [];
-      this.processing = false;
+      this.isLoading = false;
     },
     async onPublishItem(item) {
-      this.processing = true;
+      this.isLoading = true;
 
       await this.publishResources({
         destinationEnvionmentId: item.environment.id,
@@ -294,10 +296,10 @@ export default {
       });
 
       this.onRefresh();
-      this.processing = false;
+      this.isLoading = false;
     },
     async onApprove() {
-      this.processing = true;
+      this.isLoading = true;
 
       const input = {
         resources: this.selected.filter(this.aprovable).map(x => ({
@@ -311,10 +313,10 @@ export default {
       this.onRefresh();
 
       this.selected = [];
-      this.processing = false;
+      this.isLoading = false;
     },
     async onApproveItem(item) {
-      this.processing = true;
+      this.isLoading = true;
 
       await this.approveResources({
         resources: [
@@ -327,7 +329,7 @@ export default {
         ]
       });
       this.onRefresh();
-      this.processing = false;
+      this.isLoading = false;
     },
     publishable(item) {
       return item.state !== 'Latest' &&
@@ -338,6 +340,9 @@ export default {
       return item.state !== 'Latest' &&
         item.state !== 'Approving' &&
         item.state !== 'NotDeployed';
+    },
+    canApprove: function() {
+      return this.hasPermission("CA_Approval");
     },
     selectAllToggle(props) {
       if(this.selected.length == 0) {
