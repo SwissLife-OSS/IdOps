@@ -67,8 +67,11 @@ namespace IdOps
                 {
                     (null, null) => NotDeployed,
                     (null, { }) when approvalState.Version == version => NotDeployed,
-                    ({ }, _) when publishState.Version >= version => Latest,
+                    ({ }, { }) when publishState.Version >= version => Latest,
+                    ({ }, { }) when publishState.Version < version && approvalState.Version >= version => NotDeployed,
+                    ({ }, { }) when approvalState.Version < version => NotApproved,
                     ({ }, null) when publishState.Version < version => NotDeployed,
+                    ({ }, null) when publishState.Version >= version => Latest,
                     _ => NotApproved
                 };
 

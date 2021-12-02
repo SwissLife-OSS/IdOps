@@ -138,11 +138,11 @@
       >
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-icon
+      <v-btn
         @click="onPublishItem(item)"
         v-if="publishable(item) && !processing"
-        color="blue"
-        >mdi-cloud-upload-outline</v-icon
+        color="normal"
+        >Publish</v-btn
       >
       <v-btn
         @click="onApproveItem(item)"
@@ -185,14 +185,14 @@ export default {
         {
           text: "Resource",
           width: 100,
-          align: "start",
+          align: "center",
           value: "title",
           sortable: false
         },
         {
           text: "Type",
           width: 100,
-          align: "start",
+          align: "center",
           value: "type",
           sortable: false
         },
@@ -200,26 +200,26 @@ export default {
           text: "Current Version",
           width: 200,
           value: "currentVersion",
-          align: "start",
+          align: "center",
           sortable: false
         },
         {
           text: "State",
           width: 60,
-          align: "start",
+          align: "center",
           value: "state",
           sortable: false
         },
         {
           text: "Environment",
-          align: "start",
+          align: "center",
           value: "environment.name",
           sortable: false
         },
-        { text: "Version", value: "version" },
-        { text: "Published at", value: "publishedAt" },
-        { text: "Approved at", value: "approvedAt" },
-        { text: "Actions", value: "actions" }
+        { text: "Published Version", align: "center", value: "version" },
+        { text: "Published at", align: "center", value: "publishedAt" },
+        { text: "Approved at", align: "center", value: "approvedAt" },
+        { text: "Actions", align: "center", value: "actions" }
       ]
     };
   },
