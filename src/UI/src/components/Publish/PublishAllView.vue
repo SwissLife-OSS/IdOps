@@ -269,7 +269,7 @@ export default {
 
       const input = {
         destinationEnvionmentId: this.filter.environment,
-        resources: this.selected.map(x => x.id)
+        resources: this.selected.filter(this.publishable).map(x => x.id)
       };
       await this.publishResources(input);
       this.onRefresh();
@@ -292,7 +292,7 @@ export default {
       this.processing = true;
 
       const input = {
-        resources: this.selected.map(x => ({
+        resources: this.selected.filter(this.aprovable).map(x => ({
           resourceId: x.id,
           environmentId: x.environment.id,
           type: x.type,
