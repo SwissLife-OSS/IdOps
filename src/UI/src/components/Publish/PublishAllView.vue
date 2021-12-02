@@ -11,6 +11,7 @@
     :single-select="false"
     :show-select="filter.environment != 'ALL'"
     :footer-props="{ itemsPerPageOptions: [50, 100, -1] }"
+    @toggle-select-all="selectAllToggle"
   >
     <template v-slot:top>
       <v-row>
@@ -80,7 +81,7 @@
             <v-btn
               @click="onPublish"
               class="mr-4"
-              color="primary"
+              color="success"
               :disabled="selected.length === 0 || !selected.some(publishable)"
               >Publish
             </v-btn>
@@ -98,7 +99,10 @@
     </template>
 
     <template v-slot:item.data-table-select="{ isSelected, select, item }">
-      <v-simple-checkbox :value="isSelected" @input="select($event)" :disabled="item.state == 'Latest'"/>
+      <v-simple-checkbox
+        :value="isSelected"
+        @input="select($event)"
+        :disabled="item.state == 'Latest'"/>
     </template>
 
     <template v-slot:item.title="{ item }">
@@ -141,7 +145,7 @@
       <v-btn
         @click="onPublishItem(item)"
         v-if="publishable(item) && !processing"
-        color="normal"
+        color="success"
         >Publish</v-btn
       >
       <v-btn
@@ -334,6 +338,17 @@ export default {
       return item.state !== 'Latest' &&
         item.state !== 'Approving' &&
         item.state !== 'NotDeployed';
+    },
+    selectAllToggle(props) {
+      if(this.selected.length == 0) {
+        props.items.forEach(item => {
+          if(item.state !== 'Latest') {
+            this.selected.push(item);
+          }
+        });
+      } else {
+        this.selected = [];
+      }
     },
     onRefresh: function() {
       this.getPublishedByFilter({
