@@ -100,7 +100,7 @@
       | {{ item.currentVersion.createdAt | dateformat }}
     </template>
     <template v-slot:item.approvedAt="{ item }">
-      {{ item.approveedAt | dateformat }}
+      {{ item.approvedAt | dateformat }}
     </template>
     <template v-slot:item.state="{ item }">
       <v-progress-circular
@@ -201,7 +201,7 @@ export default {
           sortable: false
         },
         { text: "Version", value: "version" },
-        { text: "Approved at", value: "approveedAt" },
+        { text: "Approved at", value: "approvedAt" },
         { text: "Actions", value: "actions" }
       ]
     };

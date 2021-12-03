@@ -34,20 +34,15 @@
             >
           </template>
           <template v-slot:item.actions="{ item }">
-            <v-icon
+            <v-btn
               @click="onClickPubish(item.environment)"
-              v-if="
-                item.state !== 'Latest' &&
-                  item.state !== 'Publishing' &&
-                  item.state !== 'NotApproved'
-              "
-              color="blue"
-              >mdi-cloud-upload-outline</v-icon
-            >
-
+              v-if="publishable(item) && !isLoading"
+              color="success"
+              >Publish
+            </v-btn>
             <v-btn
               :disabled="!canApprove()"
-              v-if="item.state === 'NotApproved'"
+              v-if="aprovable(item) && !isLoading"
               @click="onClickApprove(item)"
               color="primary"
             >
@@ -56,7 +51,7 @@
             <v-progress-circular
               indeterminate
               color="blue"
-              v-if="item.state === 'Publishing'"
+              v-if="isLoading"
             ></v-progress-circular>
           </template>
         </v-data-table>
@@ -86,19 +81,20 @@ export default {
         {
           text: "State",
           width: 60,
-          align: "start",
+          align: "center",
           value: "state",
           sortable: false
         },
         {
           text: "Environment",
-          align: "start",
+          align: "center",
           value: "environment.name",
           sortable: false
         },
-        { text: "Version", value: "version" },
-        { text: "Published at", value: "publishedAt" },
-        { text: "Actions", value: "actions" }
+        { text: "Version", align: "center",value: "version" },
+        { text: "Published at", align: "center", value: "publishedAt" },
+        { text: "Approved at", align: "center", value: "publishedAt" },
+        { text: "Actions", align: "center", value: "actions" }
       ]
     };
   },
@@ -126,13 +122,30 @@ export default {
     loadPublished: function() {
       this.getPublishedByResource(this.resourceId);
     },
+    publishable(item) {
+      return item.state !== 'Latest' &&
+        item.state !== 'Publishing' &&
+        item.state !== 'NotApproved';
+    },
+    aprovable(item) {
+      return item.state !== 'Latest' &&
+        item.state !== 'Approving' &&
+        item.state !== 'NotDeployed';
+    },
     onClickPubish: function(environment) {
+      this.isLoading = true;
+
       this.publishResources({
         destinationEnvionmentId: environment.id,
         resources: [this.resourceId]
       });
+
+      this.onRefresh();
+      this.isLoading = false;
     },
     onClickApprove: async function(item) {
+      this.isLoading = true;
+
       await this.approveResources({
         resources: [
           {
@@ -143,7 +156,9 @@ export default {
           }
         ]
       });
+
       this.onRefresh();
+      this.isLoading = false;
     },
     onRefresh: function() {
       this.loadPublished();

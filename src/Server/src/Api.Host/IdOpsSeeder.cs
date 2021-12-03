@@ -131,6 +131,7 @@ namespace IdOps.Api
                         ShowInDiscoveryDocument = true,
                         Enabled = true,
                         Required = true,
+                        Version = ResourceVersion.CreateNew("seeder")
                     }, cancellationToken: cancellationToken);
 
                 await _idOpsDbContext.ApiScopes.InsertManyAsync(
@@ -139,7 +140,8 @@ namespace IdOps.Api
                         Name = "api.read",
                         Tenant = tenant,
                         DisplayName = "Read access",
-                        Enabled = true
+                        Enabled = true,
+                        Version = ResourceVersion.CreateNew("seeder")
                     }), cancellationToken: cancellationToken);
 
                 await _idOpsDbContext.ClientTemplates.InsertManyAsync(

@@ -12,7 +12,7 @@ namespace IdOps
         private readonly ILookup<Guid, ResourcePublishState> _states;
         private readonly IEnumerable<Model.Environment> _environments;
         private readonly IdentityServerGroup? _serverGroup;
-        private readonly Dictionary<(Guid, Guid), string?> _approvalStates;
+        private readonly Dictionary<(Guid, Guid), ResourceApprovalEnvironment?> _approvalStates;
 
         internal PublishedResourceMatcher(
             IEnumerable<ResourcePublishState> states,
@@ -21,13 +21,13 @@ namespace IdOps
             IdentityServerGroup? serverGroup)
         {
             _states = states.ToLookup(x => x.ResourceId);
-            _approvalStates = new Dictionary<(Guid, Guid), string?>();
+            _approvalStates = new Dictionary<(Guid, Guid), ResourceApprovalEnvironment?>();
 
             foreach (var approval in approvals)
             {
                 foreach (var env in approval.Environments)
                 {
-                    _approvalStates[(approval.Id, env.EnvironmentId)] = env.State;
+                    _approvalStates[(approval.Id, env.EnvironmentId)] = env;
                 }
             }
 
@@ -60,14 +60,18 @@ namespace IdOps
                     _states[resource.Id].FirstOrDefault(x => x.EnvironmentId == environment.Id);
 
                 var approvalState =
-                    _approvalStates.GetValueOrDefault((resource.Id, environment.Id), Latest);
+                    _approvalStates.GetValueOrDefault((resource.Id, environment.Id), null);
 
                 int version = resource.Version.Version;
                 string environmentState = (publishState, approvalState) switch
                 {
-                    (null, Latest) => NotDeployed,
-                    ({ }, _) when publishState.Version >= version => Latest,
-                    ({ }, Latest) when publishState.Version < version => NotDeployed,
+                    (null, null) => NotDeployed,
+                    (null, { }) when approvalState.Version == version => NotDeployed,
+                    ({ }, { }) when publishState.Version >= version => Latest,
+                    ({ }, { }) when publishState.Version < version && approvalState.Version >= version => NotDeployed,
+                    ({ }, { }) when approvalState.Version < version => NotApproved,
+                    ({ }, null) when publishState.Version < version => NotDeployed,
+                    ({ }, null) when publishState.Version >= version => Latest,
                     _ => NotApproved
                 };
 
@@ -75,6 +79,7 @@ namespace IdOps
                 {
                     Version = publishState?.Version,
                     PublishedAt = publishState?.PublishedAt,
+                    ApprovedAt = approvalState?.ApprovedAt,
                     State = environmentState
                 };
 

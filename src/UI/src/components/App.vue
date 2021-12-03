@@ -155,12 +155,6 @@ export default {
         permission: "CA_PUBLISH"
       },
       {
-        name: "Approval",
-        route: "Approval",
-        icon: "mdi-check-network-outline",
-        permission: "CA_APPROVAL"
-      },
-      {
         text: "Insighs",
         icon: "mdi-eye-outline",
         route: "Insights",

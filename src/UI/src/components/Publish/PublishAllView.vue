@@ -11,6 +11,7 @@
     :single-select="false"
     :show-select="filter.environment != 'ALL'"
     :footer-props="{ itemsPerPageOptions: [50, 100, -1] }"
+    @toggle-select-all="selectAllToggle"
   >
     <template v-slot:top>
       <v-row>
@@ -70,23 +71,38 @@
         <v-spacer></v-spacer>
         <v-col md="2" style="text-align: right">
           <v-progress-linear
-            v-if="publishStarted"
+            v-if="isLoading"
             color="purple"
             stream
             reverse
             buffer-value="0"
           ></v-progress-linear>
-          <v-btn
-            @click="onPublish"
-            class="mr-4"
-            color="primary"
-            :disabled="selected.length === 0"
-            v-else
-            >Publish selected</v-btn
-          ></v-col
-        >
+          <span v-else>
+            <v-btn
+              @click="onPublish"
+              class="mr-4"
+              color="success"
+              :disabled="selected.length === 0 || !selected.some(publishable)"
+              >Publish
+            </v-btn>
+            <v-btn
+              @click="onApprove"
+              class="mr-4"
+              color="primary"
+              :disabled="selected.length === 0 || !selected.some(aprovable) || !canApprove()">
+              Approve
+            </v-btn>
+          </span>
+        </v-col>
         <v-col></v-col>
       </v-row>
+    </template>
+
+    <template v-slot:item.data-table-select="{ isSelected, select, item }">
+      <v-simple-checkbox
+        :value="isSelected"
+        @input="select($event)"
+        :disabled="item.state == 'Latest'"/>
     </template>
 
     <template v-slot:item.title="{ item }">
@@ -102,9 +118,12 @@
     <template v-slot:item.publishedAt="{ item }">
       {{ item.publishedAt | dateformat }}
     </template>
+    <template v-slot:item.approvedAt="{ item }">
+      {{ item.approvedAt | dateformat }}
+    </template>
     <template v-slot:item.state="{ item }">
       <v-progress-circular
-        v-if="item.state === 'Publishing'"
+        v-if="item.state === 'Publishing' || item.state === 'Approving'"
         indeterminate
         :size="22"
         color="blue"
@@ -123,23 +142,26 @@
       >
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-icon
+      <v-btn
         @click="onPublishItem(item)"
-        v-if="
-          item.state !== 'Latest' &&
-            item.state !== 'Publishing' &&
-            item.state !== 'NotApproved' &&
-            !publishStarted
-        "
-        color="blue"
-        >mdi-cloud-upload-outline</v-icon
+        v-if="publishable(item) && !isLoading"
+        color="success"
+        >Publish</v-btn
       >
+      <v-btn
+        @click="onApproveItem(item)"
+        v-if="aprovable(item) && !isLoading"
+        :disabled="!canApprove()"
+        color="primary"
+      >
+        Approve
+      </v-btn>
     </template>
   </v-data-table>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   created() {
     this.filter.identityServerGroupId = this.identityServerGroups[0].id;
@@ -147,7 +169,7 @@ export default {
   },
   data() {
     return {
-      publishStarted: false,
+      isLoading: false,
       items: [],
       selected: [],
       filter: {
@@ -168,14 +190,14 @@ export default {
         {
           text: "Resource",
           width: 100,
-          align: "start",
+          align: "center",
           value: "title",
           sortable: false
         },
         {
           text: "Type",
           width: 100,
-          align: "start",
+          align: "center",
           value: "type",
           sortable: false
         },
@@ -183,25 +205,26 @@ export default {
           text: "Current Version",
           width: 200,
           value: "currentVersion",
-          align: "start",
+          align: "center",
           sortable: false
         },
         {
           text: "State",
           width: 60,
-          align: "start",
+          align: "center",
           value: "state",
           sortable: false
         },
         {
           text: "Environment",
-          align: "start",
+          align: "center",
           value: "environment.name",
           sortable: false
         },
-        { text: "Version", value: "version" },
-        { text: "Published at", value: "publishedAt" },
-        { text: "Actions", value: "actions" }
+        { text: "Published Version", align: "center", value: "version" },
+        { text: "Published at", align: "center", value: "publishedAt" },
+        { text: "Approved at", align: "center", value: "approvedAt" },
+        { text: "Actions", align: "center", value: "actions" }
       ]
     };
   },
@@ -229,7 +252,8 @@ export default {
               environment: env.environment,
               state: env.state,
               version: env.version,
-              publishedAt: env.publishedAt
+              publishedAt: env.publishedAt,
+              approvedAt: env.approvedAt
             });
           }
         }
@@ -248,27 +272,88 @@ export default {
     }
   },
   methods: {
-    ...mapActions("idResource", ["getPublishedByFilter", "publishResources"]),
+    ...mapActions("idResource", ["getPublishedByFilter", "publishResources", "approveResources"]),
+    ...mapGetters("user", ["hasPermission"]),
     async onPublish() {
-      this.publishStarted = true;
+      this.isLoading = true;
 
       const input = {
         destinationEnvionmentId: this.filter.environment,
-        resources: this.selected.map(x => x.id)
+        resources: this.selected.filter(this.publishable).map(x => x.id)
       };
       await this.publishResources(input);
+      this.onRefresh();
 
       this.selected = [];
-      this.publishStarted = false;
+      this.isLoading = false;
     },
     async onPublishItem(item) {
-      this.publishStarted = true;
+      this.isLoading = true;
 
       await this.publishResources({
         destinationEnvionmentId: item.environment.id,
         resources: [item.id]
       });
-      this.publishStarted = false;
+
+      this.onRefresh();
+      this.isLoading = false;
+    },
+    async onApprove() {
+      this.isLoading = true;
+
+      const input = {
+        resources: this.selected.filter(this.aprovable).map(x => ({
+          resourceId: x.id,
+          environmentId: x.environment.id,
+          type: x.type,
+          version: x.currentVersion.version
+        }))
+      };
+      await this.approveResources(input);
+      this.onRefresh();
+
+      this.selected = [];
+      this.isLoading = false;
+    },
+    async onApproveItem(item) {
+      this.isLoading = true;
+
+      await this.approveResources({
+        resources: [
+          {
+            resourceId: item.id,
+            environmentId: item.environment.id,
+            type: item.type,
+            version: item.currentVersion.version
+          }
+        ]
+      });
+      this.onRefresh();
+      this.isLoading = false;
+    },
+    publishable(item) {
+      return item.state !== 'Latest' &&
+        item.state !== 'Publishing' &&
+        item.state !== 'NotApproved';
+    },
+    aprovable(item) {
+      return item.state !== 'Latest' &&
+        item.state !== 'Approving' &&
+        item.state !== 'NotDeployed';
+    },
+    canApprove: function() {
+      return this.hasPermission("CA_Approval");
+    },
+    selectAllToggle(props) {
+      if(this.selected.length == 0) {
+        props.items.forEach(item => {
+          if(item.state !== 'Latest') {
+            this.selected.push(item);
+          }
+        });
+      } else {
+        this.selected = [];
+      }
     },
     onRefresh: function() {
       this.getPublishedByFilter({
