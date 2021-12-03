@@ -445,7 +445,7 @@ type PublishedResource {
 
 type PublishedResourceEnvironment {
   environment: Environment!
-  needsApproval: Boolean!
+  approvedAt: DateTime
   version: Int
   publishedAt: DateTime
   state: String
