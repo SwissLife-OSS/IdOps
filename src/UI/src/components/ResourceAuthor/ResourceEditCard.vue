@@ -37,7 +37,10 @@
       </div>
       <div v-if="view === 'INSIGHTS'">
         <identity-server-events-view
-          :clientId="resource.clientId"
+          :input="{
+            clients: [resource.clientId],
+            environments: resource.environments
+          }"
           detailMode="POPUP"
         ></identity-server-events-view>
       </div>

@@ -10,8 +10,9 @@ const insightsStore = {
             filter: {
                 pageNr: 0,
                 pageSize: 100,
-                clientId: null,
-                environment: null
+                clients: null,
+                environments: null,
+                applications: null
             },
             items: []
         }
