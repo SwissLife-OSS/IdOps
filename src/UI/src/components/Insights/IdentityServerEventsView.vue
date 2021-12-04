@@ -210,7 +210,6 @@ export default {
       immediate: true,
       handler: function() {
         if (this.input) {
-          console.log(this.input);
           this.filter.clients = this.input.clients;
           this.filter.environments = this.input.environments;
           this.onClickRefresh();
