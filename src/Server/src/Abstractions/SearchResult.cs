@@ -53,9 +53,11 @@ namespace IdOps
     public record SearchIdentityServerEventsRequest(int PageSize, int PageNr)
         : PagedRequest(PageSize, PageNr)
     {
-        public string? ClientId { get; init; }
+        public IEnumerable<Guid>? Applications { get; init; }
 
-        public string? Environment { get; init; }
+        public IEnumerable<string>? Clients { get; init; }
+
+        public IEnumerable<string>? Environments { get; init; }
 
         public IEnumerable<string>? EventTypes { get; init; }
     }

@@ -37,7 +37,7 @@
       </div>
       <div v-if="view === 'INSIGHTS'">
         <identity-server-events-view
-          :clientId="resource.clientId"
+          :input="this.createInsightsInput()"
           detailMode="POPUP"
         ></identity-server-events-view>
       </div>
@@ -174,6 +174,21 @@ export default {
   methods: {
     onClickTool: function (tool) {
       this.view = tool;
+    },
+    createInsightsInput: function() {
+      if (this.resource.allowedApplicationIds) {
+        // Personal Access Token
+        return {
+          applications: this.resource.allowedApplicationIds,
+          environments: [this.resource.environmentId]
+        };
+      } else {
+        // Client
+        return {
+          clients: [this.resource.clientId],
+          environments: this.resource.environments
+        };
+      }
     },
     onSave: function () {
       this.saving = true;

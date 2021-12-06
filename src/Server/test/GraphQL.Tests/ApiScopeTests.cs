@@ -10,8 +10,8 @@ using Xunit;
 
 namespace IdOps.GraphQL.Tests
 {
+    [Collection(TestCollectionNames.GraphQL)]
     public class ApiScopeTests : TestHelper
-        , IClassFixture<MongoResource>
     {
         public ApiScopeTests(MongoResource mongoResource) : base(mongoResource)
         {

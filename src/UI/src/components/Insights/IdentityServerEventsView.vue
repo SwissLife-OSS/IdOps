@@ -22,33 +22,22 @@
               <v-icon @click="onClickRefresh">mdi-reload</v-icon>
             </template>
 
-            <template v-slot:top v-if="clientId == null">
+            <template v-slot:top v-if="input == null">
               <v-row dense>
-                <v-col md="2">
-                  <v-btn-toggle
+                <v-col md="3">
+                  <v-autocomplete
+                    label="Environments"
                     @change="onClickRefresh"
                     dense
-                    v-model="filter.environment"
-                    rounded
-                  >
-                    <v-btn small value="ALL">All</v-btn>
-                    <v-btn
-                      small
-                      v-for="env in environments"
-                      :key="env.id"
-                      :value="env.name"
-                    >
-                      {{ env.name }}
-                    </v-btn>
-                  </v-btn-toggle></v-col
-                >
-                <v-col md="2">
-                  <v-text-field
-                    dense
-                    @keyup.enter="onClickRefresh"
-                    label="ClientId"
-                    v-model="filter.clientId"
-                  ></v-text-field>
+                    v-model="filter.environments"
+                    :items="environments"
+                    item-text="name"
+                    item-value="id"
+                    chips
+                    multiple
+                    small-chips
+                    deletable-chips
+                  />
                 </v-col>
                 <v-col md="2">
                   <v-autocomplete
@@ -58,8 +47,62 @@
                     :items="eventTypes"
                     @change="onClickRefresh"
                     multiple
+                    clearable
                   ></v-autocomplete
                 ></v-col>
+                <v-spacer> </v-spacer>
+                <v-col md="1">
+                  <v-autocomplete
+                    @change="refreshFilter"
+                    :items="filterTypes"
+                    v-model="currentFilterType"
+                    label="Filter type"
+                    dense
+                    hide-details
+                    class="pa-0"
+                  ></v-autocomplete>
+                </v-col>
+                <v-col md="4">
+                  <v-autocomplete
+                    @change="onClickRefresh"
+                    dense
+                    v-model="filter.clients"
+                    v-if="currentFilterType == 'Client Name'"
+                    :items="clients"
+                    item-text="name"
+                    item-value="id"
+                    multiple
+                    clearable
+                    small-chips
+                    deletable-chips
+                  />
+                  <v-autocomplete
+                    @change="onClickRefresh"
+                    dense
+                    v-model="filter.clients"
+                    v-if="currentFilterType == 'Client Id'"
+                    :items="clients"
+                    item-text="id"
+                    item-value="id"
+                    multiple
+                    clearable
+                    small-chips
+                    deletable-chips
+                  />
+                  <v-autocomplete
+                    @change="onClickRefresh"
+                    dense
+                    v-model="filter.applications"
+                    v-if="currentFilterType == 'Application'"
+                    :items="applications"
+                    item-text="name"
+                    item-value="id"
+                    multiple
+                    clearable
+                    small-chips
+                    deletable-chips
+                  />
+                </v-col>
                 <v-spacer> </v-spacer>
                 <v-col md="1">
                   <v-btn color="primary" @click="onClickRefresh"
@@ -95,20 +138,25 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from "vuex";
+import { mapState, mapActions } from "vuex";
 import InsightsDetailCard from "./InsightsDetailCard.vue";
-const { mapState, mapActions } = createNamespacedHelpers("insights");
 
 export default {
+  created() {
+    if (this.input == null) {
+      this.searchClients();
+      this.search();
+    }
+  },
   components: { InsightsDetailCard },
   props: {
-    clientId: {
-      type: String,
+    input: {
+      type: Object
     },
     detailMode: {
       type: String,
-      default: "POPUP",
-    },
+      default: "POPUP"
+    }
   },
   data() {
     return {
@@ -116,11 +164,14 @@ export default {
       userSearchTriggered: false,
       details: null,
       options: {},
+      filterTypes: ["Client Name", "Client Id", "Application"],
+      currentFilterType: "Client Name",
       filter: {
-        environment: "ALL",
-        clientId: null,
+        applications: [],
+        environments: [],
+        clients: [],
         eventTypes: [],
-        pageSize: 100,
+        pageSize: 100
       },
       eventTypes: ["Success", "Error", "Failure"],
       headers: [
@@ -129,7 +180,7 @@ export default {
           align: "start",
           value: "timeStamp",
           sortable: false,
-          width: 160,
+          width: 160
         },
         { text: "Category", value: "category" },
         { text: "name", value: "name" },
@@ -139,8 +190,8 @@ export default {
         { text: "Hostname", value: "hostname" },
         { text: "Endpoint", value: "endpoint" },
         { text: "ClientId", value: "clientId" },
-        { text: "SubjectId", value: "subjectId" },
-      ],
+        { text: "SubjectId", value: "subjectId" }
+      ]
     };
   },
   watch: {
@@ -149,33 +200,39 @@ export default {
         if (this.userSearchTriggered) {
           this.setIdentityServerEventsPaging({
             pageSize: this.options.itemsPerPage,
-            pageNr: this.options.page - 1,
+            pageNr: this.options.page - 1
           });
         }
       },
-      deep: true,
+      deep: true
     },
-    clientId: {
+    input: {
       immediate: true,
-      handler: function () {
-        console.log("CL", this.clientId);
-        if (this.clientId) {
-          this.filter.clientId = this.clientId;
+      handler: function() {
+        if (this.input) {
+          this.filter.clients = this.input.clients;
+          this.filter.environments = this.input.environments;
           this.onClickRefresh();
         }
-      },
-    },
+      }
+    }
   },
   computed: {
-    ...mapState({
-      events: (state) => state.idEvents.items,
-      totalCount: (state) => state.idEvents.totalCount,
-      loading: (state) => state.idEvents.loading,
+    ...mapState("insights", {
+      events: state => state.idEvents.items,
+      totalCount: state => state.idEvents.totalCount,
+      loading: state => state.idEvents.loading
     }),
-    environments: function () {
+    environments: function() {
       return this.$store.state.system.environment.items;
     },
-    tableHeight: function () {
+    clients: function() {
+      return this.$store.state.idResource.client.items;
+    },
+    applications: function() {
+      return this.$store.state.application.list.items;
+    },
+    tableHeight: function() {
       if (this.details && this.detailMode === "INLINE") {
         return this.$vuetify.breakpoint.height - 810;
       } else if (this.detailMode === "POPUP") {
@@ -183,28 +240,34 @@ export default {
       } else {
         return this.$vuetify.breakpoint.height - 230;
       }
-    },
+    }
   },
   methods: {
-    ...mapActions([
+    ...mapActions("insights", [
       "searchIdentityServerEvents",
-      "setIdentityServerEventsPaging",
+      "setIdentityServerEventsPaging"
     ]),
-    onClickRow: function (item) {
+    ...mapActions("idResource", ["searchClients"]),
+    ...mapActions("application", ["search"]),
+    onClickRow: function(item) {
       if (this.detailMode === "POPUP") {
         this.dialog = true;
       }
       this.details = Object.assign({}, item, {
         data: JSON.parse(item.rawData),
-        rawData: undefined,
+        rawData: undefined
       });
     },
-    onClickRefresh: function () {
+    refreshFilter: function() {
+      this.filter.clients = [];
+      this.filter.applications = [];
+    },
+    onClickRefresh: function() {
       this.userSearchTriggered = true;
       this.details = null;
       this.searchIdentityServerEvents(this.filter);
-    },
-  },
+    }
+  }
 };
 </script>
 
