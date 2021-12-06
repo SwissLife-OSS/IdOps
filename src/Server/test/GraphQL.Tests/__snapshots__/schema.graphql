@@ -1000,8 +1000,9 @@ input SearchClientsInput {
 }
 
 input SearchIdentityServerEventsInput {
-  clientId: String
-  environment: String
+  applications: [Uuid!]
+  clients: [String!]
+  environments: [String!]
   eventTypes: [String!]
   pageSize: Int!
   pageNr: Int!
