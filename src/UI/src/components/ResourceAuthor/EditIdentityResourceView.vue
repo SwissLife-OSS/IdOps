@@ -3,7 +3,7 @@
     :title="title"
     :loading="loading"
     :resource="resource"
-    :tools="['PUBLISH', 'AUDIT']"
+    :tools="['PUBLISH', 'AUDIT', 'LOG']"
     @Save="onSave"
   >
     <v-form ref="form" v-model="valid" lazy-validation>

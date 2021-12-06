@@ -21,7 +21,12 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                 .WithCollectionSettings(s => s.ReadPreference = ReadPreference.Nearest)
                 .WithCollectionConfiguration(collection =>
                 {
+                    var resourceIdIndex = new CreateIndexModel<ResourceApprovalLog>(
+                        Builders<ResourceApprovalLog>.IndexKeys
+                            .Ascending(c => c.ResourceId),
+                        new CreateIndexOptions { Unique = false });
 
+                    collection.Indexes.CreateOne(resourceIdIndex);
                 });
         }
     }

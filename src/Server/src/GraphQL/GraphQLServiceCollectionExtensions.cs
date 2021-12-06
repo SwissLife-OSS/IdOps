@@ -167,6 +167,8 @@ namespace IdOps.GraphQL
             builder.RenameRequestToInput<PublishResourceRequest>();
             builder.RenameRequestToInput<ApproveResourcesRequest>();
             builder.RenameRequestToInput<ResourceApprovalRequest>();
+            builder.RenameRequestToInput<ResourceApprovalLogRequest>();
+            builder.RenameRequestToInput<ResourcePublishingLogRequest>();
             builder.RenameRequestToInput<SearchResourceApprovalLogsRequest>();
             builder.RenameRequestToInput<SearchIdentityServerEventsRequest>();
             builder.RenameRequestToInput<AddEnvironmentToApplicationRequest>();

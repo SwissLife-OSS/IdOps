@@ -1,5 +1,6 @@
 import apollo from "../apollo";
 
+import QUERY_RESOURCE_APPROVAL_LOG from "../graphql/Approval/Log.gql";
 import QUERY_RESOURCE_APPROVAL from "../graphql/Approval/Get.gql";
 import MUTATION_APPROVE from "../graphql/Approval/Approve.gql";
 
@@ -18,5 +19,12 @@ export const approveResources = async input => {
     variables: {
       input
     }
+  });
+};
+
+export const getResourceApprovalLog = async input => {
+  return await apollo.query({
+    query: QUERY_RESOURCE_APPROVAL_LOG,
+    variables: { input }
   });
 };

@@ -23,7 +23,7 @@ namespace IdOps.Server.Storage.Mongo
             IEnumerable<Guid> resourceIds,
             CancellationToken cancellationToken)
         {
-            FilterDefinition<ResourcePublishLog> filter = Filter.In(x => x.Id, resourceIds);
+            FilterDefinition<ResourcePublishLog> filter = Filter.In(x => x.ResourceId, resourceIds);
             return await Collection.Find(filter).ToListAsync(cancellationToken);
         }
 

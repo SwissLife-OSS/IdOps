@@ -52,6 +52,11 @@
         :type="this.type"
         ></resource-dependencies-view>
       </div>
+      <div v-if="view === 'LOG'">
+        <resource-log-view
+          :resourceId="resource.id"
+        ></resource-log-view>
+      </div>
     </v-card-text>
   </v-card>
 </template>
@@ -59,6 +64,7 @@
 <script>
 import ResourceAuditList from "./ResourceAuditList.vue";
 import ResourcePublishView from "./ResourcePublishView.vue";
+import ResourceLogView from "./ResourceLogView.vue";
 import ResourceDependenciesView from "./ResourceDependenciesView.vue";
 import hash from "object-hash";
 import IdentityServerEventsView from "../Insights/IdentityServerEventsView.vue";
@@ -67,6 +73,7 @@ export default {
   components: {
     ResourceAuditList,
     ResourcePublishView,
+    ResourceLogView,
     ResourceDependenciesView,
     IdentityServerEventsView,
   },
@@ -95,6 +102,10 @@ export default {
       originalHash: null,
       view: "DEFAULT",
       toolsDef: {
+        LOG: {
+          icon: "mdi-clipboard-text-clock-outline",
+          title: "Logs",
+        },
         INSIGHTS: {
           icon: "mdi-eye-outline",
           title: "Insights",
@@ -110,7 +121,7 @@ export default {
         PUBLISH: {
           icon: "mdi-rocket-launch-outline",
           title: "Publishing",
-        },
+        }
       },
     };
   },

@@ -1,0 +1,7 @@
+query resourceApprovalLog($input: ResourceApprovalLogInput!) {
+  resourceApprovalLog(input: $input) {
+    version
+    approvedAt
+    requestedBy
+  }
+}

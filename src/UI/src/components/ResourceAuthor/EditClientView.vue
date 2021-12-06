@@ -3,10 +3,10 @@
     :title="client.name"
     :loading="loading"
     :resource="client"
-    :tools="['DEPENDENCIES', 'PUBLISH', 'INSIGHTS', 'AUDIT']"
+    :tools="['DEPENDENCIES', 'PUBLISH', 'INSIGHTS', 'AUDIT', 'LOG']"
     type="Client"
     @Save="onSave"
-  > 
+  >
     <v-form ref="form" v-model="valid" lazy-validation>
       <v-tabs vertical v-model="tab">
         <v-tab> <v-icon left> mdi-format-list-checkbox </v-icon> </v-tab>
