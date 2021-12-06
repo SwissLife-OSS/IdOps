@@ -25,19 +25,23 @@
             <template v-slot:top v-if="input == null">
               <v-row dense>
                 <v-col md="3">
-                  <v-autocomplete
-                    label="Environments"
+                  <v-btn-toggle
                     @change="onClickRefresh"
                     dense
                     v-model="filter.environments"
-                    :items="environments"
-                    item-text="name"
-                    item-value="id"
-                    chips
+                    rounded
                     multiple
-                    small-chips
-                    deletable-chips
-                  />
+                    mandatory
+                  >
+                    <v-btn
+                      small
+                      v-for="env in environments"
+                      :key="env.id"
+                      :value="env.name"
+                    >
+                      {{ env.name }}
+                    </v-btn>
+                  </v-btn-toggle>
                 </v-col>
                 <v-col md="2">
                   <v-autocomplete
@@ -144,6 +148,7 @@ import InsightsDetailCard from "./InsightsDetailCard.vue";
 export default {
   created() {
     if (this.input == null) {
+      this.filter.environments = this.environments.map(env => env.name);
       this.searchClients();
       this.search();
     }
