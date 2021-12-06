@@ -34,6 +34,15 @@ namespace IdOps.GraphQL.Publish
             return _approvalService
                 .GetResourceApprovals(input, cancellationToken);
         }
+
+        [AuthorizeClientAuthoring(AccessMode.Read, includeTenantAuth: false)]
+        public Task<IEnumerable<ResourceApprovalLog>> GetResourceApprovalLog(
+            ResourceApprovalLogRequest input,
+            CancellationToken cancellationToken)
+        {
+            return _approvalService
+                .GetResourceApprovalLog(new[] { input.ResourceId }, cancellationToken);
+        }
     }
 
     public class ResourceApprovalEnvironmentType : ObjectType<ResourceApprovalEnvironment>

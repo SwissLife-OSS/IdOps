@@ -3,7 +3,7 @@
     :title="personalAccessToken.title"
     :loading="loading"
     :resource="personalAccessToken"
-    :tools="['PUBLISH', 'INSIGHTS', 'AUDIT']"
+    :tools="['PUBLISH', 'INSIGHTS', 'AUDIT', 'LOG']"
     type="PersonalAccessToken"
     @Save="onSave"
   >

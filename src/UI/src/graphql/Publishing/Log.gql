@@ -1,0 +1,7 @@
+query resourcePublishingLog($input: ResourcePublishingLogInput!) {
+  resourcePublishingLog(input: $input) {
+    version
+    publishedAt
+    requestedBy
+  }
+}

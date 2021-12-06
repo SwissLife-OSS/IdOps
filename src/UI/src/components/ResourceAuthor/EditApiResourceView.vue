@@ -3,7 +3,7 @@
     :title="title"
     :loading="loading"
     :resource="resource"
-    :tools="['DEPENDENCIES', 'PUBLISH', 'AUDIT']"
+    :tools="['DEPENDENCIES', 'PUBLISH', 'AUDIT', 'LOG']"
     type="ApiResource"
     @Save="onSave"
   >
