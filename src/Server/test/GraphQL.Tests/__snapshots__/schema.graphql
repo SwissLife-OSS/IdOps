@@ -464,6 +464,7 @@ type Query @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) {
   environments: [Environment!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   grantTypes: [GrantType!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   publishedResouces(input: PublishedResourcesInput): [PublishedResource!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
+  resourcePublishingLog(input: ResourcePublishingLogInput!): [ResourcePublishLog!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   searchIdentityServerEvents(input: SearchIdentityServerEventsInput!): SearchResultOfIdentityServerEvent!
   identityResources(input: GetIdentityResourcesInput): [IdentityResource!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   searchResourceAudits(input: SearchResourceAuditInput!): SearchResultOfResourceAuditEvent! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
@@ -482,6 +483,7 @@ type Query @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) {
   apiResources(input: GetApiResourcesInput): [ApiResource!]! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   hashAlgorithms: [HashAlgorithm!]!
   resourceApprovals(input: ResourceApprovalInput): [ResourceApproval!]! @authorize(policy: "ResourceApproval", apply: BEFORE_RESOLVER)
+  resourceApprovalLog(input: ResourceApprovalLogInput!): [ResourceApprovalLog!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   dependencies(input: GetDependenciesInput!): Dependency! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
 }
 
@@ -505,6 +507,18 @@ type ResourceApprovalEnvironment {
   state: String
 }
 
+type ResourceApprovalLog {
+  id: Uuid!
+  resourceId: Uuid!
+  resourceType: String!
+  environmentId: Uuid!
+  version: Int!
+  approvedAt: DateTime!
+  requestedBy: String!
+  operation: String!
+  errorMessage: String
+}
+
 type ResourceAuditEvent {
   resourceId: Uuid!
   resourceType: String!
@@ -523,6 +537,19 @@ type ResourceChange {
   after: String
   delta: String
   arrayIndex: Int
+}
+
+type ResourcePublishLog {
+  id: Uuid!
+  resourceId: Uuid!
+  resourceType: String!
+  environmentId: Uuid!
+  identityServerGroupId: Uuid!
+  version: Int!
+  publishedAt: DateTime!
+  requestedBy: String!
+  operation: String!
+  errorMessage: String!
 }
 
 type ResourceVersion {
@@ -880,6 +907,14 @@ input ResourceApprovalInput {
   environmentId: Uuid
   identityServerGroupId: Uuid
   tenants: [String!]
+}
+
+input ResourceApprovalLogInput {
+  resourceId: Uuid!
+}
+
+input ResourcePublishingLogInput {
+  resourceId: Uuid!
 }
 
 input SaveApiResourceInput {

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -9,7 +8,6 @@ using System.Threading.Tasks;
 using IdOps.Model;
 using IdOps.Security;
 using IdOps.Server.Storage;
-using Microsoft.Azure.Amqp.Framing;
 
 namespace IdOps
 {
@@ -38,6 +36,13 @@ namespace IdOps
             _environmentService = environmentService;
             _identityServerService = identityServerService;
             _identityServerGroupService = identityServerGroupService;
+        }
+
+        public Task<IEnumerable<ResourceApprovalLog>> GetResourceApprovalLog(
+            IReadOnlyList<Guid> ids,
+            CancellationToken cancellationToken)
+        {
+            return _resourceApprovalLogStore.GetManyAsync(ids, cancellationToken);
         }
 
         public async IAsyncEnumerable<ResourceApproval> GetResourceApprovals(

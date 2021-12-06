@@ -8,6 +8,7 @@ using HotChocolate.Resolvers;
 using HotChocolate.Types;
 using IdOps.Authorization;
 using IdOps.GraphQL.DataLoaders;
+using IdOps.Model;
 
 namespace IdOps.GraphQL.Publish
 {
@@ -29,6 +30,15 @@ namespace IdOps.GraphQL.Publish
             CancellationToken cancellationToken) =>
             _publishingService
                 .GetPublishedResourcesAsync(input, cancellationToken);
+
+        [AuthorizeClientAuthoring(AccessMode.Read, includeTenantAuth: false)]
+        public Task<IEnumerable<ResourcePublishLog>> GetResourcePublishingLog(
+            ResourcePublishingLogRequest input,
+            CancellationToken cancellationToken)
+        {
+            return _publishingService
+                .GetResourcePublishingLog(new[] { input.ResourceId }, cancellationToken);
+        }
     }
 
     public class PublishedResourceEnvironmentType : ObjectType<PublishedResourceEnvironment>

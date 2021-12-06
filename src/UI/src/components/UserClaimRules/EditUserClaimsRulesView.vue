@@ -4,7 +4,7 @@
       :title="title"
       :loading="loading"
       :resource="rule"
-      :tools="['PUBLISH', 'AUDIT']"
+      :tools="['PUBLISH', 'AUDIT', 'LOG']"
       @Save="onSave"
     >
       <v-tabs vertical v-model="tab">

@@ -14,6 +14,7 @@ namespace IdOps
     public class PublishingService : UserTenantService, IPublishingService
     {
         private readonly IResourcePublishStateStore _resourcePublishStateStore;
+        private readonly IResourcePublishLogStore _resourcePublishLog;
         private readonly IApprovalService _approvalService;
         private readonly IEnvironmentService _environmentService;
         private readonly IIdentityServerService _identityServerService;
@@ -22,6 +23,7 @@ namespace IdOps
 
         public PublishingService(
             IResourcePublishStateStore resourcePublishStateStore,
+            IResourcePublishLogStore resourcePublishLog,
             IApprovalService approvalService,
             IEnvironmentService environmentService,
             IIdentityServerService identityServerService,
@@ -31,11 +33,19 @@ namespace IdOps
             : base(userContextAccessor)
         {
             _resourcePublishStateStore = resourcePublishStateStore;
+            _resourcePublishLog = resourcePublishLog;
             _approvalService = approvalService;
             _environmentService = environmentService;
             _identityServerService = identityServerService;
             _identityServerGroupService = identityServerGroupService;
             _resourceServiceResolver = resourceServiceResolver;
+        }
+
+        public Task<IEnumerable<ResourcePublishLog>> GetResourcePublishingLog(
+            IReadOnlyList<Guid> ids,
+            CancellationToken cancellationToken)
+        {
+            return _resourcePublishLog.GetManyAsync(ids, cancellationToken);
         }
 
         public async IAsyncEnumerable<PublishedResource> GetPublishedResourcesAsync(
