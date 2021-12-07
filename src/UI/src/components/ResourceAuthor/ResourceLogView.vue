@@ -49,7 +49,7 @@ export default {
       headers: [
         {
           text: "User",
-          align: "center",
+          align: "left",
           value: "user",
           sortable: false
         },
