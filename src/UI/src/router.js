@@ -319,7 +319,7 @@ const routes = [
     component: InsightsPage,
     children: [
       {
-        path: "idevents/:clientId?",
+        path: "idevents/:input?",
         name: "IdentityServerEvents",
         component: IdentityServerEventsView,
         props: true

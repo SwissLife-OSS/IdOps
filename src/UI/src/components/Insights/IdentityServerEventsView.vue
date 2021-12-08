@@ -15,6 +15,20 @@
             :footer-props="{ itemsPerPageOptions: [50, 100, 200 - 1] }"
             :items-per-page="filter.pageSize"
           >
+            <template v-slot:item.eventType="{ item }">
+              <v-chip :color="getColor(item.eventType)" outlined>
+                {{ item.eventType }}
+              </v-chip>
+            </template>
+            <template v-slot:header.timeStamp="{ header }">
+              <v-icon
+                v-if="input && !input.unwind"
+                class="ml-n4 mr-4"
+                @click="navigateToFullView"
+                >mdi-arrow-top-right-bold-box-outline</v-icon
+              >
+              {{ header.text }}
+            </template>
             <template v-slot:item.timeStamp="{ item }">
               {{ item.timeStamp | dateformat }}
             </template>
@@ -22,7 +36,7 @@
               <v-icon @click="onClickRefresh">mdi-reload</v-icon>
             </template>
 
-            <template v-slot:top v-if="input == null">
+            <template v-slot:top v-if="input == null || input.unwind">
               <v-row dense>
                 <v-col md="1">
                   <v-autocomplete
@@ -138,6 +152,9 @@
         :data="details"
       ></insights-detail-card>
     </v-dialog>
+    <div class="ma-2 pa-0">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -152,6 +169,11 @@ export default {
       this.searchClients();
       this.search();
       this.onClickRefresh();
+    } else if (this.input.unwind) {
+      this.filter.clients = this.input.clients;
+      this.filter.environments = this.input.environments.map(
+        env => this.environments.find(e => e.id == env).name
+      );
     }
   },
   components: { InsightsDetailCard },
@@ -179,25 +201,7 @@ export default {
         eventTypes: [],
         pageSize: 100
       },
-      eventTypes: ["Success", "Error", "Failure"],
-      headers: [
-        {
-          text: "Timestamp",
-          align: "start",
-          value: "timeStamp",
-          sortable: false,
-          width: 160
-        },
-        { text: "Category", value: "category" },
-        { text: "name", value: "name" },
-        { text: "Environment", value: "environmentName" },
-        { text: "IP address", value: "remoteIpAddress" },
-        { text: "EventType", value: "eventType" },
-        { text: "Hostname", value: "hostname" },
-        { text: "Endpoint", value: "endpoint" },
-        { text: "ClientId", value: "clientId" },
-        { text: "SubjectId", value: "subjectId" }
-      ]
+      eventTypes: ["Success", "Error", "Failure"]
     };
   },
   watch: {
@@ -217,8 +221,9 @@ export default {
       handler: function() {
         if (this.input) {
           this.filter.clients = this.input.clients;
-          this.filter.environments = this.input.environments.map(env =>
-            this.environments.find(e => e.id == env).name);
+          this.filter.environments = this.input.environments.map(
+            env => this.environments.find(e => e.id == env).name
+          );
           this.onClickRefresh();
         }
       }
@@ -230,6 +235,30 @@ export default {
       totalCount: state => state.idEvents.totalCount,
       loading: state => state.idEvents.loading
     }),
+    headers: function() {
+      const headers = [];
+      headers.push(
+        {
+          text: "Timestamp",
+          align: "start",
+          value: "timeStamp",
+          sortable: false,
+          width: 160
+        },
+        { text: "Name", value: "name" },
+        { text: "Environment", value: "environmentName" },
+        { text: "Event Type", value: "eventType" },
+        { text: "Client Id", value: "clientId" },
+        { text: "Subject Id", value: "subjectId" }
+      );
+      if (this.input == null || this.input.unwind) {
+        headers.splice(1, 0, { text: "Category", value: "category" });
+        headers.splice(4, 0, { text: "IP Address", value: "remoteIpAddress" });
+        headers.splice(6, 0, { text: "Hostname", value: "hostname" });
+        headers.splice(7, 0, { text: "Endpoint", value: "endpoint" });
+      }
+      return headers;
+    },
     environments: function() {
       return this.$store.state.system.environment.items;
     },
@@ -273,6 +302,26 @@ export default {
       this.userSearchTriggered = true;
       this.details = null;
       this.searchIdentityServerEvents(this.filter);
+    },
+    getColor: function(eventType) {
+      if (eventType == "Error") {
+        return "red";
+      } else if (eventType == "Failure") {
+        return "orange";
+      } else {
+        return "green";
+      }
+    },
+    navigateToFullView: function() {
+      this.$router.push({
+        name: "IdentityServerEvents",
+        params: {
+          input: {
+            unwind: true,
+            ...this.input
+          }
+        }
+      });
     }
   }
 };
