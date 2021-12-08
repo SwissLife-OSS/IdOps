@@ -11,10 +11,15 @@ namespace IdOps.Server.Storage.Mongo
     public class IdentityServerEventStore : IIdentityServerEventStore
     {
         private readonly IApplicationService _applicationService;
+        private readonly IClientService _clientService;
 
-        public IdentityServerEventStore(IIdOpsDbContext dbContext, IApplicationService applicationService)
+        public IdentityServerEventStore(
+            IIdOpsDbContext dbContext,
+            IApplicationService applicationService,
+            IClientService clientService)
         {
             _applicationService = applicationService;
+            _clientService = clientService;
             Collection = dbContext.IdentityServerEvents;
         }
 
@@ -35,7 +40,7 @@ namespace IdOps.Server.Storage.Mongo
             FilterDefinition<IdentityServerEvent> filter =
                 Filter.Empty;
 
-            var clients = new List<string>();
+            var clientIds = new List<string>();
 
             if (request.Environments is { } envs && envs.Any())
             {
@@ -44,7 +49,7 @@ namespace IdOps.Server.Storage.Mongo
 
             if (request.Clients is { } ids && ids.Any())
             {
-                clients.AddRange(request.Clients);
+                clientIds.AddRange(request.Clients);
             }
 
             if (request.Applications is { } apps && apps.Any())
@@ -52,12 +57,15 @@ namespace IdOps.Server.Storage.Mongo
                 IReadOnlyList<Application> applications = await _applicationService
                     .GetByIdsAsync(request.Applications, cancellationToken);
 
-                clients.AddRange(applications.SelectMany(x => x.ClientIds.Select(c => c.ToString("N"))));
+                IReadOnlyList<Client> clients = await _clientService
+                    .GetByIdsAsync(applications.SelectMany(x => x.ClientIds), cancellationToken);
+
+                clientIds.AddRange(clients.Select(x => x.ClientId));
             }
 
-            if (clients.Count > 0)
+            if (clientIds.Count > 0)
             {
-                filter &= Filter.In(x => x.ClientId, clients);
+                filter &= Filter.In(x => x.ClientId, clientIds);
             }
 
             if (request.EventTypes is { } events && events.Any())
