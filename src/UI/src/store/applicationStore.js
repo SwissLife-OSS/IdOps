@@ -46,7 +46,6 @@ const applicationStore = {
       state.lastCreated = result;
     },
     APPLICATION_ENVIRONMENT_CREATED(state, result) {
-      this.APPLICATION_UPDATED(state, result.application)
       state.lastCreated = result;
     },
     APPLICATION_UPDATED(state, application) {
@@ -153,9 +152,11 @@ const applicationStore = {
       );
 
       if (result.success) {
-        commit("APPLICATION_ENVIRONMENT_CREATED", result.data.addEnvironmentToApplication);
+        const application = result.data.addEnvironmentToApplication;
+        commit("APPLICATION_UPDATED", application);
+        commit("APPLICATION_ENVIRONMENT_CREATED", application);
 
-        return result.data.addEnvironmentToApplication;
+        return application;
       }
       return null;
     },

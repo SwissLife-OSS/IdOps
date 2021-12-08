@@ -24,37 +24,6 @@
 
             <template v-slot:top v-if="input == null">
               <v-row dense>
-                <v-col md="3">
-                  <v-btn-toggle
-                    @change="onClickRefresh"
-                    dense
-                    v-model="filter.environments"
-                    rounded
-                    multiple
-                    mandatory
-                  >
-                    <v-btn
-                      small
-                      v-for="env in environments"
-                      :key="env.id"
-                      :value="env.name"
-                    >
-                      {{ env.name }}
-                    </v-btn>
-                  </v-btn-toggle>
-                </v-col>
-                <v-col md="2">
-                  <v-autocomplete
-                    label="Event Types"
-                    dense
-                    v-model="filter.eventTypes"
-                    :items="eventTypes"
-                    @change="onClickRefresh"
-                    multiple
-                    clearable
-                  ></v-autocomplete
-                ></v-col>
-                <v-spacer> </v-spacer>
                 <v-col md="1">
                   <v-autocomplete
                     @change="refreshFilter"
@@ -74,7 +43,7 @@
                     v-if="currentFilterType == 'Client Name'"
                     :items="clients"
                     item-text="name"
-                    item-value="id"
+                    item-value="clientId"
                     multiple
                     clearable
                     small-chips
@@ -86,8 +55,8 @@
                     v-model="filter.clients"
                     v-if="currentFilterType == 'Client Id'"
                     :items="clients"
-                    item-text="id"
-                    item-value="id"
+                    item-text="clientId"
+                    item-value="clientId"
                     multiple
                     clearable
                     small-chips
@@ -106,6 +75,37 @@
                     small-chips
                     deletable-chips
                   />
+                </v-col>
+                <v-col md="2">
+                  <v-autocomplete
+                    label="Event Types"
+                    dense
+                    v-model="filter.eventTypes"
+                    :items="eventTypes"
+                    @change="onClickRefresh"
+                    multiple
+                    clearable
+                  ></v-autocomplete
+                ></v-col>
+                <v-spacer></v-spacer>
+                <v-col md="3">
+                  <v-btn-toggle
+                    @change="onClickRefresh"
+                    dense
+                    v-model="filter.environments"
+                    rounded
+                    multiple
+                    mandatory
+                  >
+                    <v-btn
+                      small
+                      v-for="env in environments"
+                      :key="env.id"
+                      :value="env.name"
+                    >
+                      {{ env.name }}
+                    </v-btn>
+                  </v-btn-toggle>
                 </v-col>
                 <v-spacer> </v-spacer>
                 <v-col md="1">
@@ -151,6 +151,7 @@ export default {
       this.filter.environments = this.environments.map(env => env.name);
       this.searchClients();
       this.search();
+      this.onClickRefresh();
     }
   },
   components: { InsightsDetailCard },
@@ -216,7 +217,8 @@ export default {
       handler: function() {
         if (this.input) {
           this.filter.clients = this.input.clients;
-          this.filter.environments = this.input.environments;
+          this.filter.environments = this.input.environments.map(env =>
+            this.environments.find(e => e.id == env).name);
           this.onClickRefresh();
         }
       }
