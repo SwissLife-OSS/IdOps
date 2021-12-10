@@ -48,14 +48,12 @@
       </div>
       <div v-if="view === 'DEPENDENCIES'">
         <resource-dependencies-view
-        :resourceId="resource.id"
-        :type="this.type"
+          :resourceId="resource.id"
+          :type="this.type"
         ></resource-dependencies-view>
       </div>
       <div v-if="view === 'LOG'">
-        <resource-log-view
-          :resourceId="resource.id"
-        ></resource-log-view>
+        <resource-log-view :resourceId="resource.id"></resource-log-view>
       </div>
     </v-card-text>
   </v-card>
@@ -75,25 +73,25 @@ export default {
     ResourcePublishView,
     ResourceLogView,
     ResourceDependenciesView,
-    IdentityServerEventsView,
+    IdentityServerEventsView
   },
   props: {
     title: {
-      type: String,
+      type: String
     },
     loading: {
       type: Boolean,
-      default: false,
+      default: false
     },
     resource: {
-      type: Object,
+      type: Object
     },
     tools: {
       type: Array,
-      default: () => ["AUDIT"],
+      default: () => ["AUDIT"]
     },
     type: {
-      type: String,
+      type: String
     }
   },
   data() {
@@ -104,42 +102,42 @@ export default {
       toolsDef: {
         LOG: {
           icon: "mdi-clipboard-text-clock-outline",
-          title: "Logs",
+          title: "Logs"
         },
         INSIGHTS: {
           icon: "mdi-eye-outline",
-          title: "Insights",
+          title: "Insights"
         },
         AUDIT: {
           icon: "mdi-timeline-clock-outline",
-          title: "Audit",
+          title: "Audit"
         },
         DEPENDENCIES: {
           icon: "mdi-graph-outline",
-          title: "Dependencies",
+          title: "Dependencies"
         },
         PUBLISH: {
           icon: "mdi-rocket-launch-outline",
-          title: "Publishing",
+          title: "Publishing"
         }
-      },
+      }
     };
   },
   watch: {
     resource: {
       immediate: true,
-      handler: function () {
+      handler: function() {
         this.originalHash = hash(this.resource);
-      },
-    },
+      }
+    }
   },
   computed: {
-    toolsButtons: function () {
+    toolsButtons: function() {
       if (this.hideTools) {
         return {};
       }
       const filtered = Object.keys(this.toolsDef)
-        .filter((key) => this.tools.includes(key))
+        .filter(key => this.tools.includes(key))
         .reduce((obj, key) => {
           obj[key] = this.toolsDef[key];
           return obj;
@@ -147,16 +145,16 @@ export default {
 
       return filtered;
     },
-    showAudit: function () {
+    showAudit: function() {
       return this.resource.id && this.view !== "AUDIT";
     },
-    showPublish: function () {
+    showPublish: function() {
       return this.resource.id && this.view !== "PUBLISH";
     },
-    buttonLoading: function () {
+    buttonLoading: function() {
       return this.saveState === "SAVING";
     },
-    toolbarTitle: function () {
+    toolbarTitle: function() {
       if (this.resource.id) {
         if (this.view === "DEFAULT") {
           return `Edit ${this.title}`;
@@ -167,10 +165,10 @@ export default {
 
       return `Create new ${this.title}`;
     },
-    hash: function () {
+    hash: function() {
       return hash(this.resource);
     },
-    saveState: function () {
+    saveState: function() {
       if (this.saving) {
         return "SAVING";
       } else {
@@ -180,38 +178,42 @@ export default {
 
         return "UNCHANGED";
       }
-    },
+    }
   },
   methods: {
-    onClickTool: function (tool) {
+    onClickTool: function(tool) {
       this.view = tool;
     },
     createInsightsInput: function() {
-      if (this.resource.allowedApplicationIds) {
-        // Personal Access Token
+      if (this.resource.__typename == "Application") {
         return {
+          filterType: "Application",
+          applications: [this.resource.id]
+        };
+      } else if (this.resource.allowedApplicationIds) {
+        return {
+          filterType: "Application",
           applications: this.resource.allowedApplicationIds,
           environments: [this.resource.environmentId]
         };
       } else {
-        // Client
         return {
+          filterType: "Client Name",
           clients: [this.resource.clientId],
           environments: this.resource.environments
         };
       }
     },
-    onSave: function () {
+    onSave: function() {
       this.saving = true;
       this.$emit("Save", {
         done: () => {
           this.saving = false;
-        },
+        }
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>

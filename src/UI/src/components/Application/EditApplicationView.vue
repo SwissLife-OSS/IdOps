@@ -3,7 +3,7 @@
     :title="title"
     :loading="loading"
     :resource="application"
-    :tools="['DEPENDENCIES', 'AUDIT']"
+    :tools="['DEPENDENCIES', 'AUDIT', 'INSIGHTS']"
     type="Application"
     @Save="onSave"
   >

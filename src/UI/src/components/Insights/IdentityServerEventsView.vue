@@ -14,20 +14,24 @@
             item-key="id"
             :footer-props="{ itemsPerPageOptions: [50, 100, 200 - 1] }"
             :items-per-page="filter.pageSize"
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
           >
-            <template v-slot:item.eventType="{ item }">
-              <v-chip :color="getColor(item.eventType)" outlined>
-                {{ item.eventType }}
-              </v-chip>
-            </template>
-            <template v-slot:header.timeStamp="{ header }">
-              <v-icon
-                v-if="input && !input.unwind"
-                class="ml-n4 mr-4"
-                @click="navigateToFullView"
+            <template v-slot:header.status="{}">
+              <v-icon v-if="input && !input.unwind" @click="navigateToFullView"
                 >mdi-arrow-top-right-bold-box-outline</v-icon
               >
-              {{ header.text }}
+            </template>
+            <template v-slot:item.status="{ item }">
+              <v-icon color="green" v-if="item.eventType == 'Success'"
+                >mdi-checkbox-marked-circle</v-icon
+              >
+              <v-icon color="orange" v-if="item.eventType == 'Failure'"
+                >mdi-alert</v-icon
+              >
+              <v-icon color="red" v-if="item.eventType == 'Error'"
+                >mdi-alert-circle</v-icon
+              >
             </template>
             <template v-slot:item.timeStamp="{ item }">
               {{ item.timeStamp | dateformat }}
@@ -42,7 +46,7 @@
                   <v-autocomplete
                     @change="refreshFilter"
                     :items="filterTypes"
-                    v-model="currentFilterType"
+                    v-model="filterType"
                     label="Filter type"
                     dense
                     hide-details
@@ -54,7 +58,7 @@
                     @change="onClickRefresh"
                     dense
                     v-model="filter.clients"
-                    v-if="currentFilterType == 'Client Name'"
+                    v-if="filterType == 'Client Name'"
                     :items="clients"
                     item-text="name"
                     item-value="clientId"
@@ -67,7 +71,7 @@
                     @change="onClickRefresh"
                     dense
                     v-model="filter.clients"
-                    v-if="currentFilterType == 'Client Id'"
+                    v-if="filterType == 'Client Id'"
                     :items="clients"
                     item-text="clientId"
                     item-value="clientId"
@@ -80,7 +84,7 @@
                     @change="onClickRefresh"
                     dense
                     v-model="filter.applications"
-                    v-if="currentFilterType == 'Application'"
+                    v-if="filterType == 'Application'"
                     :items="applications"
                     item-text="name"
                     item-value="id"
@@ -164,16 +168,12 @@ import InsightsDetailCard from "./InsightsDetailCard.vue";
 
 export default {
   created() {
+    this.searchClients();
+    this.search();
+
     if (this.input == null) {
       this.filter.environments = this.environments.map(env => env.name);
-      this.searchClients();
-      this.search();
       this.onClickRefresh();
-    } else if (this.input.unwind) {
-      this.filter.clients = this.input.clients;
-      this.filter.environments = this.input.environments.map(
-        env => this.environments.find(e => e.id == env).name
-      );
     }
   },
   components: { InsightsDetailCard },
@@ -188,12 +188,14 @@ export default {
   },
   data() {
     return {
+      sortBy: "timeStamp",
+      sortDesc: true,
       dialog: false,
       userSearchTriggered: false,
       details: null,
       options: {},
       filterTypes: ["Client Name", "Client Id", "Application"],
-      currentFilterType: "Client Name",
+      filterType: "Client Name",
       filter: {
         applications: [],
         environments: [],
@@ -220,10 +222,17 @@ export default {
       immediate: true,
       handler: function() {
         if (this.input) {
+          this.filterType = this.input.filterType;
           this.filter.clients = this.input.clients;
-          this.filter.environments = this.input.environments.map(
-            env => this.environments.find(e => e.id == env).name
-          );
+          this.filter.applications = this.input.applications;
+
+          if (this.input.environments) {
+            this.filter.environments = this.input.environments.map(
+              env => this.environments.find(e => e.id == env).name
+            );
+          } else {
+            this.filter.environments = this.environments.map(env => env.name);
+          }
           this.onClickRefresh();
         }
       }
@@ -239,23 +248,67 @@ export default {
       const headers = [];
       headers.push(
         {
-          text: "Timestamp",
-          align: "start",
-          value: "timeStamp",
-          sortable: false,
-          width: 160
+          align: "center",
+          value: "status",
+          sortable: false
         },
-        { text: "Name", value: "name" },
-        { text: "Environment", value: "environmentName" },
-        { text: "Event Type", value: "eventType" },
-        { text: "Client Id", value: "clientId" },
-        { text: "Subject Id", value: "subjectId" }
+        {
+          text: "Timestamp",
+          align: "center",
+          value: "timeStamp",
+          sortable: true
+        },
+        { text: "Name", align: "center", sortable: false, value: "name" },
+        {
+          text: "Environment",
+          align: "center",
+          sortable: false,
+          value: "environmentName"
+        },
+        {
+          text: "Event Type",
+          align: "center",
+          sortable: false,
+          value: "eventType"
+        },
+        {
+          text: "Client Id",
+          align: "center",
+          sortable: false,
+          value: "clientId"
+        },
+        {
+          text: "Subject Id",
+          align: "center",
+          sortable: false,
+          value: "subjectId"
+        }
       );
       if (this.input == null || this.input.unwind) {
-        headers.splice(1, 0, { text: "Category", value: "category" });
-        headers.splice(4, 0, { text: "IP Address", value: "remoteIpAddress" });
-        headers.splice(6, 0, { text: "Hostname", value: "hostname" });
-        headers.splice(7, 0, { text: "Endpoint", value: "endpoint" });
+        headers.splice(2, 0, {
+          text: "Category",
+          align: "center",
+          sortable: false,
+          value: "category"
+        });
+        headers.splice(5, 0, {
+          text: "IP Address",
+          align: "center",
+          sortable: false,
+          value: "remoteIpAddress"
+        });
+        headers.splice(7, 0, {
+          text: "Hostname",
+          align: "center",
+          sortable: false,
+          value: "hostname"
+        });
+        headers.splice(8, 0, {
+          text: "Endpoint",
+          align: "center",
+          sortable: false,
+          value: "endpoint"
+        });
       }
       return headers;
     },
@@ -302,15 +355,6 @@ export default {
       this.userSearchTriggered = true;
       this.details = null;
       this.searchIdentityServerEvents(this.filter);
-    },
-    getColor: function(eventType) {
-      if (eventType == "Error") {
-        return "red";
-      } else if (eventType == "Failure") {
-        return "orange";
-      } else {
-        return "green";
-      }
     },
     navigateToFullView: function() {
       this.$router.push({
