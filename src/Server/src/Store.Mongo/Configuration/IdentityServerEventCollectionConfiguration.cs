@@ -22,21 +22,15 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                 .WithCollectionSettings(s => s.ReadPreference = ReadPreference.Nearest)
                 .WithCollectionConfiguration(collection =>
                 {
-                    var envIndex = new CreateIndexModel<IdentityServerEvent>(
+                    var searchIndex = new CreateIndexModel<IdentityServerEvent>(
                          Builders<IdentityServerEvent>.IndexKeys
                              .Ascending(c => c.EnvironmentName)
-                             .Descending(c => c.TimeStamp),
-                         new CreateIndexOptions { Unique = false });
-
-                    collection.Indexes.CreateOne(envIndex);
-
-                    var clientIdIndex = new CreateIndexModel<IdentityServerEvent>(
-                         Builders<IdentityServerEvent>.IndexKeys
                              .Ascending(c => c.ClientId)
+                             .Ascending(c => c.EventType)
                              .Descending(c => c.TimeStamp),
                          new CreateIndexOptions { Unique = false });
 
-                    collection.Indexes.CreateOne(clientIdIndex);
+                    collection.Indexes.CreateOne(searchIndex);
 
                     var ttlIndex = new CreateIndexModel<IdentityServerEvent>(
                          Builders<IdentityServerEvent>.IndexKeys.Ascending(c => c.TimeStamp),
