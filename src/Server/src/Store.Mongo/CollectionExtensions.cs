@@ -31,7 +31,8 @@ namespace IdOps.Server.Storage.Mongo
                 cursor = cursor.Sort(sort);
             }
 
-            long totalCount = await cursor.CountDocumentsAsync(cancellationToken);
+            long totalCount = await collection
+                .EstimatedDocumentCountAsync(cancellationToken: cancellationToken);
 
             List<T> items = await cursor
                 .Skip(request.PageNr * request.PageSize)

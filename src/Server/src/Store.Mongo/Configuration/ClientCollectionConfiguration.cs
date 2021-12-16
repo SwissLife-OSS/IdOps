@@ -32,7 +32,12 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                              .Ascending(c => c.ClientId),
                          new CreateIndexOptions { Unique = true });
 
-                    collection.Indexes.CreateOne(clientIdIndex);
+                    var tenantIndex = new CreateIndexModel<Client>(
+                        Builders<Client>.IndexKeys
+                            .Ascending(c => c.Tenant),
+                        new CreateIndexOptions { Unique = false });
+
+                    collection.Indexes.CreateMany(new[] { clientIdIndex, tenantIndex });
                 });
         }
     }

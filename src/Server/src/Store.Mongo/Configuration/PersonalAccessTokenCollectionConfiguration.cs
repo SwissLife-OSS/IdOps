@@ -21,13 +21,15 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                 .WithCollectionSettings(s => s.ReadPreference = ReadPreference.Nearest)
                 .WithCollectionConfiguration(collection =>
                 {
-                    string tokenIndexSelector =
-                        $"{nameof(PersonalAccessToken.Tokens)}.{nameof(HashedToken.Token)}";
-
                     CreateIndexModel<PersonalAccessToken> tokenIndex = new(
-                        IndexKeys.Ascending(tokenIndexSelector));
+                        IndexKeys.Ascending($"{nameof(PersonalAccessToken.Tokens)}.{nameof(HashedToken.Token)}"));
 
-                    collection.Indexes.CreateOne(tokenIndex);
+                    var tenantIndex = new CreateIndexModel<PersonalAccessToken>(
+                        Builders<PersonalAccessToken>.IndexKeys
+                            .Ascending(c => c.Tenant),
+                        new CreateIndexOptions { Unique = false });
+
+                    collection.Indexes.CreateMany(new[] { tokenIndex, tenantIndex });
                 });
         }
     }

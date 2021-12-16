@@ -19,13 +19,23 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                 .WithCollectionSettings(s => s.ReadPreference = ReadPreference.Nearest)
                 .WithCollectionConfiguration(collection =>
                 {
-                    var nameIndex = new CreateIndexModel<ApiResource>(
+                    var uniquenessIndex = new CreateIndexModel<ApiResource>(
                         Builders<ApiResource>.IndexKeys
                             .Ascending(c => c.Name)
                             .Ascending(c => c.Tenant),
                         new CreateIndexOptions { Unique = true });
 
-                    collection.Indexes.CreateOne(nameIndex);
+                    var nameIndex = new CreateIndexModel<ApiResource>(
+                        Builders<ApiResource>.IndexKeys
+                            .Ascending(c => c.Name),
+                        new CreateIndexOptions { Unique = false });
+
+                    var tenantIndex = new CreateIndexModel<ApiResource>(
+                        Builders<ApiResource>.IndexKeys
+                            .Ascending(c => c.Tenant),
+                        new CreateIndexOptions { Unique = false });
+
+                    collection.Indexes.CreateMany(new[] { uniquenessIndex, nameIndex, tenantIndex });
                 });
         }
     }

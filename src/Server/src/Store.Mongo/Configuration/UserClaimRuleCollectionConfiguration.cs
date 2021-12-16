@@ -1,4 +1,4 @@
-﻿using IdOps.Model;
+using IdOps.Model;
 using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 
@@ -21,13 +21,23 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                 .WithCollectionSettings(s => s.ReadPreference = ReadPreference.Nearest)
                 .WithCollectionConfiguration(collection =>
                 {
-                    var nameIndex = new CreateIndexModel<UserClaimRule>(
-                     Builders<UserClaimRule>.IndexKeys
-                         .Ascending(c => c.Name)
-                         .Ascending(c => c.Tenant),
-                     new CreateIndexOptions { Unique = true });
+                    var uniquenessIndex = new CreateIndexModel<UserClaimRule>(
+                        Builders<UserClaimRule>.IndexKeys
+                            .Ascending(c => c.Name)
+                            .Ascending(c => c.Tenant),
+                        new CreateIndexOptions { Unique = true });
 
-                    collection.Indexes.CreateOne(nameIndex);
+                    var nameIndex = new CreateIndexModel<UserClaimRule>(
+                        Builders<UserClaimRule>.IndexKeys
+                            .Ascending(c => c.Name),
+                        new CreateIndexOptions { Unique = false });
+
+                    var tenantIndex = new CreateIndexModel<UserClaimRule>(
+                        Builders<UserClaimRule>.IndexKeys
+                            .Ascending(c => c.Tenant),
+                        new CreateIndexOptions { Unique = true });
+
+                    collection.Indexes.CreateMany(new[] { uniquenessIndex, nameIndex, tenantIndex });
                 });
         }
     }
