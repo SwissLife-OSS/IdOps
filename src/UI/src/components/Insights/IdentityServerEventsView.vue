@@ -23,6 +23,9 @@
               >
             </template>
             <template v-slot:item.status="{ item }">
+              <v-icon color="blue" v-if="item.eventType == 'Information'"
+                >mdi-information</v-icon
+              >
               <v-icon color="green" v-if="item.eventType == 'Success'"
                 >mdi-checkbox-marked-circle</v-icon
               >
