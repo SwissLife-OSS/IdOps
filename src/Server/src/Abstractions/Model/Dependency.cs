@@ -8,7 +8,12 @@ namespace IdOps.Model
 
         public IEnumerable<IdentityResource>? IdentityResources { get; set; } = new HashSet<IdentityResource>();
 
-        public IEnumerable<ApiResource>? ApiResources { get; set; } = new HashSet<ApiResource>();
+        public IEnumerable<ApiResource>? ApiResources { get; set; } =
+            new HashSet<ApiResource>();
 
+        public IEnumerable<Client>? Clients { get; set; } = new HashSet<Client>();
+
+        public IEnumerable<PersonalAccessToken>? PersonalAccessTokens { get; set; } =
+            new HashSet<PersonalAccessToken>();
     }
 }

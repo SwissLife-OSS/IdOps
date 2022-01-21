@@ -29,4 +29,9 @@ namespace IdOps
     {
         public string Tenant { get; }
     }
+
+    public interface IAllowedScopesResource : IResource
+    {
+        public IReadOnlyList<Guid> GetAllowedScopesIds();
+    }
 }

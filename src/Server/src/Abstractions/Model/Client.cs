@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 
 namespace IdOps.Model
 {
-    public class Client : ITenantResource
+    public class Client : ITenantResource, IAllowedScopesResource
     {
         public Guid Id { get; set; }
 
@@ -307,6 +308,9 @@ namespace IdOps.Model
         public ICollection<Guid> GetEnvironmentIds() => Environments;
 
         public ClientDependencies ClientDependencies { get; set; }
+
+        public IReadOnlyList<Guid> GetAllowedScopesIds() =>
+            AllowedScopes.Select(p => p.Id).ToList();
     }
 
     /// <summary>

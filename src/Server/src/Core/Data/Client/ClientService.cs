@@ -203,6 +203,11 @@ namespace IdOps
             return result.Resource;
         }
 
+        public Task<IReadOnlyList<Client>> GetByAllowedScopesAsync(
+            IEnumerable<Guid> apiScopeIds,
+            CancellationToken cancellationToken) =>
+                _clientStore.GetByAllowedScopesAsync(apiScopeIds, cancellationToken);
+
         private static ICollection<ClientScope> BuildScopes(
             IReadOnlyList<Guid> apiScopes,
             IReadOnlyList<Guid> identityScopes)
@@ -210,12 +215,14 @@ namespace IdOps
             List<ClientScope> scopes = new();
             scopes.AddRange(apiScopes.Select(x => new ClientScope
             {
-                Type = ScopeType.Resource, Id = x
+                Type = ScopeType.Resource,
+                Id = x
             }));
 
             scopes.AddRange(identityScopes.Select(x => new ClientScope
             {
-                Type = ScopeType.Identity, Id = x
+                Type = ScopeType.Identity,
+                Id = x
             }));
 
             return scopes;
