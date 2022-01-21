@@ -66,18 +66,16 @@ namespace IdOps
                 _ => new Dependency()
             };
 
-        private Task<Dependency> GetAllApiScopeDependencies(
+        private async Task<Dependency> GetAllApiScopeDependencies(
             Guid id,
             CancellationToken cancellationToken)
         {
-
-
-            return Task.FromResult(new Dependency
+            return new Dependency
             {
-                Clients = _clientStore.GetByAllowedScopesAsync(),
+                Clients = await _clientStore.GetByAllowedScopesAsync(id, cancellationToken),
                 ApiResources = new List<ApiResource>(),
                 PersonalAccessTokens = new List<PersonalAccessToken>()
-            });
+            };
         }
 
         public async Task<Dependency> GetAllClientDependencies(Guid id, CancellationToken cancellationToken)
