@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -53,6 +55,18 @@ namespace IdOps.Server.Storage.Mongo
             }
 
             return await Collection.ExecuteSearchAsync(filter, request, cancellationToken);
+        }
+
+        public async Task<IReadOnlyList<PersonalAccessToken>> GetByAllowedScopesAsync(
+            Guid scope,
+            CancellationToken cancellationToken)
+        {
+            FilterDefinition<PersonalAccessToken> filter =
+                Filter.ElemMatch(
+                    field: c => c.AllowedScopes,
+                    filter: p => scope == p);
+
+            return await Collection.Find(filter).ToListAsync(cancellationToken);
         }
     }
 }

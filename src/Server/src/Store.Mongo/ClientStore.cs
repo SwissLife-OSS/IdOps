@@ -46,9 +46,10 @@ namespace IdOps.Server.Storage.Mongo
             Guid apiScopeId,
             CancellationToken cancellationToken)
         {
-            FilterDefinition<Client> filter = Filter.ElemMatch(
-                field: c => c.AllowedScopes,
-                filter: p => apiScopeId == p.Id);
+            FilterDefinition<Client> filter =
+                Filter.ElemMatch(
+                    field: c => c.AllowedScopes,
+                    filter: p => apiScopeId == p.Id);
 
             return await Collection.Find(filter).ToListAsync(cancellationToken);
         }

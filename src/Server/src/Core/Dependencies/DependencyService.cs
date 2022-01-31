@@ -72,9 +72,11 @@ namespace IdOps
         {
             return new Dependency
             {
+                //TODO: Make parallel
                 Clients = await _clientStore.GetByAllowedScopesAsync(id, cancellationToken),
-                ApiResources = new List<ApiResource>(),
-                PersonalAccessTokens = new List<PersonalAccessToken>()
+                ApiResources = await _apiResourceStore.GetByScopesAsync(id, cancellationToken),
+                PersonalAccessTokens =
+                    await _personalAccessTokenStore.GetByAllowedScopesAsync(id, cancellationToken)
             };
         }
 

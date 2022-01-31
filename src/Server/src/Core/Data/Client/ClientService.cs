@@ -203,11 +203,6 @@ namespace IdOps
             return result.Resource;
         }
 
-        public Task<IReadOnlyList<Client>> GetByAllowedScopesAsync(
-            IEnumerable<Guid> apiScopeIds,
-            CancellationToken cancellationToken) =>
-                _clientStore.GetByAllowedScopesAsync(apiScopeIds, cancellationToken);
-
         private static ICollection<ClientScope> BuildScopes(
             IReadOnlyList<Guid> apiScopes,
             IReadOnlyList<Guid> identityScopes)

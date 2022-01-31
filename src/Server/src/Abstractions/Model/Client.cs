@@ -5,7 +5,7 @@ using System.Security.Claims;
 
 namespace IdOps.Model
 {
-    public class Client : ITenantResource, IAllowedScopesResource
+    public class Client : ITenantResource
     {
         public Guid Id { get; set; }
 
