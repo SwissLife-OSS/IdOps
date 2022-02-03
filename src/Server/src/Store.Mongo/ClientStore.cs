@@ -49,7 +49,7 @@ namespace IdOps.Server.Storage.Mongo
             FilterDefinition<Client> filter =
                 Filter.ElemMatch(
                     field: c => c.AllowedScopes,
-                    filter: p => apiScopeId == p.Id);
+                    filter: p => p.Id == apiScopeId);
 
             return await Collection.Find(filter).ToListAsync(cancellationToken);
         }

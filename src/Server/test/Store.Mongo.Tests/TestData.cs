@@ -43,5 +43,47 @@ namespace IdOps.Server.Store.Mongo.Tests
                     ClientId = "Id4",
                 }
             };
+
+        public static List<ApiResource> GetApiResources() =>
+            new()
+            {
+                new()
+                {
+                    Id = Guid.Parse("00000000-0001-0000-0000-000000000000"),
+                    Name = "foo1",
+                    Tenant = "bar",
+                    Scopes = new List<Guid>
+                    {
+                        Guid.Parse("00000000-0001-0000-0000-000000000000"),
+                        Guid.Parse("00000000-0002-0000-0000-000000000000")
+                    }
+                },
+                new()
+                {
+                    Id = Guid.Parse("00000000-0002-0000-0000-000000000000"),
+                    Name = "foo2",
+                    Tenant = "bar",
+                    Scopes = new List<Guid>
+                    {
+                        Guid.Parse("00000000-0001-0000-0000-000000000000")
+                    }
+                },
+                new()
+                {
+                    Id = Guid.Parse("00000000-0003-0000-0000-000000000000"),
+                    Name = "foo3",
+                    Tenant = "bar",
+                    Scopes = new List<Guid>
+                    {
+                        Guid.Parse("00000000-0002-0000-0000-000000000000")
+                    }
+                },
+                new()
+                {
+                    Id = Guid.Parse("00000000-0004-0000-0000-000000000000"),
+                    Name = "foo4",
+                    Tenant = "bar",
+                }
+            };
     }
 }

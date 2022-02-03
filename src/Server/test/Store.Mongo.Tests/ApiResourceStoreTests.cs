@@ -10,28 +10,28 @@ using System.Collections.Generic;
 
 namespace IdOps.Server.Store.Mongo.Tests
 {
-    public class ClientStoreTests : IClassFixture<MongoResource>
+    public class ApiResourceStoreTests : IClassFixture<MongoResource>
     {
         private readonly MongoResource _mongoResource;
 
-        public ClientStoreTests(MongoResource mongoResource)
+        public ApiResourceStoreTests(MongoResource mongoResource)
         {
             _mongoResource = mongoResource;
         }
 
         [Fact]
-        public async Task GetByAllowedScopesTest_AssertResult()
+        public async Task GetByScopesTest_AssertResult()
         {
             // Arrange
             IIdOpsDbContext context = CreateDbContext();
 
-            await context.Clients.InsertManyAsync(TestData.GetTestClients());
+            await context.ApiResources.InsertManyAsync(TestData.GetApiResources());
 
-            var store = new ClientStore(context);
+            var store = new ApiResourceStore(context);
 
             // Act
-            IReadOnlyList<Model.Client> result =
-                await store.GetByAllowedScopesAsync(
+            IReadOnlyList<Model.ApiResource> result =
+                await store.GetByScopesAsync(
                     Guid.Parse("00000000-0001-0000-0000-000000000000"),
                     default);
 

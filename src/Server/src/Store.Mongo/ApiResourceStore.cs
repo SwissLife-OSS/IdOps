@@ -19,9 +19,7 @@ namespace IdOps.Server.Storage.Mongo
             CancellationToken cancellationToken)
         {
             FilterDefinition<ApiResource> filter =
-                Filter.ElemMatch(
-                    field: c => c.Scopes,
-                    filter: p => scope == p);
+                Filter.Where(p => p.Scopes.Contains(scope));
 
             return await Collection.Find(filter).ToListAsync(cancellationToken);
         }
