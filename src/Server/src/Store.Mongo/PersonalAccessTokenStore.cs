@@ -62,9 +62,7 @@ namespace IdOps.Server.Storage.Mongo
             CancellationToken cancellationToken)
         {
             FilterDefinition<PersonalAccessToken> filter =
-                Filter.ElemMatch(
-                    field: c => c.AllowedScopes,
-                    filter: p => scope == p);
+                Filter.Where(p => p.AllowedScopes.Contains(scope));
 
             return await Collection.Find(filter).ToListAsync(cancellationToken);
         }

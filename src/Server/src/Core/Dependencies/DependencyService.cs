@@ -70,13 +70,22 @@ namespace IdOps
             Guid id,
             CancellationToken cancellationToken)
         {
+            Task<IReadOnlyList<Client>> clientTask =
+                _clientStore.GetByAllowedScopesAsync(id, cancellationToken);
+
+            Task<IReadOnlyList<ApiResource>> apiResourceTask =
+                _apiResourceStore.GetByScopesAsync(id, cancellationToken);
+
+            Task<IReadOnlyList<PersonalAccessToken>> personalAccessTokenTask =
+                _personalAccessTokenStore.GetByAllowedScopesAsync(id, cancellationToken);
+
+            await Task.WhenAll(clientTask, apiResourceTask, personalAccessTokenTask);
+
             return new Dependency
             {
-                //TODO: Make parallel
-                Clients = await _clientStore.GetByAllowedScopesAsync(id, cancellationToken),
-                ApiResources = await _apiResourceStore.GetByScopesAsync(id, cancellationToken),
-                PersonalAccessTokens =
-                    await _personalAccessTokenStore.GetByAllowedScopesAsync(id, cancellationToken)
+                Clients = await clientTask,
+                ApiResources = await apiResourceTask,
+                PersonalAccessTokens = await personalAccessTokenTask
             };
         }
 

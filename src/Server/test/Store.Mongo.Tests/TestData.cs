@@ -85,5 +85,43 @@ namespace IdOps.Server.Store.Mongo.Tests
                     Tenant = "bar",
                 }
             };
+
+        public static List<PersonalAccessToken> GetPersonalAccessTokens() =>
+            new()
+            {
+                new()
+                {
+                    Id = Guid.Parse("00000000-0001-0000-0000-000000000000"),
+                    Tenant = "bar",
+                    AllowedScopes = new List<Guid>
+                    {
+                        Guid.Parse("00000000-0001-0000-0000-000000000000"),
+                        Guid.Parse("00000000-0002-0000-0000-000000000000")
+                    }
+                },
+                new()
+                {
+                    Id = Guid.Parse("00000000-0002-0000-0000-000000000000"),
+                    Tenant = "bar",
+                    AllowedScopes = new List<Guid>
+                    {
+                        Guid.Parse("00000000-0001-0000-0000-000000000000")
+                    }
+                },
+                new()
+                {
+                    Id = Guid.Parse("00000000-0003-0000-0000-000000000000"),
+                    Tenant = "bar",
+                    AllowedScopes = new List<Guid>
+                    {
+                        Guid.Parse("00000000-0002-0000-0000-000000000000")
+                    }
+                },
+                new()
+                {
+                    Id = Guid.Parse("00000000-0004-0000-0000-000000000000"),
+                    Tenant = "bar",
+                }
+            };
     }
 }
