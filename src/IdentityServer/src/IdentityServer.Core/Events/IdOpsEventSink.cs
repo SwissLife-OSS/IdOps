@@ -13,7 +13,9 @@ namespace IdOps.IdentityServer.Events
         private readonly ILogger<BusEventSink> _logger;
         private readonly IEnumerable<IIdOpsEventSink> _sinks;
 
-        public IdOpsEventSink(ILogger<BusEventSink> logger, IEnumerable<IIdOpsEventSink> sinks)
+        public IdOpsEventSink(
+            ILogger<IdOpsEventSink> logger, 
+            IEnumerable<IIdOpsEventSink> sinks)
         {
             _logger = logger;
             _sinks = sinks;
