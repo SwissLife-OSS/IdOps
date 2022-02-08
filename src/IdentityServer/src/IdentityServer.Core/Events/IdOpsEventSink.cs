@@ -10,7 +10,7 @@ namespace IdOps.IdentityServer.Events
 {
     public class IdOpsEventSink : IEventSink
     {
-        private readonly ILogger<BusEventSink> _logger;
+        private readonly ILogger<IdOpsEventSink> _logger;
         private readonly IEnumerable<IIdOpsEventSink> _sinks;
 
         public IdOpsEventSink(
