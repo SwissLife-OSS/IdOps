@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Duende.IdentityServer.Events;
 using IdOps.IdentityServer.Extensions;
@@ -13,7 +15,7 @@ namespace IdOps.IdentityServer.Events
 {
     public class BusEventSink : IIdOpsEventSink
     {
-        private readonly IBus _bus;
+        private readonly ChannelWriter<IdentityEventMessage> _channelWriter;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IdOpsOptions _idOpsOptions;
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
@@ -23,17 +25,17 @@ namespace IdOps.IdentityServer.Events
         };
 
         public BusEventSink(
-            IBus bus,
+            ChannelWriter<IdentityEventMessage> channelWriter,
             IHttpContextAccessor httpContextAccessor,
             IdOpsOptions idOpsOptions)
         {
-            _bus = bus;
+            _channelWriter = channelWriter;
             _httpContextAccessor = httpContextAccessor;
             _idOpsOptions = idOpsOptions;
             _jsonOptions.Converters.Add(new JsonStringEnumConverter());
         }
 
-        public async Task ProcessAsync(Event evt)
+        public async ValueTask ProcessAsync(Event evt, Activity? activity)
         {
             evt.RemoteIpAddress = _httpContextAccessor.HttpContext?.GetRemoteIpAddress();
 
@@ -46,7 +48,7 @@ namespace IdOps.IdentityServer.Events
                 Data = Encoding.UTF8.GetBytes(JsonSerializer.Serialize<object>(evt, _jsonOptions)),
             };
 
-            await _bus.Publish(entity);
+            await _channelWriter.WriteAsync(entity);
         }
     }
 }

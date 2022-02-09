@@ -7,16 +7,10 @@ namespace IdOps.IdentityServer.Samples
 {
     public class ActivityEnricherSink : IIdOpsEventSink
     {
-        public Task ProcessAsync(Event evt)
+        public ValueTask ProcessAsync(Event evt, Activity? activity)
         {
-            if (evt.EventType is EventTypes.Failure or EventTypes.Error)
+            if (evt.EventType is EventTypes.Failure or EventTypes.Error && activity is { })
             {
-                Activity? activity = Activity.Current;
-                if (activity is null)
-                {
-                    return Task.CompletedTask;
-                }
-
                 var tagsCollection = new ActivityTagsCollection
                 {
                     { "exception.category", evt.Category },
@@ -32,7 +26,7 @@ namespace IdOps.IdentityServer.Samples
                 activity.AddEvent(new ActivityEvent("exception", default, tagsCollection));
             }
 
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
     }
 }
