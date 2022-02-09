@@ -1,5 +1,6 @@
 using System;
 using IdOps.IdentityServer.AzureServiceBus;
+using IdOps.IdentityServer.Events;
 using IdOps.IdentityServer.RabbitMQ;
 using IdOps.IdentityServer.Samples.DataSeeding;
 using MassTransit;
@@ -54,6 +55,7 @@ namespace IdOps.IdentityServer.Samples
                     }
                 }).AddProfileService<SampleProfileService>();
 
+            services.AddSingleton<IIdOpsEventSink, ActivityEnricherSink>();
             services.AddMassTransitHostedService();
             services.ConfigureSameSiteCookies();
             services.AddSingleton<DataSeeder>();
