@@ -29,7 +29,6 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                         Builders<ApiResource>.IndexKeys.Ascending(c => c.Scopes),
                         new CreateIndexOptions { Unique = false });
 
-                    collection.Indexes.CreateOne(nameIndex);
                     collection.Indexes.CreateMany(new[] { nameIndex, scopesIndex });
                 });
         }
