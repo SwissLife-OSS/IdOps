@@ -64,7 +64,8 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.Services.AddResources();
             builder.Services.AddSingleton(builder.Options);
             builder.Services.AddSingleton<IResourceUpdateHandler, ResourceUpdateHandler>();
-            builder.Services.AddSingleton<IEventSink, BusEventSink>();
+            builder.Services.AddSingleton<IEventSink, IdOpsEventSink>();
+            builder.Services.AddSingleton<IIdOpsEventSink, BusEventSink>();
             builder.Services.AddTransient<IExtensionGrantValidator, PersonalAccessTokenGrantValidator>();
             builder.Services
                 .AddSingleton<IPersonalAccessTokenValidator, PersonalAccessTokenValidator>();
