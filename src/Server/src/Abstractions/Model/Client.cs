@@ -308,9 +308,6 @@ namespace IdOps.Model
         public ICollection<Guid> GetEnvironmentIds() => Environments;
 
         public ClientDependencies ClientDependencies { get; set; }
-
-        public IReadOnlyList<Guid> GetAllowedScopesIds() =>
-            AllowedScopes.Select(p => p.Id).ToList();
     }
 
     /// <summary>
