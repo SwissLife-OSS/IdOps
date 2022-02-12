@@ -19,6 +19,8 @@ namespace IdOps
         private readonly IIdentityResourceStore _identityResourceStore;
         private readonly IApiScopeStore _apiScopeStore;
         private readonly IApiResourceStore _apiResourceStore;
+        private readonly IClientStore _clientStore;
+        private readonly IPersonalAccessTokenStore _personalAccessTokenStore;
 
         public DependencyService(
             IClientService clientService,
@@ -27,7 +29,9 @@ namespace IdOps
             IUserContextAccessor userContextAccessor,
             IIdentityResourceStore identityResourceStore,
             IApiScopeStore apiScopeStore,
-            IApiResourceStore apiResourceStore)
+            IApiResourceStore apiResourceStore,
+            IClientStore clientStore,
+            IPersonalAccessTokenStore personalAccessTokenStore)
                 : base(userContextAccessor)
         {
             _clientService = clientService;
@@ -36,6 +40,8 @@ namespace IdOps
             _identityResourceStore = identityResourceStore;
             _apiScopeStore = apiScopeStore;
             _apiResourceStore = apiResourceStore;
+            _clientStore = clientStore;
+            _personalAccessTokenStore = personalAccessTokenStore;
         }
 
         public async Task<Dependency> GetAllDependenciesAsync(
@@ -54,8 +60,34 @@ namespace IdOps
                 nameof(ClientTemplate) =>
                     await GetAllClientTemplateDependencies(request.Id, cancellationToken),
 
+                nameof(ApiScope) =>
+                    await GetAllApiScopeDependencies(request.Id, cancellationToken),
+
                 _ => new Dependency()
             };
+
+        private async Task<Dependency> GetAllApiScopeDependencies(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            Task<IReadOnlyList<Client>> clientTask =
+                _clientStore.GetByAllowedScopesAsync(id, cancellationToken);
+
+            Task<IReadOnlyList<ApiResource>> apiResourceTask =
+                _apiResourceStore.GetByScopesAsync(id, cancellationToken);
+
+            Task<IReadOnlyList<PersonalAccessToken>> personalAccessTokenTask =
+                _personalAccessTokenStore.GetByAllowedScopesAsync(id, cancellationToken);
+
+            await Task.WhenAll(clientTask, apiResourceTask, personalAccessTokenTask);
+
+            return new Dependency
+            {
+                Clients = await clientTask,
+                ApiResources = await apiResourceTask,
+                PersonalAccessTokens = await personalAccessTokenTask
+            };
+        }
 
         public async Task<Dependency> GetAllClientDependencies(Guid id, CancellationToken cancellationToken)
         {
@@ -128,7 +160,7 @@ namespace IdOps
 
             if (apiScopes != null)
             {
-                apiScopeList = await _apiScopeStore.GetByIdsAsync( apiScopes, cancellationToken);
+                apiScopeList = await _apiScopeStore.GetByIdsAsync(apiScopes, cancellationToken);
             }
 
             IReadOnlyList<IdentityResource> identityResourceList = Array.Empty<IdentityResource>();

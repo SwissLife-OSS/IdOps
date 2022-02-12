@@ -4,5 +4,6 @@
     <AspNetCoreVersion>5.0.0</AspNetCoreVersion>
     <HotChocolateVersion>12.0.1</HotChocolateVersion>
     <IdentityServerVersion>5.1.1</IdentityServerVersion>
+    <SquadronVersion>0.13.0</SquadronVersion>
   </PropertyGroup>
 </Project>

@@ -12,5 +12,13 @@ query dependencies($input: GetDependenciesInput!) {
       title
       id
     }
+    clients {
+      title
+      id
+    }
+    personalAccessTokens {
+      title
+      id
+    }
   }
 }

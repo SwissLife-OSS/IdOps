@@ -3,7 +3,8 @@
     :title="title"
     :loading="loading"
     :resource="scope"
-    :tools="['PUBLISH', 'AUDIT', 'LOG']"
+    :tools="['DEPENDENCIES', 'PUBLISH', 'AUDIT', 'LOG']"
+    type="ApiScope"
     @Save="onSave"
   >
     <v-form ref="form" v-model="valid" lazy-validation>
@@ -13,8 +14,8 @@
             required
             label="Name"
             :rules="[
-              (v) => !!v || 'Required',
-              (v) => (v && v.length > 2) || 'Must be at least 3 characters',
+              v => !!v || 'Required',
+              v => (v && v.length > 2) || 'Must be at least 3 characters'
             ]"
             v-model="scope.name"
           ></v-text-field
@@ -40,8 +41,8 @@
             required
             v-model="scope.displayName"
             :rules="[
-              (v) => !!v || ' Required',
-              (v) => (v && v.length > 4) || 'Must be at least 5 characters',
+              v => !!v || ' Required',
+              v => (v && v.length > 4) || 'Must be at least 5 characters'
             ]"
           ></v-text-field
         ></v-col>
@@ -68,7 +69,7 @@ import ResourceEditCard from "./ResourceEditCard.vue";
 
 export default {
   components: {
-    ResourceEditCard,
+    ResourceEditCard
   },
   props: ["id"],
   created() {
@@ -77,10 +78,10 @@ export default {
   watch: {
     id: {
       immediate: true,
-      handler: function () {
+      handler: function() {
         this.setScope();
-      },
-    },
+      }
+    }
   },
   data() {
     return {
@@ -93,31 +94,31 @@ export default {
         description: null,
         showInDiscoveryDocument: false,
         enabled: true,
-        tenant: null,
-      },
+        tenant: null
+      }
     };
   },
   computed: {
-    isNew: function () {
+    isNew: function() {
       return !this.id;
     },
-    title: function () {
+    title: function() {
       if (this.id) {
         return this.scope.name;
       }
 
       return "API Scope";
     },
-    tenants: function () {
+    tenants: function() {
       return this.$store.state.system.tenant.items;
-    },
+    }
   },
   methods: {
     ...mapActions("idResource", ["saveApiScope"]),
-    setScope: function () {
+    setScope: function() {
       if (this.id) {
         const scope = this.$store.state.idResource.apiScope.items.find(
-          (x) => x.id === this.id
+          x => x.id === this.id
         );
         this.scope = Object.assign({}, scope);
         delete this.scope.__typename;
@@ -125,7 +126,7 @@ export default {
         this.resetForm();
       }
     },
-    resetForm: function () {
+    resetForm: function() {
       this.scope = {
         id: null,
         name: null,
@@ -133,7 +134,7 @@ export default {
         description: null,
         showInDiscoveryDocument: false,
         enabled: true,
-        tenant: null,
+        tenant: null
       };
       if (this.id) {
         this.$refs.form.resetValidation();
@@ -148,13 +149,12 @@ export default {
       if (scope && this.$route.name === "ApiScope_New") {
         this.$router.replace({
           name: "ApiScope_Edit",
-          params: { id: scope.id },
+          params: { id: scope.id }
         });
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>

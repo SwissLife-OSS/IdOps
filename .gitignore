@@ -343,3 +343,5 @@ src/Server/src/AspNet/UI
 /src/Server/test/GraphQL.Tests/__snapshots__/__mismatch__
 appsettings.user.json
 __mismatch__
+
+.tye/

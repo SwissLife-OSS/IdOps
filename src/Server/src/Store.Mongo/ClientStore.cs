@@ -41,5 +41,15 @@ namespace IdOps.Server.Storage.Mongo
 
             return Collection.ExecuteSearchAsync(filter, request, cancellationToken);
         }
+
+        public async Task<IReadOnlyList<Client>> GetByAllowedScopesAsync(
+            Guid apiScopeId,
+            CancellationToken cancellationToken)
+        {
+            FilterDefinition<Client> filter =
+                Filter.Where(p => p.AllowedScopes.Any(s => s.Id == apiScopeId));
+
+            return await Collection.Find(filter).ToListAsync(cancellationToken);
+        }
     }
 }

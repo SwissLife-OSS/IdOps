@@ -32,7 +32,12 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                              .Ascending(c => c.ClientId),
                          new CreateIndexOptions { Unique = true });
 
-                    collection.Indexes.CreateOne(clientIdIndex);
+                    var allowedScopesIdIndex =
+                        new CreateIndexModel<Client>(
+                            Builders<Client>.IndexKeys.Ascending(
+                                $"{nameof(Client.AllowedScopes)}.{nameof(ClientScope.Id)}"));
+
+                    collection.Indexes.CreateMany(new[] { clientIdIndex, allowedScopesIdIndex });
                 });
         }
     }
