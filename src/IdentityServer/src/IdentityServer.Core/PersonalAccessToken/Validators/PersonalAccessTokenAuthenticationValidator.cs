@@ -32,7 +32,7 @@ namespace IdOps.IdentityServer
             RuleFor(x => x.Definition.AllowedScopes)
                 .Custom((allowedScopes, context) =>
                 {
-                    IDictionary<string, object> contextData = context.ParentContext.RootContextData;
+                    IDictionary<string, object> contextData = context.RootContextData;
 
                     if (contextData.TryGetValue("scopes", out var rawScopes) &&
                         rawScopes is IEnumerable<string> scopes)
@@ -54,7 +54,7 @@ namespace IdOps.IdentityServer
             RuleFor(x => x.Definition.AllowedClients)
                 .Custom((allowedClients, context) =>
                 {
-                    IDictionary<string, object> contextData = context.ParentContext.RootContextData;
+                    IDictionary<string, object> contextData = context.RootContextData;
 
                     if (contextData.TryGetValue("client", out var rawClient) &&
                         rawClient is string client &&

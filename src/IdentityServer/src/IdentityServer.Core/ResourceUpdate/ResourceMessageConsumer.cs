@@ -28,7 +28,8 @@ namespace IdOps.IdentityServer.ResourceUpdate
             CancellationToken cancellationToken)
         {
             await using var stream = new MemoryStream(data);
-            T? res = await JsonSerializer.DeserializeAsync<T>(stream, default, cancellationToken);
+            JsonSerializerOptions options = new();
+            T? res = await JsonSerializer.DeserializeAsync<T>(stream, options, cancellationToken);
 
             if (res == null)
             {

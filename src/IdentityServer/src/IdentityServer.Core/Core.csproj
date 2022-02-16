@@ -16,7 +16,7 @@
     <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
     <PackageReference Include="Duende.IdentityServer" Version="$(IdentityServerVersion)" />
     <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="$(MassTransitVersion)" />
-    <PackageReference Include="FluentValidation" Version="9.2.0" />
+    <PackageReference Include="FluentValidation" Version="10.3.6" />
     <ProjectReference Include="..\Hashing\Hashing.csproj" />
   </ItemGroup>
 
