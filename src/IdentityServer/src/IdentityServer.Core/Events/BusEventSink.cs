@@ -1,28 +1,23 @@
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Duende.IdentityServer.Events;
-using Duende.IdentityServer.Services;
-using IdentityModel.Client;
 using IdOps.IdentityServer.Extensions;
 using IdOps.Messages;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 namespace IdOps.IdentityServer.Events
 {
-    public class BusEventSink : IEventSink
+    public class BusEventSink : IIdOpsEventSink
     {
-        private readonly IBus _bus;
+        private readonly ChannelWriter<IdentityEventMessage> _channelWriter;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IdOpsOptions _idOpsOptions;
-        private readonly ILogger<BusEventSink> _logger;
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             IgnoreNullValues = true,
@@ -30,33 +25,17 @@ namespace IdOps.IdentityServer.Events
         };
 
         public BusEventSink(
-            IBus bus,
+            ChannelWriter<IdentityEventMessage> channelWriter,
             IHttpContextAccessor httpContextAccessor,
-            IdOpsOptions idOpsOptions,
-            ILogger<BusEventSink> logger)
+            IdOpsOptions idOpsOptions)
         {
-            _bus = bus;
+            _channelWriter = channelWriter;
             _httpContextAccessor = httpContextAccessor;
             _idOpsOptions = idOpsOptions;
-            _logger = logger;
             _jsonOptions.Converters.Add(new JsonStringEnumConverter());
         }
 
-        public Task PersistAsync(Event evt)
-        {
-            try
-            {
-                Task.Run(() => SendEventAsync(evt)).Forget();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while sending event");
-            }
-
-            return Task.CompletedTask;
-        }
-
-        private async Task SendEventAsync(Event evt)
+        public async ValueTask ProcessAsync(Event evt, Activity? activity)
         {
             evt.RemoteIpAddress = _httpContextAccessor.HttpContext?.GetRemoteIpAddress();
 
@@ -69,7 +48,7 @@ namespace IdOps.IdentityServer.Events
                 Data = Encoding.UTF8.GetBytes(JsonSerializer.Serialize<object>(evt, _jsonOptions)),
             };
 
-            await _bus.Publish(entity);
+            await _channelWriter.WriteAsync(entity);
         }
     }
 }

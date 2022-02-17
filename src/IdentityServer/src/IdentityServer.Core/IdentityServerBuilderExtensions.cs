@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Channels;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Validation;
 using IdOps.IdentityServer;
@@ -8,6 +9,7 @@ using IdOps.IdentityServer.Hashing;
 using IdOps.IdentityServer.ResourceUpdate;
 using IdOps.IdentityServer.Services;
 using IdOps.IdentityServer.Storage;
+using IdOps.Messages;
 using MassTransit;
 using MassTransit.ExtensionsDependencyInjectionIntegration;
 using Microsoft.Extensions.Configuration;
@@ -61,10 +63,22 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             configure?.Invoke(builder);
 
+            var channel = Channel
+                .CreateUnbounded<IdentityEventMessage>(new UnboundedChannelOptions
+                {
+                    SingleWriter = true,
+                    SingleReader = true,
+                    AllowSynchronousContinuations = false
+                });
+
+            builder.Services.AddSingleton(channel.Reader);
+            builder.Services.AddSingleton(channel.Writer);
+            builder.Services.AddHostedService<BusEventSender>();
             builder.Services.AddResources();
             builder.Services.AddSingleton(builder.Options);
             builder.Services.AddSingleton<IResourceUpdateHandler, ResourceUpdateHandler>();
-            builder.Services.AddSingleton<IEventSink, BusEventSink>();
+            builder.Services.AddSingleton<IEventSink, IdOpsEventSink>();
+            builder.Services.AddSingleton<IIdOpsEventSink, BusEventSink>();
             builder.Services.AddTransient<IExtensionGrantValidator, PersonalAccessTokenGrantValidator>();
             builder.Services
                 .AddSingleton<IPersonalAccessTokenValidator, PersonalAccessTokenValidator>();
