@@ -78,7 +78,7 @@ export default {
       if (this.searchText) {
         const regex = new RegExp(`.*${this.searchText}.*`, "i");
         personalAccessTokens = personalAccessTokens.filter(
-          x => regex.test(x.name) || regex.test(x.personalAccessTokenId)
+          x => regex.test(x.userName) || regex.test(x.id)
         );
       }
 
