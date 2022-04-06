@@ -20,6 +20,7 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                 })
                 .WithCollectionSettings(s => s.ReadConcern = ReadConcern.Majority)
                 .WithCollectionSettings(s => s.ReadPreference = ReadPreference.Nearest)
+                .WithCollectionSettings(s => s.WriteConcern = WriteConcern.W1.With(journal: false))
                 .WithCollectionConfiguration(collection =>
                 {
                     var searchIndex = new CreateIndexModel<IdentityServerEvent>(
@@ -28,7 +29,10 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                              .Ascending(c => c.ClientId)
                              .Ascending(c => c.EventType)
                              .Descending(c => c.TimeStamp),
-                         new CreateIndexOptions { Unique = false });
+                         new CreateIndexOptions
+                         {
+                             Unique = false
+                         });
 
                     collection.Indexes.CreateOne(searchIndex);
 
@@ -36,8 +40,9 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                          Builders<IdentityServerEvent>.IndexKeys.Ascending(c => c.TimeStamp),
                          new CreateIndexOptions
                          {
+                             Name = "timestamp_asc_ttl60d",
                              Unique = false,
-                             ExpireAfter = TimeSpan.FromDays(90)
+                             ExpireAfter = TimeSpan.FromDays(60)
                          });
 
                     collection.Indexes.CreateOne(ttlIndex);
