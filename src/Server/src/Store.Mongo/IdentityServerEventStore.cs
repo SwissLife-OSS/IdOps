@@ -29,8 +29,13 @@ namespace IdOps.Server.Storage.Mongo
             IEnumerable<IdentityServerEvent> events,
             CancellationToken cancellationToken)
         {
+            InsertManyOptions insertManyOptions = new InsertManyOptions
+            {
+                IsOrdered = false
+            };
+
             await Collection
-                .InsertManyAsync(events, options: null, cancellationToken);
+                .InsertManyAsync(events, insertManyOptions, cancellationToken);
         }
 
         public async Task<SearchResult<IdentityServerEvent>> SearchAsync(
