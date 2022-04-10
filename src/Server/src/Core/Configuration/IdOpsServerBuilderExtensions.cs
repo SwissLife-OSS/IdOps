@@ -5,7 +5,6 @@ using IdOps.Consumers;
 using IdOps.IdentityServer.Hashing;
 using IdOps.Model;
 using MassTransit;
-using MassTransit.ExtensionsDependencyInjectionIntegration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -94,7 +93,7 @@ namespace IdOps
             services.RegisterHashAlgorithms();
         }
 
-        private static void AddConsumers(this IServiceCollectionBusConfigurator busConfigurator)
+        private static void AddConsumers(this IBusRegistrationConfigurator busConfigurator)
         {
             busConfigurator.AddConsumer<ResourcePublishedSuccessConsumer>();
             busConfigurator.AddConsumer<UiConsoleConsumer>();
@@ -102,8 +101,8 @@ namespace IdOps
             busConfigurator.AddConsumer<IdentityServerEventBatchConsumer>();
         }
 
-        private static IServiceCollectionBusConfigurator UseRabbitMq(
-            this IServiceCollectionBusConfigurator s,
+        private static IBusRegistrationConfigurator UseRabbitMq(
+            this IBusRegistrationConfigurator s,
             MessagingOptions options)
         {
             s.UsingRabbitMq((provider, cfg) =>
@@ -149,8 +148,8 @@ namespace IdOps
                 });
         }
 
-        private static IServiceCollectionBusConfigurator UseAzureServiceBus(
-            this IServiceCollectionBusConfigurator s,
+        private static IBusRegistrationConfigurator UseAzureServiceBus(
+            this IBusRegistrationConfigurator s,
             MessagingOptions options)
         {
             s.UsingAzureServiceBus((provider, cfg) =>
@@ -162,8 +161,8 @@ namespace IdOps
             return s;
         }
 
-        private static IServiceCollectionBusConfigurator UseInMemory(
-            this IServiceCollectionBusConfigurator s,
+        private static IBusRegistrationConfigurator UseInMemory(
+            this IBusRegistrationConfigurator s,
             MessagingOptions options)
         {
             s.UsingInMemory((provider, cfg) =>
