@@ -12,7 +12,6 @@ using IdOps.IdentityServer.Storage;
 using IdOps.Messages;
 using MassTransit;
 using MassTransit.ExtensionsDependencyInjectionIntegration;
-using MassTransit.MultiBus;
 using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -106,7 +105,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IIdOpsIdentityServerBuilder UseInMemory(this BusBuilder builder)
         {
-            builder.IdOpsBuilder.Services.AddMassTransit<IIdOpsBus>(s =>
+            builder.IdOpsBuilder.Services.AddMassTransit(s =>
             {
                 builder.BusSetup?.Invoke(s);
 

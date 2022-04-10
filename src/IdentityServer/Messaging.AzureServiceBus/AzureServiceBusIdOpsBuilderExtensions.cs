@@ -1,6 +1,5 @@
 using System;
 using MassTransit;
-using MassTransit.MultiBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,7 +28,7 @@ namespace IdOps.IdentityServer.AzureServiceBus
             this BusBuilder builder,
             AzureServiceBusOptions options)
         {
-            builder.IdOpsBuilder.Services.AddMassTransit<IIdOpsBus>(s =>
+            builder.IdOpsBuilder.Services.AddMassTransit(s =>
             {
                 builder.BusSetup?.Invoke(s);
 

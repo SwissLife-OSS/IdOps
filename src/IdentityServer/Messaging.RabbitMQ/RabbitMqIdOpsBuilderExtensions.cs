@@ -1,6 +1,5 @@
 using System;
 using MassTransit;
-using MassTransit.MultiBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,7 +11,7 @@ namespace IdOps.IdentityServer.RabbitMQ
             this BusBuilder builder,
             RabbitMqOptions options)
         {
-            builder.IdOpsBuilder.Services.AddMassTransit<IIdOpsBus>(s =>
+            builder.IdOpsBuilder.Services.AddMassTransit(s =>
             {
                 builder.BusSetup?.Invoke(s);
 
