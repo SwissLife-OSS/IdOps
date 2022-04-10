@@ -106,9 +106,8 @@ namespace IdOps
             this IServiceCollectionBusConfigurator s,
             MessagingOptions options)
         {
-            s.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+            s.UsingRabbitMq((provider, cfg) =>
             {
-                cfg.UseHealthCheck(provider);
                 cfg.Host(options.Host,
                     c =>
                     {
@@ -127,7 +126,7 @@ namespace IdOps
                             b.TimeLimit = TimeSpan.FromSeconds(5);
                         });
                     });
-            }));
+            });
 
             return s;
         }
@@ -154,12 +153,11 @@ namespace IdOps
             this IServiceCollectionBusConfigurator s,
             MessagingOptions options)
         {
-            s.AddBus(provider => Bus.Factory.CreateUsingAzureServiceBus(cfg =>
+            s.UsingAzureServiceBus((provider, cfg) =>
             {
-                cfg.UseHealthCheck(provider);
                 cfg.Host(options.Host);
                 cfg.ConfigureEndpoint(provider, options);
-            }));
+            });
 
             return s;
         }
@@ -168,10 +166,10 @@ namespace IdOps
             this IServiceCollectionBusConfigurator s,
             MessagingOptions options)
         {
-            s.AddBus(provider => Bus.Factory.CreateUsingInMemory(cfg =>
+            s.UsingInMemory((provider, cfg) =>
             {
                 cfg.ConfigureEndpoint(provider, options);
-            }));
+            });
 
             return s;
         }

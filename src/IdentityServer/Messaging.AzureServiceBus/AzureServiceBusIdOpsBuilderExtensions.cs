@@ -1,5 +1,6 @@
 using System;
 using MassTransit;
+using MassTransit.MultiBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,13 +29,12 @@ namespace IdOps.IdentityServer.AzureServiceBus
             this BusBuilder builder,
             AzureServiceBusOptions options)
         {
-            builder.IdOpsBuilder.Services.AddMassTransit(s =>
+            builder.IdOpsBuilder.Services.AddMassTransit<IIdOpsBus>(s =>
             {
                 builder.BusSetup?.Invoke(s);
 
-                s.AddBus(provider => Bus.Factory.CreateUsingAzureServiceBus(cfg =>
+                s.UsingAzureServiceBus((provider, cfg) =>
                 {
-                    cfg.UseHealthCheck(provider);
                     cfg.Host(options.ConnectionString);
                     cfg.ReceiveEndpoint($"id-" +
                         $"{builder.IdOpsBuilder.Options!.ServerGroup.ToLower()}-" +
@@ -44,7 +44,7 @@ namespace IdOps.IdentityServer.AzureServiceBus
                             e.ConfigureConsumers(provider);
                             e.PrefetchCount = options.PrefetchCount;
                         });
-                }));
+                });
             });
 
             return builder.IdOpsBuilder;

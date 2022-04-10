@@ -34,7 +34,7 @@ namespace IdOps.Api
             services.AddMemoryCache();
             services.AddAuthentication(HostEnvironment, builder.Configuration);
             services.AddAuthorization(builder.Configuration);
-            services.AddMassTransitHostedService();
+            services.AddMassTransitHostedService(true);
             services.AddSignalR();
             services.AddControllers();
             services.AddHttpContextAccessor();

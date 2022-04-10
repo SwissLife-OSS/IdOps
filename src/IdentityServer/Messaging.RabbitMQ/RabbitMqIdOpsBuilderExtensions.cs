@@ -1,7 +1,6 @@
 using System;
-using IdOps.IdentityServer;
-using IdOps.IdentityServer.RabbitMQ;
 using MassTransit;
+using MassTransit.MultiBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,13 +12,12 @@ namespace IdOps.IdentityServer.RabbitMQ
             this BusBuilder builder,
             RabbitMqOptions options)
         {
-            builder.IdOpsBuilder.Services.AddMassTransit(s =>
+            builder.IdOpsBuilder.Services.AddMassTransit<IIdOpsBus>(s =>
             {
                 builder.BusSetup?.Invoke(s);
 
-                s.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                s.UsingRabbitMq((provider, cfg) =>
                 {
-                    cfg.UseHealthCheck(provider);
                     cfg.Host(options.Host, c =>
                     {
                         c.Username(options.Username);
@@ -34,7 +32,7 @@ namespace IdOps.IdentityServer.RabbitMQ
                             e.ConfigureConsumers(provider);
                             e.PrefetchCount = 10;
                         });
-                }));
+                });
             });
 
             return builder.IdOpsBuilder;

@@ -56,7 +56,7 @@ namespace IdOps.IdentityServer.Samples
                 }).AddProfileService<SampleProfileService>();
 
             services.AddSingleton<IIdOpsEventSink, ActivityEnricherSink>();
-            services.AddMassTransitHostedService();
+            services.AddMassTransitHostedService(true);
             services.ConfigureSameSiteCookies();
             services.AddSingleton<DataSeeder>();
             services.AddControllersWithViews()
