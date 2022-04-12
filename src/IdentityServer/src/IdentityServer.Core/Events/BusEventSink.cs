@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Duende.IdentityServer.Events;
 using IdOps.IdentityServer.Extensions;
 using IdOps.Messages;
-using MassTransit;
 using Microsoft.AspNetCore.Http;
 
 namespace IdOps.IdentityServer.Events

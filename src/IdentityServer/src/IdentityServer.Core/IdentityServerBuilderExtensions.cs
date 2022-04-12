@@ -11,7 +11,6 @@ using IdOps.IdentityServer.Services;
 using IdOps.IdentityServer.Storage;
 using IdOps.Messages;
 using MassTransit;
-using MassTransit.ExtensionsDependencyInjectionIntegration;
 using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -26,7 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
     public record BusBuilder(
         IIdOpsIdentityServerBuilder IdOpsBuilder,
-        Action<IServiceCollectionBusConfigurator>? BusSetup);
+        Action<IBusRegistrationConfigurator>? BusSetup);
 
     public static class IdentityServerBuilderExtensions
     {
@@ -109,14 +108,14 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 builder.BusSetup?.Invoke(s);
 
-                s.AddBus(provider => Bus.Factory.CreateUsingInMemory(cfg =>
+                s.UsingInMemory((provider, cfg) =>
                 {
                     cfg.ReceiveEndpoint(
                         $"id-{builder.IdOpsBuilder.Options!.EnvironmentName.ToLower()}", e =>
                     {
                         e.ConfigureConsumers(provider);
                     });
-                }));
+                });
             });
 
             return builder.IdOpsBuilder;
