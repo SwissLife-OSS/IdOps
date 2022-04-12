@@ -14,168 +14,170 @@ using Microsoft.Extensions.Logging;
 using OpenTelemetry.Trace;
 using static Duende.IdentityServer.IdentityServerConstants.ProfileDataCallers;
 
-namespace IdOps.IdentityServer.DataConnector;
-
-public class UserDataConnectorService : IUserDataConnectorService
+namespace IdOps.IdentityServer.DataConnector
 {
-    private readonly ILogger<UserDataConnectorService> _logger;
-    private readonly IEnumerable<IUserDataConnector> _connectors;
-    private readonly IUserDataConnectorDataRepository _repository;
-    private readonly IEventService _eventService;
-    private static readonly Dictionary<string, ConnectorProfileType> ProfileTypeMap
-        = new Dictionary<string, ConnectorProfileType>
-        {
-            [UserInfoEndpoint] = ConnectorProfileType.UserInfo,
-            [ClaimsProviderAccessToken] = ConnectorProfileType.AccessToken,
-            [ClaimsProviderIdentityToken] = ConnectorProfileType.IdentityToken,
-        };
-
-    public UserDataConnectorService(
-        ILogger<UserDataConnectorService> logger,
-        IEnumerable<IUserDataConnector> connectors,
-        IUserDataConnectorDataRepository repository,
-        IEventService eventService)
+    public class UserDataConnectorService : IUserDataConnectorService
     {
-        _logger = logger;
-        _connectors = connectors;
-        _repository = repository;
-        _eventService = eventService;
-    }
+        private readonly ILogger<UserDataConnectorService> _logger;
+        private readonly IEnumerable<IUserDataConnector> _connectors;
+        private readonly IUserDataConnectorDataRepository _repository;
+        private readonly IEventService _eventService;
 
-    public async Task<IEnumerable<Claim>> GetClaimsAsync(
-        UserDataConnectorCallerContext context,
-        IEnumerable<Claim> input,
-        CancellationToken cancellationToken)
-    {
-        var newClaims = new List<Claim>();
-        context.Subject = input.FirstOrDefaultValue(JwtClaimTypes.Subject);
-
-        if (context?.Client?.DataConnectors != null)
-        {
-            foreach (DataConnectorOptions? options in context.Client.DataConnectors)
+        private static readonly Dictionary<string, ConnectorProfileType> ProfileTypeMap
+            = new Dictionary<string, ConnectorProfileType>
             {
-                using Activity? activity = IdOpsActivity.StartDataConnector(options);
+                [UserInfoEndpoint] = ConnectorProfileType.UserInfo,
+                [ClaimsProviderAccessToken] = ConnectorProfileType.AccessToken,
+                [ClaimsProviderIdentityToken] = ConnectorProfileType.IdentityToken,
+            };
 
+        public UserDataConnectorService(
+            ILogger<UserDataConnectorService> logger,
+            IEnumerable<IUserDataConnector> connectors,
+            IUserDataConnectorDataRepository repository,
+            IEventService eventService)
+        {
+            _logger = logger;
+            _connectors = connectors;
+            _repository = repository;
+            _eventService = eventService;
+        }
+
+        public async Task<IEnumerable<Claim>> GetClaimsAsync(
+            UserDataConnectorCallerContext context,
+            IEnumerable<Claim> input,
+            CancellationToken cancellationToken)
+        {
+            var newClaims = new List<Claim>();
+            context.Subject = input.FirstOrDefaultValue(JwtClaimTypes.Subject);
+
+            if (context?.Client?.DataConnectors != null)
+            {
+                foreach (DataConnectorOptions? options in context.Client.DataConnectors)
+                {
+                    using Activity? activity = IdOpsActivity.StartDataConnector(options);
+
+                    try
+                    {
+                        if (!ShouldExecute(options, context.Name))
+                        {
+                            continue;
+                        }
+
+                        IEnumerable<Claim>? claims = await LoadDataAsync(
+                            context,
+                            input.Concat(newClaims),
+                            options,
+                            activity,
+                            cancellationToken);
+
+                        await _eventService.RaiseAsync(new UserDataConnectorSuccessEvent(
+                            context.Client.ClientId,
+                            context.Subject,
+                            options.Name,
+                            context.Name,
+                            claims.Count()));
+
+                        newClaims.AddRange(claims);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.DataConnectorClaimsFailed(options.Name);
+                        activity?.RecordException(ex);
+
+                        await _eventService.RaiseAsync(new UserDataConnectorFailedEvent(
+                            context.Client.ClientId,
+                            context.Subject,
+                            options.Name,
+                            context.Name,
+                            ex));
+                    }
+                }
+            }
+
+            return newClaims;
+        }
+
+        private async Task<IEnumerable<Claim>> LoadDataAsync(
+            UserDataConnectorCallerContext context,
+            IEnumerable<Claim> input,
+            DataConnectorOptions options,
+            Activity? activity,
+            CancellationToken cancellationToken)
+        {
+            IUserDataConnector? connector = _connectors
+                .Single(x => x.Name == options.Name);
+
+            var timeOutToken = new CancellationTokenSource(Debugger.IsAttached ? 300000 : 5000);
+
+            CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(
+                cancellationToken,
+                timeOutToken.Token);
+
+            UserDataConnectorResult result = await connector
+                .GetClaimsAsync(context, options, input, cts.Token);
+
+            IEnumerable<Claim> claims = result.Claims;
+
+            activity?.EnrichDataConnectorResult(result);
+
+            if (result.Success && result.Executed && result.CacheKey != null)
+            {
                 try
                 {
-                    if (!ShouldExecute(options, context.Name))
-                    {
-                        continue;
-                    }
-
-                    IEnumerable<Claim>? claims = await LoadDataAsync(
-                        context,
-                        input.Concat(newClaims),
-                        options,
-                        activity,
-                        cancellationToken);
-
-                    await _eventService.RaiseAsync(new UserDataConnectorSuccessEvent(
-                        context.Client.ClientId,
-                        context.Subject,
-                        options.Name,
-                        context.Name,
-                        claims.Count()));
-
-                    newClaims.AddRange(claims);
+                    await SaveDataAsync(options, result, context.Subject, cancellationToken);
                 }
                 catch (Exception ex)
                 {
-                    _logger.DataConnectorClaimsFailed(options.Name);
+                    _logger.DataConnectorSaveDataFailed(connector.Name);
                     activity?.RecordException(ex);
-
-                    await _eventService.RaiseAsync(new UserDataConnectorFailedEvent(
-                        context.Client.ClientId,
-                        context.Subject,
-                        options.Name,
-                        context.Name,
-                        ex));
                 }
             }
+            else if (!result.Success && result.CacheKey != null)
+            {
+                UserDataConnectorData? storedData = await _repository.GetAsync(
+                    result.CacheKey,
+                    connector.Name,
+                    cancellationToken);
+
+                if (storedData != null)
+                {
+                    claims = storedData.Claims.Select(x => new Claim(x.Type, x.Value));
+                }
+                else
+                {
+                    throw result.Error;
+                }
+            }
+
+            return claims;
         }
 
-        return newClaims;
-    }
-
-    private async Task<IEnumerable<Claim>> LoadDataAsync(
-        UserDataConnectorCallerContext context,
-        IEnumerable<Claim> input,
-        DataConnectorOptions options,
-        Activity? activity,
-        CancellationToken cancellationToken)
-    {
-        IUserDataConnector? connector = _connectors
-            .Single(x => x.Name == options.Name);
-
-        var timeOutToken = new CancellationTokenSource(Debugger.IsAttached ? 300000 : 5000);
-
-        CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(
-            cancellationToken,
-            timeOutToken.Token);
-
-        UserDataConnectorResult result = await connector
-            .GetClaimsAsync(context, options, input, cts.Token);
-
-        IEnumerable<Claim> claims = result.Claims;
-
-        activity?.EnrichDataConnectorResult(result);
-
-        if (result.Success && result.Executed && result.CacheKey != null)
+        private async Task SaveDataAsync(
+            DataConnectorOptions options,
+            UserDataConnectorResult result,
+            string subject,
+            CancellationToken cancellationToken)
         {
-            try
+            await _repository.SaveAsync(new UserDataConnectorData
             {
-                await SaveDataAsync(options, result, context.Subject, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                _logger.DataConnectorSaveDataFailed(connector.Name);
-                activity?.RecordException(ex);
-            }
-        }
-        else if (!result.Success && result.CacheKey != null)
-        {
-            UserDataConnectorData? storedData = await _repository.GetAsync(
-                result.CacheKey,
-                connector.Name,
-                cancellationToken);
-
-            if (storedData != null)
-            {
-                claims = storedData.Claims.Select(x => new Claim(x.Type, x.Value));
-            }
-            else
-            {
-                throw result.Error;
-            }
+                Claims = result.Claims.Select(x => new ClaimData
+                {
+                    Type = x.Type,
+                    Value = x.Value
+                }),
+                Key = result.CacheKey!,
+                SubjectId = subject,
+                Connector = options.Name,
+                LastModifiedAt = DateTime.UtcNow
+            }, cancellationToken);
         }
 
-        return claims;
-    }
-
-    private async Task SaveDataAsync(
-        DataConnectorOptions options,
-        UserDataConnectorResult result,
-        string subject,
-        CancellationToken cancellationToken)
-    {
-        await _repository.SaveAsync(new UserDataConnectorData
+        private bool ShouldExecute(DataConnectorOptions options, string caller)
         {
-            Claims = result.Claims.Select(x => new ClaimData
-            {
-                Type = x.Type,
-                Value = x.Value
-            }),
-            Key = result.CacheKey!,
-            SubjectId = subject,
-            Connector = options.Name,
-            LastModifiedAt = DateTime.UtcNow
-        }, cancellationToken);
-    }
-
-    private bool ShouldExecute(DataConnectorOptions options, string caller)
-    {
-        return options.Enabled &&
-               options.ProfileTypeFilter != null &&
-               options.ProfileTypeFilter.Contains(ProfileTypeMap[caller]);
+            return options.Enabled &&
+                   options.ProfileTypeFilter != null &&
+                   options.ProfileTypeFilter.Contains(ProfileTypeMap[caller]);
+        }
     }
 }
