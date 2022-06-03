@@ -16,7 +16,7 @@ namespace IdOps.Server.Storage.Mongo
         public IdOpsDbContext(
             MongoOptions mongoOptions,
             Action<IMongoDatabaseBuilder>? configureMongoDatabaseBuilder)
-            : base(mongoOptions)
+            : base(mongoOptions, false)
         {
             _configureMongoDatabaseBuilder = configureMongoDatabaseBuilder;
         }

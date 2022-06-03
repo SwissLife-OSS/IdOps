@@ -17,8 +17,13 @@ namespace IdOps
             MongoOptions options = builder.Configuration.GetSection("Storage:Database")
                 .Get<MongoOptions>();
 
-            builder.Services.AddSingleton<IIdOpsDbContext>(
-                new IdOpsDbContext(options, configureMongoDatabaseBuilder));
+            builder.Services.AddSingleton<IIdOpsDbContext>(_ =>
+            {
+                var context = new IdOpsDbContext(options, configureMongoDatabaseBuilder);
+                context.Initialize();
+
+                return context;
+            });
 
             builder.Services.AddStores();
 
