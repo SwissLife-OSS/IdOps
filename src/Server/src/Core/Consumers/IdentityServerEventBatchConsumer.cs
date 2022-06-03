@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using IdOps.Messages;
 using IdOps.Model;
@@ -22,18 +23,14 @@ namespace IdOps.Consumers
 
         public async Task Consume(ConsumeContext<Batch<IdentityEventMessage>> context)
         {
-            var events = new List<IdentityServerEvent>();
+            Activity.Current?.AddTag("messaging.masstransit.batch_count", context.Message.Length);
 
-            foreach (ConsumeContext<IdentityEventMessage>? message in context.Message)
-            {
-                IdentityServerEvent? ev = _mapper.CreateEvent(message.Message);
-                if (ev is { })
-                {
-                    events.Add(ev);
-                }
-            }
+            IdentityServerEvent?[] events = context.Message
+                .AsParallel()
+                .Select(m => _mapper.CreateEvent(m.Message))
+                .ToArray();
 
-            if (events.Count > 0)
+            if (events.Length > 0)
             {
                 await _eventStore.CreateManyAsync(events, context.CancellationToken);
             }

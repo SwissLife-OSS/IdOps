@@ -98,7 +98,6 @@ namespace IdOps
             busConfigurator.AddConsumer<ResourcePublishedSuccessConsumer>();
             busConfigurator.AddConsumer<UiConsoleConsumer>();
             busConfigurator.AddConsumer<IdentityServerEventBatchConsumer>();
-            busConfigurator.AddConsumer<IdentityServerEventBatchConsumer>();
         }
 
         private static IBusRegistrationConfigurator UseRabbitMq(
@@ -114,17 +113,7 @@ namespace IdOps
                         c.Password(options.Password);
                     });
 
-                cfg.ReceiveEndpoint("ops",
-                    e =>
-                    {
-                        e.ConfigureConsumers(provider);
-                        e.PrefetchCount = 2;
-                        e.Batch<IdentityServerEvent>(b =>
-                        {
-                            b.MessageLimit = 2;
-                            b.TimeLimit = TimeSpan.FromSeconds(5);
-                        });
-                    });
+                cfg.ConfigureEndpoint(provider, options);
             });
 
             return s;
@@ -139,10 +128,10 @@ namespace IdOps
                 e =>
                 {
                     e.ConfigureConsumers(provider);
-                    //e.PrefetchCount = 2;
+                    e.PrefetchCount = 100;
                     e.Batch<IdentityServerEvent>(b =>
                     {
-                        b.MessageLimit = 2;
+                        b.MessageLimit = 50;
                         b.TimeLimit = TimeSpan.FromSeconds(5);
                     });
                 });
