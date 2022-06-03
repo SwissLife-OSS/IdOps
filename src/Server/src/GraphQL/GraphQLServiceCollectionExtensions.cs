@@ -1,3 +1,4 @@
+using System;
 using HotChocolate.Execution.Configuration;
 using HotChocolate.Types;
 using IdOps.Authorization;
@@ -12,12 +13,16 @@ namespace IdOps.GraphQL
 {
     public static class GrapQLServiceCollectionExtensions
     {
-        public static IIdOpsServerBuilder AddGraphQLServer(this IIdOpsServerBuilder builder)
+        public static IIdOpsServerBuilder AddGraphQLServer(
+            this IIdOpsServerBuilder builder,
+            Action<IRequestExecutorBuilder>? configureRequestExecutorBuilder = default)
         {
-            builder
+            IRequestExecutorBuilder requestExecutorBuilder = builder
                 .Services
                 .AddGraphQLServer()
                 .AddGraphQLTypes();
+
+            configureRequestExecutorBuilder?.Invoke(requestExecutorBuilder);
 
             builder
                 .Services
