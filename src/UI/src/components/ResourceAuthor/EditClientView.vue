@@ -718,7 +718,7 @@ export default {
       });
     },
     onRemoveProperty: function (index) {
-      this.properties.splice(index, 1);
+      this.client.properties.splice(index, 1);
     },
 
     onAddNewClaim: function () {
