@@ -28,6 +28,7 @@ namespace IdOps.Consumers
             IdentityServerEvent?[] events = context.Message
                 .AsParallel()
                 .Select(m => _mapper.CreateEvent(m.Message))
+                .Where(m => m is not null)
                 .ToArray();
 
             if (events.Length > 0)
