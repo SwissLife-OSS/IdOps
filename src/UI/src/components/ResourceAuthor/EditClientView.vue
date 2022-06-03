@@ -422,6 +422,7 @@
                   dense
                   label="Name"
                   v-model="prop.key"
+                  :rules="[(v) => !!v || 'Required']"
                 ></v-text-field
               ></v-col>
               <v-col md="7"
@@ -429,6 +430,7 @@
                   dense
                   label="Value"
                   v-model="prop.value"
+                  :rules="[(v) => !!v || 'Required']"
                 ></v-text-field
               ></v-col>
               <v-col md="1">
@@ -452,6 +454,7 @@
                   dense
                   label="Type"
                   v-model="claim.type"
+                  :rules="[(v) => !!v || 'Required']"
                 ></v-text-field
               ></v-col>
               <v-col md="4"
@@ -459,6 +462,7 @@
                   dense
                   label="Value"
                   v-model="claim.value"
+                  :rules="[(v) => !!v || 'Required']"
                 ></v-text-field
               ></v-col>
               <v-col md="3"
@@ -466,6 +470,7 @@
                   dense
                   label="ValueType"
                   v-model="claim.valueType"
+                  :rules="[(v) => !!v || 'Required']"
                 ></v-text-field
               ></v-col>
               <v-col md="1">
@@ -727,7 +732,17 @@ export default {
       this.client.claims.splice(index, 1);
     },
     async onSave(event) {
-      this.$refs.form.validate();
+      if(!this.$refs.form.validate())
+      {
+        this.$store.dispatch(
+            "shell/addMessage",
+            { text: "Input validation failed.", type: "ERROR" },
+            { root: true }
+        );
+
+        event.done(true);
+        return;
+      }
 
       const update = Object.assign({}, this.client);
       delete update.allowedScopes;
