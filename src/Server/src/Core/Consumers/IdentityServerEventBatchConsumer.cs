@@ -23,16 +23,38 @@ namespace IdOps.Consumers
 
         public async Task Consume(ConsumeContext<Batch<IdentityEventMessage>> context)
         {
-            Activity.Current?.AddTag("messaging.masstransit.batch_count", context.Message.Length);
+            Activity? activity = Activity.Current;
+            var activityStarted = false;
 
-            IdentityServerEvent?[] events = context.Message
-                .AsParallel()
-                .Select(m => _mapper.CreateEvent(m.Message))
-                .ToArray();
-
-            if (events.Length > 0)
+            try
             {
-                await _eventStore.CreateManyAsync(events, context.CancellationToken);
+                if (activity == null)
+                {
+                    activity = IdOpsActivity.StartEventBatchConsumer(context);
+                    activityStarted = true;
+                }
+                else
+                {
+                    activity.EnrichStartEventBatchConsumer(context);
+                }
+
+                IdentityServerEvent?[] events = context.Message
+                    .AsParallel()
+                    .Select(m => _mapper.CreateEvent(m.Message))
+                    .Where(m => m is not null)
+                    .ToArray();
+
+                if (events.Length > 0)
+                {
+                    await _eventStore.CreateManyAsync(events, context.CancellationToken);
+                }
+            }
+            finally
+            {
+                if (activityStarted)
+                {
+                    activity?.Dispose();
+                }
             }
         }
     }
