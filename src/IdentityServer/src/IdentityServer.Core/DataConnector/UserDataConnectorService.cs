@@ -55,7 +55,7 @@ namespace IdOps.IdentityServer.DataConnector
             {
                 foreach (DataConnectorOptions? options in context.Client.DataConnectors)
                 {
-                    using Activity? activity = IdOpsActivity.StartDataConnector(options);
+                    using Activity? activity = IdOpsActivity.StartDataConnector(options, context);
 
                     try
                     {
