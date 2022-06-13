@@ -200,7 +200,7 @@ export default {
         applications: [],
         environments: [],
         clients: [],
-        eventTypes: [],
+        eventTypes: ["Success", "Error", "Failure"],
         pageSize: 100
       },
       eventTypes: ["Success", "Error", "Failure"]

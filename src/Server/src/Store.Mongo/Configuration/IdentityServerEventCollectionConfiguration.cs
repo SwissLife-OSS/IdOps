@@ -23,14 +23,30 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                 .WithCollectionSettings(s => s.WriteConcern = WriteConcern.W1.With(journal: false))
                 .WithCollectionConfiguration(collection =>
                 {
+                    collection.Indexes.DropOne("_id_");
+
+                    var searchAllIndex = new CreateIndexModel<IdentityServerEvent>(
+                        Builders<IdentityServerEvent>.IndexKeys
+                            .Ascending(c => c.EnvironmentName)
+                            .Ascending(c => c.EventType)
+                            .Descending(c => c.TimeStamp),
+                        new CreateIndexOptions
+                        {
+                            Name = "search_all",
+                            Unique = false
+                        });
+
+                    collection.Indexes.CreateOne(searchAllIndex);
+
                     var searchIndex = new CreateIndexModel<IdentityServerEvent>(
                          Builders<IdentityServerEvent>.IndexKeys
-                             .Ascending(c => c.EnvironmentName)
                              .Ascending(c => c.ClientId)
+                             .Ascending(c => c.EnvironmentName)
                              .Ascending(c => c.EventType)
                              .Descending(c => c.TimeStamp),
                          new CreateIndexOptions
                          {
+                             Name = "search_by_clients",
                              Unique = false
                          });
 
@@ -40,9 +56,9 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                          Builders<IdentityServerEvent>.IndexKeys.Ascending(c => c.TimeStamp),
                          new CreateIndexOptions
                          {
-                             Name = "timestamp_asc_ttl60d",
+                             Name = "timestamp_asc_ttl45d",
                              Unique = false,
-                             ExpireAfter = TimeSpan.FromDays(60)
+                             ExpireAfter = TimeSpan.FromDays(45)
                          });
 
                     collection.Indexes.CreateOne(ttlIndex);
