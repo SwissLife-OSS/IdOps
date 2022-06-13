@@ -8,7 +8,6 @@
             :height="tableHeight"
             :items="events"
             :options.sync="options"
-            :server-items-length="totalCount"
             :loading="loading"
             @click:row="onClickRow"
             item-key="id"
@@ -241,7 +240,6 @@ export default {
   computed: {
     ...mapState("insights", {
       events: state => state.idEvents.items,
-      totalCount: state => state.idEvents.totalCount,
       loading: state => state.idEvents.loading
     }),
     headers: function() {
