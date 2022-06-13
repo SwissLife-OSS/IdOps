@@ -38,7 +38,7 @@ namespace IdOps.IdentityServer.Events
         {
             if (activity != null)
             {
-                evt.ActivityId = activity.SpanId.ToString();
+                evt.ActivityId = activity.Id;
             }
 
             evt.RemoteIpAddress = _httpContextAccessor.HttpContext?.GetRemoteIpAddress();
