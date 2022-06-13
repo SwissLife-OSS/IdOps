@@ -615,31 +615,26 @@ type SaveUserClaimRulePayload {
 type SearchResultOfApplication {
   items: [Application!]!
   hasMore: Boolean!
-  totalCount: Int!
 }
 
 type SearchResultOfClient {
   items: [Client!]!
   hasMore: Boolean!
-  totalCount: Int!
 }
 
 type SearchResultOfIdentityServerEvent {
   items: [IdentityServerEvent!]!
   hasMore: Boolean!
-  totalCount: Int!
 }
 
 type SearchResultOfPersonalAccessToken {
   items: [PersonalAccessToken!]!
   hasMore: Boolean!
-  totalCount: Int!
 }
 
 type SearchResultOfResourceAuditEvent {
   items: [ResourceAuditEvent!]!
   hasMore: Boolean!
-  totalCount: Int!
 }
 
 type Secret {

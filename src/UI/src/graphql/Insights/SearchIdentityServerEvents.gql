@@ -20,6 +20,5 @@ query searchIdentityServerEvents($input: SearchIdentityServerEventsInput!) {
       rawData
     }
     hasMore
-    totalCount
   }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
@@ -31,17 +32,14 @@ namespace IdOps.Server.Storage.Mongo
                 cursor = cursor.Sort(sort);
             }
 
-            long totalCount = await cursor.CountDocumentsAsync(cancellationToken);
-
             List<T> items = await cursor
                 .Skip(request.PageNr * request.PageSize)
-                .Limit(request.PageSize)
+                .Limit(request.PageSize + 1)
                 .ToListAsync(cancellationToken);
 
-            return new SearchResult<T>(items, totalCount > request.PageSize)
-            {
-                TotalCount = (int)totalCount
-            };
+            var hasMore = items.Count > request.PageSize;
+
+            return new SearchResult<T>(items, hasMore);
         }
     }
 }

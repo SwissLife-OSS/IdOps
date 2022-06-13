@@ -9,10 +9,7 @@ namespace IdOps
     }
 
     public record SearchResult<TItems>(IEnumerable<TItems> Items, bool HasMore)
-        : ISearchResult<TItems>
-    {
-        public int TotalCount { get; init; }
-    }
+        : ISearchResult<TItems>;
 
     public record SearchPersonalAccessTokensRequest(int PageSize, int PageNr)
         : PagedRequest(PageSize, PageNr)
