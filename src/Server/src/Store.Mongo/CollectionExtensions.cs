@@ -39,7 +39,7 @@ namespace IdOps.Server.Storage.Mongo
 
             var hasMore = items.Count > request.PageSize;
 
-            return new SearchResult<T>(items.Take(request.PageSize), hasMore);
+            return new SearchResult<T>(items, hasMore);
         }
     }
 }
