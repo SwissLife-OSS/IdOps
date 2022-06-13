@@ -117,39 +117,19 @@ namespace IdOps.IdentityServer.DataConnector
             UserDataConnectorResult result = await connector
                 .GetClaimsAsync(context, options, input, cts.Token);
 
+            IEnumerable<Claim> claims = result.Claims;
+
             activity?.EnrichDataConnectorResult(result);
 
-            return await ProcessResultAsync(options, context, result, activity, cancellationToken);
-        }
-
-        private async Task<IEnumerable<Claim>> ProcessResultAsync(
-            DataConnectorOptions options,
-            UserDataConnectorCallerContext context,
-            UserDataConnectorResult result,
-            Activity? activity,
-            CancellationToken cancellationToken)
-        {
             if (result.Success && result.Executed && result.CacheKey != null)
             {
                 try
                 {
-                    await _repository.SaveAsync(
-                        new UserDataConnectorData
-                        {
-                            Claims = result.Claims.Select(x => new ClaimData
-                            {
-                                Type = x.Type,
-                                Value = x.Value
-                            }),
-                            Key = result.CacheKey!,
-                            SubjectId = context.Subject,
-                            Connector = options.Name,
-                            LastModifiedAt = DateTime.UtcNow
-                        }, cancellationToken);
+                    await SaveDataAsync(options, result, context.Subject, cancellationToken);
                 }
                 catch (Exception ex)
                 {
-                    _logger.DataConnectorSaveDataFailed(options.Name);
+                    _logger.DataConnectorSaveDataFailed(connector.Name);
                     activity?.RecordException(ex);
                 }
             }
@@ -157,12 +137,12 @@ namespace IdOps.IdentityServer.DataConnector
             {
                 UserDataConnectorData? storedData = await _repository.GetAsync(
                     result.CacheKey,
-                    options.Name,
+                    connector.Name,
                     cancellationToken);
 
                 if (storedData != null)
                 {
-                    return storedData.Claims.Select(x => new Claim(x.Type, x.Value));
+                    claims = storedData.Claims.Select(x => new Claim(x.Type, x.Value));
                 }
                 else
                 {
@@ -170,8 +150,27 @@ namespace IdOps.IdentityServer.DataConnector
                 }
             }
 
-            return result.Claims;
+            return claims;
+        }
 
+        private async Task SaveDataAsync(
+            DataConnectorOptions options,
+            UserDataConnectorResult result,
+            string subject,
+            CancellationToken cancellationToken)
+        {
+            await _repository.SaveAsync(new UserDataConnectorData
+            {
+                Claims = result.Claims.Select(x => new ClaimData
+                {
+                    Type = x.Type,
+                    Value = x.Value
+                }),
+                Key = result.CacheKey!,
+                SubjectId = subject,
+                Connector = options.Name,
+                LastModifiedAt = DateTime.UtcNow
+            }, cancellationToken);
         }
 
         private bool ShouldExecute(DataConnectorOptions options, string caller)
