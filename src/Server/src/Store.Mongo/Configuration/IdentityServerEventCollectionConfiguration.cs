@@ -23,8 +23,6 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                 .WithCollectionSettings(s => s.WriteConcern = WriteConcern.W1.With(journal: false))
                 .WithCollectionConfiguration(collection =>
                 {
-                    collection.Indexes.DropOne("_id_");
-
                     var searchAllIndex = new CreateIndexModel<IdentityServerEvent>(
                         Builders<IdentityServerEvent>.IndexKeys
                             .Ascending(c => c.EnvironmentName)
