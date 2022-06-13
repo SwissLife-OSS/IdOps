@@ -9,11 +9,16 @@ internal static class IdOpsActivity
 {
     private static readonly ActivitySource ActivitySource = new("IdOps.IdentityServer");
 
-    public static Activity? StartDataConnector(DataConnectorOptions options)
+    public static Activity? StartDataConnector(
+        DataConnectorOptions options,
+        UserDataConnectorCallerContext context)
     {
         Activity? activity = ActivitySource.StartActivity($"DataConnector {options.Name}");
-
         activity?.SetTag("idops.identityserver.dataconnector.enabled", options.Enabled);
+
+        Activity? parentOrCurrent = activity?.Parent ?? activity;
+        parentOrCurrent?.SetTag("idops.identityserver.client_id", context.Client?.ClientId);
+        parentOrCurrent?.SetTag("idops.identityserver.subject", context.Subject);
 
         return activity;
     }

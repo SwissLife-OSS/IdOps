@@ -36,6 +36,11 @@ namespace IdOps.IdentityServer.Events
 
         public async ValueTask ProcessAsync(Event evt, Activity? activity)
         {
+            if (activity != null)
+            {
+                evt.ActivityId = activity.SpanId.ToString();
+            }
+
             evt.RemoteIpAddress = _httpContextAccessor.HttpContext?.GetRemoteIpAddress();
 
             var entity = new IdentityEventMessage

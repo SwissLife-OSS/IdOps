@@ -47,11 +47,6 @@ namespace IdOps.Server.Storage.Mongo
 
             var clientIds = new List<string>();
 
-            if (request.Environments is { } envs && envs.Any())
-            {
-                filter &= Filter.In(x => x.EnvironmentName, request.Environments);
-            }
-
             if (request.Clients is { } ids && ids.Any())
             {
                 clientIds.AddRange(request.Clients);
@@ -71,6 +66,11 @@ namespace IdOps.Server.Storage.Mongo
             if (clientIds.Count > 0)
             {
                 filter &= Filter.In(x => x.ClientId, clientIds);
+            }
+
+            if (request.Environments is { } envs && envs.Any())
+            {
+                filter &= Filter.In(x => x.EnvironmentName, request.Environments);
             }
 
             if (request.EventTypes is { } events && events.Any())
