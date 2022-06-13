@@ -119,11 +119,6 @@ namespace IdOps.IdentityServer.DataConnector
 
             activity?.EnrichDataConnectorResult(result);
 
-            if (context.DryRun)
-            {
-                return result.Claims;
-            }
-
             return await ProcessResultAsync(options, context, result, activity, cancellationToken);
         }
 

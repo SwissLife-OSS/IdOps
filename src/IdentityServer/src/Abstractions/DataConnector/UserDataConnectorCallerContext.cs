@@ -9,6 +9,5 @@ namespace IdOps.IdentityServer.DataConnector
         public string Name { get; set; }
         public IEnumerable<string> RequestedClaimTypes { get; set; }
         public string Subject { get; set; }
-        public bool DryRun { get; set; } = false;
     }
 }
