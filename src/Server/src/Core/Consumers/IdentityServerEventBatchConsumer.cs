@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using IdOps.Messages;
 using IdOps.Model;
@@ -22,20 +23,38 @@ namespace IdOps.Consumers
 
         public async Task Consume(ConsumeContext<Batch<IdentityEventMessage>> context)
         {
-            var events = new List<IdentityServerEvent>();
+            Activity? activity = Activity.Current;
+            var activityStarted = false;
 
-            foreach (ConsumeContext<IdentityEventMessage>? message in context.Message)
+            try
             {
-                IdentityServerEvent? ev = _mapper.CreateEvent(message.Message);
-                if (ev is { })
+                if (activity == null)
                 {
-                    events.Add(ev);
+                    activity = IdOpsActivity.StartEventBatchConsumer(context);
+                    activityStarted = true;
+                }
+                else
+                {
+                    activity.EnrichStartEventBatchConsumer(context);
+                }
+
+                IdentityServerEvent?[] events = context.Message
+                    .AsParallel()
+                    .Select(m => _mapper.CreateEvent(m.Message))
+                    .Where(m => m is not null)
+                    .ToArray();
+
+                if (events.Length > 0)
+                {
+                    await _eventStore.CreateManyAsync(events, context.CancellationToken);
                 }
             }
-
-            if (events.Count > 0)
+            finally
             {
-                await _eventStore.CreateManyAsync(events, context.CancellationToken);
+                if (activityStarted)
+                {
+                    activity?.Dispose();
+                }
             }
         }
     }

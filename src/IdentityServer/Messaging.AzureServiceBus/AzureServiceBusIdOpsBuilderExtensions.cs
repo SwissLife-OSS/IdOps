@@ -32,9 +32,8 @@ namespace IdOps.IdentityServer.AzureServiceBus
             {
                 builder.BusSetup?.Invoke(s);
 
-                s.AddBus(provider => Bus.Factory.CreateUsingAzureServiceBus(cfg =>
+                s.UsingAzureServiceBus((provider, cfg) =>
                 {
-                    cfg.UseHealthCheck(provider);
                     cfg.Host(options.ConnectionString);
                     cfg.ReceiveEndpoint($"id-" +
                         $"{builder.IdOpsBuilder.Options!.ServerGroup.ToLower()}-" +
@@ -44,7 +43,7 @@ namespace IdOps.IdentityServer.AzureServiceBus
                             e.ConfigureConsumers(provider);
                             e.PrefetchCount = options.PrefetchCount;
                         });
-                }));
+                });
             });
 
             return builder.IdOpsBuilder;

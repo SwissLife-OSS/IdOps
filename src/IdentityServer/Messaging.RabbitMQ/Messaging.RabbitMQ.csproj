@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="MassTransit.RabbitMQ" Version="$(MassTransitVersion)" />
-    <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="$(MassTransitVersion)" />
   </ItemGroup>
 
   <ItemGroup>

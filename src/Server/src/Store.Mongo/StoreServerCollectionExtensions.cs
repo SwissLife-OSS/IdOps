@@ -1,3 +1,4 @@
+using System;
 using IdOps.Model;
 using IdOps.Server.Storage;
 using IdOps.Server.Storage.Mongo;
@@ -10,12 +11,20 @@ namespace IdOps
     public static class StoreServerCollectionExtensions
     {
         public static IIdOpsServerBuilder AddMongoStore(
-            this IIdOpsServerBuilder builder)
+            this IIdOpsServerBuilder builder,
+            Action<IMongoDatabaseBuilder>? configureMongoDatabaseBuilder = default)
         {
             MongoOptions options = builder.Configuration.GetSection("Storage:Database")
                 .Get<MongoOptions>();
 
-            builder.Services.AddSingleton<IIdOpsDbContext>(new IdOpsDbContext(options));
+            builder.Services.AddSingleton<IIdOpsDbContext>(_ =>
+            {
+                var context = new IdOpsDbContext(options, configureMongoDatabaseBuilder);
+                context.Initialize();
+
+                return context;
+            });
+
             builder.Services.AddStores();
 
             return builder;
@@ -42,7 +51,6 @@ namespace IdOps
             services.AddSingleton<IClientTemplateStore, ClientTemplateStore>();
             services.AddResourceStore<IResourceStore<UserClaimRule>, IUserClaimRuleStore, UserClaimRulesStore>();
             services.AddResourceStore<IResourceStore<PersonalAccessToken>, IPersonalAccessTokenStore, PersonalAccessTokenStore>();
-
 
             return services;
         }

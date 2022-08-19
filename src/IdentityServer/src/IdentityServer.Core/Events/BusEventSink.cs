@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Duende.IdentityServer.Events;
 using IdOps.IdentityServer.Extensions;
 using IdOps.Messages;
-using MassTransit;
 using Microsoft.AspNetCore.Http;
 
 namespace IdOps.IdentityServer.Events
@@ -37,6 +36,11 @@ namespace IdOps.IdentityServer.Events
 
         public async ValueTask ProcessAsync(Event evt, Activity? activity)
         {
+            if (activity != null)
+            {
+                evt.ActivityId = activity.Id;
+            }
+
             evt.RemoteIpAddress = _httpContextAccessor.HttpContext?.GetRemoteIpAddress();
 
             var entity = new IdentityEventMessage

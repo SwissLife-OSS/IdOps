@@ -29,8 +29,13 @@ namespace IdOps.Server.Storage.Mongo
             IEnumerable<IdentityServerEvent> events,
             CancellationToken cancellationToken)
         {
+            InsertManyOptions insertManyOptions = new InsertManyOptions
+            {
+                IsOrdered = false
+            };
+
             await Collection
-                .InsertManyAsync(events, options: null, cancellationToken);
+                .InsertManyAsync(events, insertManyOptions, cancellationToken);
         }
 
         public async Task<SearchResult<IdentityServerEvent>> SearchAsync(
@@ -41,11 +46,6 @@ namespace IdOps.Server.Storage.Mongo
                 Filter.Empty;
 
             var clientIds = new List<string>();
-
-            if (request.Environments is { } envs && envs.Any())
-            {
-                filter &= Filter.In(x => x.EnvironmentName, request.Environments);
-            }
 
             if (request.Clients is { } ids && ids.Any())
             {
@@ -66,6 +66,11 @@ namespace IdOps.Server.Storage.Mongo
             if (clientIds.Count > 0)
             {
                 filter &= Filter.In(x => x.ClientId, clientIds);
+            }
+
+            if (request.Environments is { } envs && envs.Any())
+            {
+                filter &= Filter.In(x => x.EnvironmentName, request.Environments);
             }
 
             if (request.EventTypes is { } events && events.Any())

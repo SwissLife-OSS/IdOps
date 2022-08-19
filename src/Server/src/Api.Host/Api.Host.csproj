@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MassTransit.AspNetCore" Version="$(MassTransitVersion)" />
-
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\AspNet\AspNet.csproj" />
     <ProjectReference Include="..\Authorization\Authorization.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />

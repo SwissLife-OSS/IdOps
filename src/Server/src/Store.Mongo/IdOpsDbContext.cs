@@ -1,17 +1,24 @@
+using System;
 using IdOps.Model;
 using IdOps.Server.Storage.Mongo.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using MongoDB.Extensions.Context;
+using Environment = IdOps.Model.Environment;
 
 namespace IdOps.Server.Storage.Mongo
 {
     public class IdOpsDbContext : MongoDbContext, IIdOpsDbContext
     {
-        public IdOpsDbContext(MongoOptions mongoOptions)
-            : base(mongoOptions)
+        private readonly Action<IMongoDatabaseBuilder>? _configureMongoDatabaseBuilder;
+
+        public IdOpsDbContext(
+            MongoOptions mongoOptions,
+            Action<IMongoDatabaseBuilder>? configureMongoDatabaseBuilder)
+            : base(mongoOptions, false)
         {
+            _configureMongoDatabaseBuilder = configureMongoDatabaseBuilder;
         }
 
         protected override void OnConfiguring(IMongoDatabaseBuilder builder)
@@ -41,6 +48,8 @@ namespace IdOps.Server.Storage.Mongo
                 .ConfigureCollection(new UserClaimRuleCollectionConfiguration())
                 .ConfigureCollection(new PersonalAccessTokenCollectionConfiguration())
                 .ConfigureCollection(new ApiResourceCollectionConfiguration());
+
+            _configureMongoDatabaseBuilder?.Invoke(builder);
         }
 
         public IMongoCollection<ApiResource> ApiResources

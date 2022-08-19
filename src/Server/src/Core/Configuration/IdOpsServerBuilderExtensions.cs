@@ -5,7 +5,6 @@ using IdOps.Consumers;
 using IdOps.IdentityServer.Hashing;
 using IdOps.Model;
 using MassTransit;
-using MassTransit.ExtensionsDependencyInjectionIntegration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -94,21 +93,19 @@ namespace IdOps
             services.RegisterHashAlgorithms();
         }
 
-        private static void AddConsumers(this IServiceCollectionBusConfigurator busConfigurator)
+        private static void AddConsumers(this IBusRegistrationConfigurator busConfigurator)
         {
             busConfigurator.AddConsumer<ResourcePublishedSuccessConsumer>();
             busConfigurator.AddConsumer<UiConsoleConsumer>();
             busConfigurator.AddConsumer<IdentityServerEventBatchConsumer>();
-            busConfigurator.AddConsumer<IdentityServerEventBatchConsumer>();
         }
 
-        private static IServiceCollectionBusConfigurator UseRabbitMq(
-            this IServiceCollectionBusConfigurator s,
+        private static IBusRegistrationConfigurator UseRabbitMq(
+            this IBusRegistrationConfigurator s,
             MessagingOptions options)
         {
-            s.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+            s.UsingRabbitMq((provider, cfg) =>
             {
-                cfg.UseHealthCheck(provider);
                 cfg.Host(options.Host,
                     c =>
                     {
@@ -116,18 +113,8 @@ namespace IdOps
                         c.Password(options.Password);
                     });
 
-                cfg.ReceiveEndpoint("ops",
-                    e =>
-                    {
-                        e.ConfigureConsumers(provider);
-                        e.PrefetchCount = 2;
-                        e.Batch<IdentityServerEvent>(b =>
-                        {
-                            b.MessageLimit = 2;
-                            b.TimeLimit = TimeSpan.FromSeconds(5);
-                        });
-                    });
-            }));
+                cfg.ConfigureEndpoint(provider, options);
+            });
 
             return s;
         }
@@ -141,37 +128,36 @@ namespace IdOps
                 e =>
                 {
                     e.ConfigureConsumers(provider);
-                    //e.PrefetchCount = 2;
+                    e.PrefetchCount = 100;
                     e.Batch<IdentityServerEvent>(b =>
                     {
-                        b.MessageLimit = 2;
+                        b.MessageLimit = 50;
                         b.TimeLimit = TimeSpan.FromSeconds(5);
                     });
                 });
         }
 
-        private static IServiceCollectionBusConfigurator UseAzureServiceBus(
-            this IServiceCollectionBusConfigurator s,
+        private static IBusRegistrationConfigurator UseAzureServiceBus(
+            this IBusRegistrationConfigurator s,
             MessagingOptions options)
         {
-            s.AddBus(provider => Bus.Factory.CreateUsingAzureServiceBus(cfg =>
+            s.UsingAzureServiceBus((provider, cfg) =>
             {
-                cfg.UseHealthCheck(provider);
                 cfg.Host(options.Host);
                 cfg.ConfigureEndpoint(provider, options);
-            }));
+            });
 
             return s;
         }
 
-        private static IServiceCollectionBusConfigurator UseInMemory(
-            this IServiceCollectionBusConfigurator s,
+        private static IBusRegistrationConfigurator UseInMemory(
+            this IBusRegistrationConfigurator s,
             MessagingOptions options)
         {
-            s.AddBus(provider => Bus.Factory.CreateUsingInMemory(cfg =>
+            s.UsingInMemory((provider, cfg) =>
             {
                 cfg.ConfigureEndpoint(provider, options);
-            }));
+            });
 
             return s;
         }

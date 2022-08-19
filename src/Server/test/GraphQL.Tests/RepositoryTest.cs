@@ -24,7 +24,7 @@ namespace IdOps.GraphQL.Tests
             {
                 ConnectionString = MongoResource.ConnectionString,
                 DatabaseName = db.DatabaseNamespace.DatabaseName
-            });
+            }, default);
         }
     }
 }
