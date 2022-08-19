@@ -44,11 +44,18 @@ namespace IdOps.Server.Store.Mongo.Tests
         private IIdOpsDbContext CreateDbContext()
         {
             IMongoDatabase database = _mongoResource.CreateDatabase();
-            return new IdOpsDbContext(new MongoOptions
-            {
-                ConnectionString = _mongoResource.ConnectionString,
-                DatabaseName = database.DatabaseNamespace.DatabaseName
-            });
+
+            var context = new IdOpsDbContext(
+                new MongoOptions
+                {
+                    ConnectionString = _mongoResource.ConnectionString,
+                    DatabaseName = database.DatabaseNamespace.DatabaseName
+                },
+                default);
+
+            context.Initialize();
+
+            return context;
         }
     }
 }
