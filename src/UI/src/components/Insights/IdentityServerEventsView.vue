@@ -37,6 +37,7 @@
               {{ item.timeStamp | dateformat }}
             </template>
             <template v-slot:footer.page-text="{}">
+              <span :style="{'margin-right': '25px'}">Page {{options.page}}</span>
               <v-icon @click="onClickRefresh">mdi-reload</v-icon>
             </template>
 
@@ -357,6 +358,7 @@ export default {
     onClickRefresh: function() {
       this.userSearchTriggered = true;
       this.details = null;
+      this.options.page = 1;
       this.searchIdentityServerEvents(this.filter);
     },
     navigateToFullView: function() {
