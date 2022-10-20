@@ -10,7 +10,7 @@ import './registerServiceWorker'
 
 Vue.config.productionTip = false
 
-Vue.filter("dateformat", function (value, format = "DATETIME_SHORT") {
+Vue.filter("dateformat", function (value, format = "DATETIME_MED_WITH_SECONDS") {
   if (!value) return "";
 
   var date = DateTime.fromISO(value);
