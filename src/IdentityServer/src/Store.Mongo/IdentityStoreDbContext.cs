@@ -112,6 +112,7 @@ namespace IdOps.IdentityServer.Storage.Mongo
         protected override void OnConfiguring(IMongoDatabaseBuilder mongoDatabaseBuilder)
         {
             mongoDatabaseBuilder
+                .AddInstrumentation()
                 .RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String))
                 .RegisterConventionPack(
                     "enumRepresentation",
