@@ -24,6 +24,7 @@ namespace IdOps.Server.Storage.Mongo
         protected override void OnConfiguring(IMongoDatabaseBuilder builder)
         {
             builder
+                .AddInstrumentation()
                 .RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String))
                 .ConfigureConnection(con => con.ReadConcern = ReadConcern.Majority)
                 .ConfigureConnection(con => con.WriteConcern = WriteConcern.WMajority)
