@@ -28,9 +28,15 @@ namespace  IdOps.IdentityServer.Storage.Mongo
                             Unique = false,
                             ExpireAfter = TimeSpan.FromDays(365)
                         });
+
+                    var persistedGrantFilter = new CreateIndexModel<PersistedGrant>(
+                        Builders<PersistedGrant>.IndexKeys
+                            .Ascending(g => g.ClientId)
+                            .Ascending(g => g.SubjectId)
+                            .Ascending(g => g.Type));
                     try
                     {
-                        collection.Indexes.CreateOne(ttlIndex);
+                        collection.Indexes.CreateMany(new [] { ttlIndex, persistedGrantFilter});
                     }
                     catch (Exception ex)
                     {
