@@ -22,19 +22,26 @@ namespace  IdOps.IdentityServer.Storage.Mongo
                 .WithCollectionConfiguration(collection =>
                 {
                     var ttlIndex = new CreateIndexModel<PersistedGrant>(
-                        Builders<PersistedGrant>.IndexKeys.Ascending(c => c.CreationTime),
+                        Builders<PersistedGrant>.IndexKeys.Ascending(c => c.Expiration),
                         new CreateIndexOptions
                         {
+                            Name = "ttl_expiration_v1",
                             Unique = false,
-                            ExpireAfter = TimeSpan.FromDays(365)
+                            ExpireAfter = TimeSpan.FromDays(1)
                         });
-                    try
-                    {
-                        collection.Indexes.CreateOne(ttlIndex);
-                    }
-                    catch (Exception ex)
-                    {
-                    }
+
+                    var persistedGrantFilter = new CreateIndexModel<PersistedGrant>(
+                        Builders<PersistedGrant>.IndexKeys
+                            .Ascending(g => g.ClientId)
+                            .Ascending(g => g.SubjectId)
+                            .Ascending(g => g.Type),
+                        new CreateIndexOptions
+                        {
+                            Name = "filter_client_subject_type_v1",
+                            Unique = false
+                        });
+
+                    collection.Indexes.CreateMany(new [] { ttlIndex, persistedGrantFilter});
                 });
         }
     }
