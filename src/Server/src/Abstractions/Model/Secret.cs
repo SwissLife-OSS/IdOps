@@ -10,6 +10,10 @@ namespace IdOps.Model
 
         public string Value { get; set; }
 
+        public string? EncryptedSecret { get; set; }
+
+        public string? EncryptionKeyId { get; set; }
+
         public DateTime? Expiration { get; set; }
         public string Type { get; set; } = "SharedSecret";
     }
