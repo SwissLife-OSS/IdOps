@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IdOps.Server.AspNet.Controllers
 {
     [Route("api/diagnose")]
-    public class DiagnoseController : Controller
+    public class DiagnoseController : Microsoft.AspNetCore.Mvc.Controller
     {
         private readonly IUserContextAccessor _userContextAccessor;
 
