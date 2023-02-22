@@ -1,8 +1,6 @@
-﻿using IdOps.Controller;
+﻿using IdOps;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
-namespace IdOps;
 
 public static class AzureKeyVaultExtension
 {
@@ -11,7 +9,7 @@ public static class AzureKeyVaultExtension
         AzureKeyVaultOptions options =
             builder.Configuration.GetSection("Azure").Get<AzureKeyVaultOptions>();
 
-        builder.Services.AddSingleton<IKeyVaultController>(_ => new KeyVaultController(options));
+        builder.Services.AddSingleton<IEncryptionService>(_ => new KeyVaultController(options));
         return builder;
     }
 }

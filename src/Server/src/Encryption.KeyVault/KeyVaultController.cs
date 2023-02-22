@@ -1,16 +1,11 @@
-﻿using System;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using Azure.Identity;
 using Azure.Security.KeyVault.Keys;
 using Azure.Security.KeyVault.Keys.Cryptography;
-using MassTransit.Configuration;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+using EncryptionAlgorithm = Azure.Security.KeyVault.Keys.Cryptography.EncryptionAlgorithm;
 
-namespace IdOps.Controller;
 
-public class KeyVaultController : IKeyVaultController
+public class KeyVaultController : IEncryptionService
 {
     private readonly string _keyVaultUri;
     private readonly string _keyVaultKeyName;

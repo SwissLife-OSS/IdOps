@@ -10,6 +10,7 @@
     <ProjectReference Include="..\AspNet\AspNet.csproj" />
     <ProjectReference Include="..\Authorization\Authorization.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Encryption.KeyVault\Encryption.KeyVault.csproj" />
     <ProjectReference Include="..\GraphQL\GraphQL.csproj" />
     <ProjectReference Include="..\Store.Mongo\Store.Mongo.csproj" />
   </ItemGroup>

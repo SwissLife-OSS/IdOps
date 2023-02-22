@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using IdOps.Controller;
 using Xunit;
 
 namespace IdOps.Core.Tests;

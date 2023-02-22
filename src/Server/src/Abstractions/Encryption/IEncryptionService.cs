@@ -1,8 +1,5 @@
 ﻿using System.Threading.Tasks;
-
-namespace IdOps.Controller;
-
-public interface IKeyVaultController
+public interface IEncryptionService
 {
 
     public string GetEncryptionKeyNameBase64();
