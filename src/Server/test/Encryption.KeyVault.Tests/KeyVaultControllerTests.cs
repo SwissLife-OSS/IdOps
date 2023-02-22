@@ -1,8 +1,6 @@
 ﻿using FluentAssertions;
 using Xunit;
 
-namespace IdOps.Core.Tests;
-
 public class KeyVaultControllerTests
 {
     [Theory]

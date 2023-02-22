@@ -1,5 +1,4 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
@@ -64,6 +63,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdOps.Importer", "src\Server\tools\IdOps.Importer\IdOps.Importer.csproj", "{8DE8BDC4-D486-40D5-8A01-9995F9669A27}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encryption.KeyVault", "src\Server\src\Encryption.KeyVault\Encryption.KeyVault.csproj", "{A89E9EE2-F89B-4CB9-87FA-B7B24535FB48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encryption.KeyVault.Tests", "src\Server\test\Encryption.KeyVault.Tests\Encryption.KeyVault.Tests.csproj", "{D3D13A29-DC60-45E2-BFEA-6EE2A5405527}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -342,6 +343,18 @@ Global
 		{A89E9EE2-F89B-4CB9-87FA-B7B24535FB48}.Release|x64.Build.0 = Release|Any CPU
 		{A89E9EE2-F89B-4CB9-87FA-B7B24535FB48}.Release|x86.ActiveCfg = Release|Any CPU
 		{A89E9EE2-F89B-4CB9-87FA-B7B24535FB48}.Release|x86.Build.0 = Release|Any CPU
+		{D3D13A29-DC60-45E2-BFEA-6EE2A5405527}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3D13A29-DC60-45E2-BFEA-6EE2A5405527}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3D13A29-DC60-45E2-BFEA-6EE2A5405527}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D3D13A29-DC60-45E2-BFEA-6EE2A5405527}.Debug|x64.Build.0 = Debug|Any CPU
+		{D3D13A29-DC60-45E2-BFEA-6EE2A5405527}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D3D13A29-DC60-45E2-BFEA-6EE2A5405527}.Debug|x86.Build.0 = Debug|Any CPU
+		{D3D13A29-DC60-45E2-BFEA-6EE2A5405527}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3D13A29-DC60-45E2-BFEA-6EE2A5405527}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3D13A29-DC60-45E2-BFEA-6EE2A5405527}.Release|x64.ActiveCfg = Release|Any CPU
+		{D3D13A29-DC60-45E2-BFEA-6EE2A5405527}.Release|x64.Build.0 = Release|Any CPU
+		{D3D13A29-DC60-45E2-BFEA-6EE2A5405527}.Release|x86.ActiveCfg = Release|Any CPU
+		{D3D13A29-DC60-45E2-BFEA-6EE2A5405527}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D264CAEC-2137-46D8-B637-FCE7CBE3B390} = {17CDA34C-429F-421D-B245-538A6FFE8248}
@@ -374,5 +387,6 @@ Global
 		{826ED872-18E8-4FA5-B3D1-0F5F87ED9CD6} = {CAC6A27B-7731-4C85-AF4F-15FB80F9F264}
 		{8DE8BDC4-D486-40D5-8A01-9995F9669A27} = {826ED872-18E8-4FA5-B3D1-0F5F87ED9CD6}
 		{A89E9EE2-F89B-4CB9-87FA-B7B24535FB48} = {F70ABE9E-7F4E-4F4C-B75B-96B9222F03A4}
+		{D3D13A29-DC60-45E2-BFEA-6EE2A5405527} = {C02928F2-8843-47FA-BE18-5510B6092929}
 	EndGlobalSection
 EndGlobal
