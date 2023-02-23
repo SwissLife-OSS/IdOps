@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Azure.Core.Cryptography;
 using Azure.Identity;
 using Azure.Security.KeyVault.Keys;
 using Azure.Security.KeyVault.Keys.Cryptography;
@@ -7,25 +8,18 @@ using EncryptionAlgorithm = Azure.Security.KeyVault.Keys.Cryptography.Encryption
 
 public class KeyVaultController : IEncryptionService
 {
-    private readonly string _keyVaultUri;
-    private readonly string _keyVaultKeyName;
-
     private readonly CryptographyClient _cryptographyClient;
     public EncryptionAlgorithm EncryptionAlgorithm { get; }
 
-    public KeyVaultController(AzureKeyVaultOptions options)
+    public KeyVaultController(CryptographyClient cryptographyClient)
     {
-
-
-        _keyVaultUri = options.KeyVaultUri;
-        _keyVaultKeyName = options.EncryptionKeyName;
-        _cryptographyClient = GetCryptographyClient().Result;
+        _cryptographyClient = cryptographyClient;
         EncryptionAlgorithm = EncryptionAlgorithm.RsaOaep;
     }
 
     public string GetEncryptionKeyNameBase64()
     {
-        var nameAsArray = Encoding.UTF8.GetBytes(_keyVaultKeyName);
+        var nameAsArray = Encoding.UTF8.GetBytes(_cryptographyClient.KeyId);
         return Convert.ToBase64String(nameAsArray);
     }
 
@@ -49,10 +43,4 @@ public class KeyVaultController : IEncryptionService
         return Encoding.Default.GetString(result.Plaintext);
     }
 
-    private async Task<CryptographyClient> GetCryptographyClient()
-    {
-        var client = new KeyClient(new Uri(_keyVaultUri), new DefaultAzureCredential());
-        KeyVaultKey key = await client.GetKeyAsync(_keyVaultKeyName).ConfigureAwait(false);
-        return new CryptographyClient(key.Id, new DefaultAzureCredential());
-    }
 }

@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using Azure.Security.KeyVault.Keys.Cryptography;
+using FluentAssertions;
+using Moq;
 using Xunit;
 
 public class KeyVaultControllerTests
@@ -14,7 +16,8 @@ public class KeyVaultControllerTests
         var options = new AzureKeyVaultOptions();
         options.KeyVaultUri = "https://idops-encryptionkeys.vault.azure.net/";
         options.EncryptionKeyName = "TestKey";
-        var controller = new KeyVaultController(options);
+        var cryptographyClientMock = new Mock<CryptographyClient>();
+        var controller = new KeyVaultController(cryptographyClientMock.Object);
 
         //Act
         var encryptedString = controller.Encrypt(input).Result;
