@@ -641,6 +641,8 @@ type Secret {
   id: Uuid!
   description: String
   value: String!
+  encryptedSecret: String
+  encryptionKeyId: String
   expiration: DateTime
   type: String!
 }
