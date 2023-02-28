@@ -7,67 +7,67 @@ using Xunit;
 
 public class KeyVaultControllerTests
 {
+    /*
+     *  Conversion Chart
+     *
+     *  Foo;    Rm9v;       {70, 111, 111}
+     *  Bar;    QmFy;       {66, 97, 114}
+     *  FooBar; Rm9vQmFy;   {70, 111, 111, 66, 97, 114}
+     *
+     */
+
 
     [Theory]
     [InlineData("")]
     [InlineData("Foo")]
     [InlineData("Bar")]
     [InlineData("FooBar")]
-    public void Encrypt_Should_ReturnString(string input)
+    public async void EncryptAsync_Should_ReturnString(string input)
     {
         //Arrange
-        byte[] inputAsBytes = Encoding.UTF8.GetBytes(input);
-        var encryptResult =
-            CryptographyModelFactory.EncryptResult("", inputAsBytes, EncryptionAlgorithm.RsaOaep);
-
-        var cryptographyClientMock = new Mock<CryptographyClient>();
-        cryptographyClientMock
-            .Setup(client =>
-                client.EncryptAsync(It.IsAny<EncryptionAlgorithm>(),
-                    It.Is<byte[]>(bytes => bytes.Equals(inputAsBytes)), CancellationToken.None))
-            .Returns(Task.FromResult(encryptResult));
-        cryptographyClientMock.SetupGet(client => client.KeyId).Returns("");
+        var inputAsArray = Encoding.UTF8.GetBytes(input);
+        var encryptResult = CryptographyModelFactory.EncryptResult(ciphertext: inputAsArray);
 
 
-        var controller = new KeyVaultController(cryptographyClientMock.Object);
+        var cryptoClientMock = new Mock<CryptographyClient>(MockBehavior.Strict);
+        cryptoClientMock.Setup(client =>
+                client.EncryptAsync(It.IsAny<EncryptionAlgorithm>(), It.IsAny<byte[]>(), default))
+            .ReturnsAsync(encryptResult);
+
+        var controller = new KeyVaultController(cryptoClientMock.Object);
 
         //Act
-        var expected = Convert.ToBase64String(encryptResult.Ciphertext);
-        var result = controller.EncryptAsync(input,CancellationToken.None).Result;
+        string expected = Convert.ToBase64String(inputAsArray);
+        string actual = await controller.EncryptAsync(input, CancellationToken.None);
 
         //Assert
-        result.Should().Be(expected);
+        actual.Should().Be(expected);
     }
 
-
     [Theory]
     [InlineData("")]
-    [InlineData("Foo")]
-    [InlineData("Bar")]
-    [InlineData("FooBar")]
-    public void Decrypt_Should_ReturnString(string input)
+    [InlineData("Rm9v")]
+    [InlineData("QmFy")]
+    [InlineData("Rm9vQmFy")]
+    public async void DecryptAsync_Should_ReturnString(string input)
     {
         //Arrange
-        byte[] inputAsByte = Encoding.UTF8.GetBytes(input);
-        var encryptResultMock = new Mock<EncryptResult>();
-
-        encryptResultMock.SetupGet(result => result.Ciphertext)
-            .Returns(inputAsByte.Reverse().ToArray);
-
-        var cryptographyClientMock = new Mock<CryptographyClient>();
-        cryptographyClientMock.Setup<Task<EncryptResult>>(client =>
-                client.EncryptAsync(It.IsAny<EncryptionAlgorithm>(),
-                    It.Is<byte[]>(bytes => bytes.Equals(inputAsByte)), CancellationToken.None))
-            .Returns(new Task<EncryptResult>(() => encryptResultMock.Object));
+        var inputAsArray = Convert.FromBase64String(input);
+        var decryptResult = CryptographyModelFactory.DecryptResult(plaintext: inputAsArray);
 
 
-        var controller = new KeyVaultController(cryptographyClientMock.Object);
+        var cryptoClientMock = new Mock<CryptographyClient>(MockBehavior.Strict);
+        cryptoClientMock.Setup(client =>
+                client.DecryptAsync(It.IsAny<EncryptionAlgorithm>(), It.IsAny<byte[]>(), default))
+            .ReturnsAsync(decryptResult);
+
+        var controller = new KeyVaultController(cryptoClientMock.Object);
 
         //Act
-        var encryptedString = controller.EncryptAsync(input,CancellationToken.None).Result;
-        var decryptedString = controller.DecryptAsync(encryptedString,CancellationToken.None).Result;
+        string expected = Encoding.UTF8.GetString(inputAsArray);
+        string actual = await controller.DecryptAsync(input, CancellationToken.None);
 
         //Assert
-        decryptedString.Should().Be(input);
+        actual.Should().Be(expected);
     }
 }
