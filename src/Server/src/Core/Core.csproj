@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Security.KeyVault.Keys" Version="4.5.0-beta.1" />
+    <PackageReference Include="Azure.Security.KeyVault.Keys" Version="4.4.0" />
     <PackageReference Include="Handlebars.Net" Version="2.1.0" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="$(MassTransitVersion)" />
     <PackageReference Include="MassTransit.Azure.ServiceBus.Core" Version="$(MassTransitVersion)" />

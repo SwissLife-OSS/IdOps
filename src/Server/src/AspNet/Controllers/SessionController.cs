@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IdOps.Server.AspNet
 {
     [Route("api/session")]
-    public class SessionController : Microsoft.AspNetCore.Mvc.Controller
+    public class SessionController : Controller
     {
         private readonly IUserContextAccessor _userContextAccessor;
 

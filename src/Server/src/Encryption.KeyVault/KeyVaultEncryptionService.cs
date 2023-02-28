@@ -8,13 +8,14 @@ using EncryptionAlgorithm = Azure.Security.KeyVault.Keys.Cryptography.Encryption
 public class KeyVaultEncryptionService : IEncryptionService
 {
     private readonly ICryptographyClientProvider _cryptographyClientProvider;
-    public EncryptionAlgorithm EncryptionAlgorithm { get; }
 
     public KeyVaultEncryptionService(ICryptographyClientProvider cryptographyClient)
     {
         _cryptographyClientProvider = cryptographyClient;
         EncryptionAlgorithm = EncryptionAlgorithm.RsaOaep;
     }
+
+    private EncryptionAlgorithm EncryptionAlgorithm { get; }
 
     public async Task<string> GetEncryptionKeyNameBase64Async()
     {
@@ -44,5 +45,4 @@ public class KeyVaultEncryptionService : IEncryptionService
 
         return Encoding.Default.GetString(result.Plaintext);
     }
-
 }

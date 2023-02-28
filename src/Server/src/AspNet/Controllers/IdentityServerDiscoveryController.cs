@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IdOps.AspNet.Controllers
 {
     [Route("api/discovery")]
-    public class IdentityServerDiscoveryController : Microsoft.AspNetCore.Mvc.Controller
+    public class IdentityServerDiscoveryController : Controller
     {
         private readonly IIdentityServerService _identityServerService;
 
