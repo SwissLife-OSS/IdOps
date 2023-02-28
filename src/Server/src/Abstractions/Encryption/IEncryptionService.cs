@@ -1,13 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
+
 public interface IEncryptionService
 {
+    string GetEncryptionKeyNameBase64();
 
-    public string GetEncryptionKeyNameBase64();
+    Task<string> EncryptAsync(string input, CancellationToken cancellationToken);
 
-    public Task<string> Encrypt(string input);
-
-    public Task<string> Decrypt(string input);
-
-
-
+    Task<string> DecryptAsync(string input, CancellationToken cancellationToken);
 }

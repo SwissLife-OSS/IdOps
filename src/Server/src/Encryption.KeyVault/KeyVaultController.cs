@@ -23,7 +23,7 @@ public class KeyVaultController : IEncryptionService
         return Convert.ToBase64String(nameAsArray);
     }
 
-    public async Task<string> Encrypt(string input)
+    public async Task<string> EncryptAsync(string input, CancellationToken cancellationToken)
     {
         var inputAsArray = Encoding.UTF8.GetBytes(input);
 
@@ -33,7 +33,7 @@ public class KeyVaultController : IEncryptionService
         return Convert.ToBase64String(result.Ciphertext);
     }
 
-    public async Task<string> Decrypt(string input)
+    public async Task<string> DecryptAsync(string input, CancellationToken cancellationToken)
     {
         var inputAsArray = Convert.FromBase64String(input);
 

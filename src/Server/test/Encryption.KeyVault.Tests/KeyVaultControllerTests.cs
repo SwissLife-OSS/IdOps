@@ -33,7 +33,7 @@ public class KeyVaultControllerTests
 
         //Act
         var expected = Convert.ToBase64String(encryptResult.Ciphertext);
-        var result = controller.Encrypt(input).Result;
+        var result = controller.EncryptAsync(input,CancellationToken.None).Result;
 
         //Assert
         result.Should().Be(expected);
@@ -64,8 +64,8 @@ public class KeyVaultControllerTests
         var controller = new KeyVaultController(cryptographyClientMock.Object);
 
         //Act
-        var encryptedString = controller.Encrypt(input).Result;
-        var decryptedString = controller.Decrypt(encryptedString).Result;
+        var encryptedString = controller.EncryptAsync(input,CancellationToken.None).Result;
+        var decryptedString = controller.DecryptAsync(encryptedString,CancellationToken.None).Result;
 
         //Assert
         decryptedString.Should().Be(input);

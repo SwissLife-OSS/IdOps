@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using IdOps.Model;
 using IdentityModel;
 using System.Linq;
+using System.Threading;
 
 namespace IdOps
 {
@@ -42,7 +43,7 @@ namespace IdOps
 
             if (request.SaveValue.GetValueOrDefault())
             {
-                secret.EncryptedSecret = await _encryptionService.Encrypt(secretValue);
+                secret.EncryptedSecret = await _encryptionService.EncryptAsync(secretValue, CancellationToken.None);
                 secret.EncryptionKeyId = _encryptionService.GetEncryptionKeyNameBase64();
             }
 
