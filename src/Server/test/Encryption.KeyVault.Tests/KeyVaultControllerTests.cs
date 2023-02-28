@@ -2,6 +2,8 @@
 using Azure.Security.KeyVault.Keys;
 using Azure.Security.KeyVault.Keys.Cryptography;
 using FluentAssertions;
+using IdOps;
+using IdOps.Encryption;
 using Moq;
 using Xunit;
 
@@ -28,13 +30,16 @@ public class KeyVaultControllerTests
         var inputAsArray = Encoding.UTF8.GetBytes(input);
         var encryptResult = CryptographyModelFactory.EncryptResult(ciphertext: inputAsArray);
 
-
         var cryptoClientMock = new Mock<CryptographyClient>(MockBehavior.Strict);
         cryptoClientMock.Setup(client =>
                 client.EncryptAsync(It.IsAny<EncryptionAlgorithm>(), It.IsAny<byte[]>(), default))
             .ReturnsAsync(encryptResult);
 
-        var controller = new KeyVaultController(cryptoClientMock.Object);
+        var cryptoClientProviderMock = new Mock<ICryptographyClientProvider>(MockBehavior.Strict);
+        cryptoClientProviderMock.Setup(provider => provider.GetCryptographyClientAsync())
+            .ReturnsAsync(cryptoClientMock.Object);
+
+        var controller = new KeyVaultEncryptionService(cryptoClientProviderMock.Object);
 
         //Act
         string expected = Convert.ToBase64String(inputAsArray);
@@ -55,13 +60,16 @@ public class KeyVaultControllerTests
         var inputAsArray = Convert.FromBase64String(input);
         var decryptResult = CryptographyModelFactory.DecryptResult(plaintext: inputAsArray);
 
-
         var cryptoClientMock = new Mock<CryptographyClient>(MockBehavior.Strict);
         cryptoClientMock.Setup(client =>
                 client.DecryptAsync(It.IsAny<EncryptionAlgorithm>(), It.IsAny<byte[]>(), default))
             .ReturnsAsync(decryptResult);
 
-        var controller = new KeyVaultController(cryptoClientMock.Object);
+        var cryptoClientProviderMock = new Mock<ICryptographyClientProvider>(MockBehavior.Strict);
+        cryptoClientProviderMock.Setup(provider => provider.GetCryptographyClientAsync())
+            .ReturnsAsync(cryptoClientMock.Object);
+
+        var controller = new KeyVaultEncryptionService(cryptoClientProviderMock.Object);
 
         //Act
         string expected = Encoding.UTF8.GetString(inputAsArray);

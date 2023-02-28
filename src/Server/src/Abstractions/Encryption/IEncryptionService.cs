@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 public interface IEncryptionService
 {
-    string GetEncryptionKeyNameBase64();
+    Task<string> GetEncryptionKeyNameBase64Async();
 
     Task<string> EncryptAsync(string input, CancellationToken cancellationToken);
 

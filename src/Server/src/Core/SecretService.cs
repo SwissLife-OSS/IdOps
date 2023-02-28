@@ -44,7 +44,7 @@ namespace IdOps
             if (request.SaveValue.GetValueOrDefault())
             {
                 secret.EncryptedSecret = await _encryptionService.EncryptAsync(secretValue, CancellationToken.None);
-                secret.EncryptionKeyId = _encryptionService.GetEncryptionKeyNameBase64();
+                secret.EncryptionKeyId = await _encryptionService.GetEncryptionKeyNameBase64Async();
             }
 
             return (secret, secretValue);
