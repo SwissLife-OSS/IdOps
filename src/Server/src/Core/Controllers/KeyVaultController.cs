@@ -20,8 +20,6 @@ public class KeyVaultController : IKeyVaultController
 
     public KeyVaultController(AzureKeyVaultOptions options)
     {
-
-
         _keyVaultUri = options.KeyVaultUri;
         _keyVaultKeyName = options.EncryptionKeyName;
         _cryptographyClient = GetCryptographyClient().Result;
