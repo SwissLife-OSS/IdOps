@@ -4,16 +4,19 @@ using System.Threading.Tasks;
 using IdOps.Model;
 using IdentityModel;
 using System.Linq;
+using System.Threading;
 
 namespace IdOps
 {
     public class SecretService : ISecretService
     {
         private readonly IEnumerable<ISharedSecretGenerator> _sharedSecretGenerators;
+        private readonly IEncryptionService _encryptionService;
 
-        public SecretService(IEnumerable<ISharedSecretGenerator> sharedSecretGenerators)
+        public SecretService(IEnumerable<ISharedSecretGenerator> sharedSecretGenerators, IEncryptionService encryptionService)
         {
             _sharedSecretGenerators = sharedSecretGenerators;
+            _encryptionService = encryptionService;
         }
 
         public async Task<(Secret, string)> CreateSecretAsync(AddSecretRequest request)
@@ -37,13 +40,15 @@ namespace IdOps
 
             secret.Value = secretValue.ToSha256();
 
+
             if (request.SaveValue.GetValueOrDefault())
             {
-                // Encrypt and save to KV
-                await Task.Delay(0);
+                secret.EncryptedSecret = await _encryptionService.EncryptAsync(secretValue, CancellationToken.None);
+                secret.EncryptionKeyId = await _encryptionService.GetEncryptionKeyNameBase64Async();
             }
 
             return (secret, secretValue);
         }
+
     }
 }
