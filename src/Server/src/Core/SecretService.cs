@@ -50,5 +50,11 @@ namespace IdOps
             return (secret, secretValue);
         }
 
+        public async Task<string> GetDecryptedSecretAsync(Secret secret, CancellationToken cancellationToken)
+        {
+            var encryptedValue = secret.EncryptedSecret ?? throw new ArgumentNullException("secret.EncryptedSecret");
+            return await _encryptionService.DecryptAsync(encryptedValue,cancellationToken);
+        }
+
     }
 }

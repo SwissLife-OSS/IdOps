@@ -30,7 +30,7 @@ public class KeyVaultEncryptionService : IEncryptionService
         var cryptographyClient = await _cryptographyClientProvider.GetCryptographyClientAsync();
 
         EncryptResult result = await cryptographyClient
-            .EncryptAsync(EncryptionAlgorithm, inputAsArray).ConfigureAwait(false);
+            .EncryptAsync(EncryptionAlgorithm, inputAsArray, cancellationToken);
 
         return Convert.ToBase64String(result.Ciphertext);
     }
@@ -41,7 +41,7 @@ public class KeyVaultEncryptionService : IEncryptionService
         var cryptographyClient = await _cryptographyClientProvider.GetCryptographyClientAsync();
 
         DecryptResult result = await cryptographyClient
-            .DecryptAsync(EncryptionAlgorithm, inputAsArray).ConfigureAwait(false);
+            .DecryptAsync(EncryptionAlgorithm, inputAsArray, cancellationToken);
 
         return Encoding.Default.GetString(result.Plaintext);
     }
