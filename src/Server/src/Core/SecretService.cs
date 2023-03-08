@@ -6,6 +6,7 @@ using IdOps.Exceptions;
 using IdentityModel;
 using System.Linq;
 using System.Threading;
+using IdOps.Data.Errors;
 using IdOps.Encryption;
 
 namespace IdOps
@@ -55,9 +56,12 @@ namespace IdOps
         public async Task<string> GetDecryptedSecretAsync(Secret secret,
             CancellationToken cancellationToken)
         {
-            var encryptedValue = secret.EncryptedSecret ??
-                                 throw new NoEncryptedSecretException(
-                                     "No Secret was saved to this client");
+            var encryptedValue = secret.EncryptedSecret;
+            if (encryptedValue == null)
+            {
+                ErrorException.Throw(new NoEncryptedSecretError());
+            }
+
             return await _encryptionService.DecryptAsync(encryptedValue, cancellationToken);
         }
     }
