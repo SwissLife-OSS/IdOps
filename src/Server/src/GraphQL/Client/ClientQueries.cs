@@ -45,5 +45,17 @@ namespace IdOps.GraphQL
                 input,
                 cancellationToken);
         }
+
+        [AuthorizeClientAuthoring(AccessMode.Read, includeTenantAuth: false)]
+        public async Task<GetClientSecretPayload> GetClientSecretAsync(
+            GetClientSecretRequest input,
+            CancellationToken cancellationToken)
+        {
+            (Client client, string secret) = await _clientService.GetClientSecretAsync(
+                input,
+                cancellationToken);
+
+            return new GetClientSecretPayload(client, secret);
+        }
     }
 }
