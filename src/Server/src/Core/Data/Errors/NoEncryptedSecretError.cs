@@ -2,6 +2,7 @@
 
 namespace IdOps.Data.Errors;
 
-public record NoEncryptedSecretError() : Error("The provided client has no encrypted secret saved.")
+public record NoEncryptedSecretError() : Error(
+    "The provided client has no encrypted secret saved.")
 {
 }

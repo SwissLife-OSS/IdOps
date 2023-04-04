@@ -10,13 +10,15 @@ namespace IdOps.GraphQL
     {
         private readonly IClientService _clientService;
 
-        public ClientMutations(IClientService clientService)
+        public ClientMutations(
+            IClientService clientService)
         {
             _clientService = clientService;
         }
 
         [AuthorizeClientAuthoring(AccessMode.Write, includeTenantAuth: true)]
-        public async Task<SaveClientPayload> CreateClientAsync(CreateClientRequest input,
+        public async Task<SaveClientPayload> CreateClientAsync(
+            CreateClientRequest input,
             CancellationToken cancellationToken)
         {
             Client client = await _clientService.CreateClientAsync(input, cancellationToken);
@@ -25,7 +27,8 @@ namespace IdOps.GraphQL
         }
 
         [AuthorizeClientAuthoring(AccessMode.Write, includeTenantAuth: true)]
-        public async Task<SaveClientPayload> UpdateClientAsync(UpdateClientRequest input,
+        public async Task<SaveClientPayload> UpdateClientAsync(
+            UpdateClientRequest input,
             CancellationToken cancellationToken)
         {
             Client client = await _clientService.UpdateClientAsync(input, cancellationToken);
@@ -34,7 +37,8 @@ namespace IdOps.GraphQL
         }
 
         [AuthorizeClientAuthoring(AccessMode.Write, includeTenantAuth: false)]
-        public async Task<AddClientSecretPayload> AddClientSecretAsync(AddClientSecretRequest input,
+        public async Task<AddClientSecretPayload> AddClientSecretAsync(
+            AddClientSecretRequest input,
             CancellationToken cancellationToken)
         {
             (Client client, string secret) result =

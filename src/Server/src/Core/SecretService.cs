@@ -53,7 +53,8 @@ namespace IdOps
             return (secret, secretValue);
         }
 
-        public async Task<string> GetDecryptedSecretAsync(Secret secret,
+        public async Task<string> GetDecryptedSecretAsync(
+            Secret secret,
             CancellationToken cancellationToken)
         {
             var encryptedValue = secret.EncryptedSecret;
