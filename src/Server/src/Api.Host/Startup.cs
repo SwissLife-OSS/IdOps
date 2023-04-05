@@ -31,8 +31,7 @@ namespace IdOps.Api
                 .AddGraphQLServer()
                 .AddAzureKeyVault();
 
-            services.AddSingleton <IIdentityService,IdentityService>();
-
+            services.AddAuthTokenGenerator();
             services.AddMemoryCache();
             services.AddAuthentication(HostEnvironment, builder.Configuration);
             services.AddAuthorization(builder.Configuration);
