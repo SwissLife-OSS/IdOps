@@ -51,7 +51,7 @@ namespace IdOps.GraphQL
         public async Task<SaveClientPayload> RemoveClientSecretAsync(
             RemoveClientSecretRequest input, CancellationToken cancellationToken)
         {
-            Client client = await _clientService.RemoveClientSecretAsync(input, cancellationToken);
+            IdOps.Model.Client client = await _clientService.RemoveClientSecretAsync(input, cancellationToken);
 
             return new SaveClientPayload(client);
         }

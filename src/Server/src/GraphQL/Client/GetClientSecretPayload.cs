@@ -11,7 +11,7 @@ public class GetClientSecretPayload
         Errors = errors;
     }
 
-    public Duende.IdentityServer.Models.Client? Client { get; }
+    public Client? Client { get; }
 
     public string? Secret { get; }
 

@@ -1,4 +1,6 @@
-using Duende.IdentityServer.Models;
+
+
+using IdOps.Model;
 
 namespace IdOps.GraphQL
 {
