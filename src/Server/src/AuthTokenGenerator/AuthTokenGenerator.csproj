@@ -9,6 +9,11 @@
     <ItemGroup>
       <PackageReference Include="IdentityModel" Version="6.0.0" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.15" />
+      <PackageReference Include="Serilog" Version="3.0.0-dev-01958" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

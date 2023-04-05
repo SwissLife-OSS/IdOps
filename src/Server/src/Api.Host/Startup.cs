@@ -1,3 +1,4 @@
+using IdOps.Abstractions;
 using IdOps.Api.Security;
 using IdOps.AspNet;
 using IdOps.Authorization;
@@ -29,6 +30,8 @@ namespace IdOps.Api
                 .AddMongoStore()
                 .AddGraphQLServer()
                 .AddAzureKeyVault();
+
+            services.AddSingleton <IIdentityService,IdentityService>();
 
             services.AddMemoryCache();
             services.AddAuthentication(HostEnvironment, builder.Configuration);
