@@ -1,6 +1,7 @@
 using System.Text.Json;
+using IdOps.Models;
 
-namespace IdOps.Models
+namespace IdOps.Certification
 {
     public class KeyRing
     {

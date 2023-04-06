@@ -1,6 +1,6 @@
 using IdOps.Models;
 
-namespace IdOps.Abstractions
+namespace IdOps.Certification
 {
     public interface IDataProtector
     {

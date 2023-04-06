@@ -6,7 +6,7 @@ namespace IdOps.Models
 {
     public class SettingsStore : ISettingsStore
     {
-        private const string AppName = "boost";
+        private const string AppName = "IdOps";
         private readonly IUserDataProtector _userDataProtector;
 
         public SettingsStore(IUserDataProtector userDataProtector)

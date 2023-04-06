@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -64,6 +65,8 @@ namespace IdOps.GraphQL
         {
             Client? client = await _clientService.GetByIdAsync(input.ClientId, cancellationToken);
 
+            var clientId = client.ClientId;
+
             Secret clientSecret =
                 client.ClientSecrets.First(secret => secret.Id.Equals(input.SecretId));
             var secret =
@@ -72,10 +75,17 @@ namespace IdOps.GraphQL
 
             var grantTypes = client.AllowedGrantTypes.First();
 
-            var scopes = client.AllowedScopes.Cast<string>();
+            //var scopes = client.AllowedScopes.Cast<string>();
+            var scopes = new List<string>{"api.read"};
 
-            var tokenRequestData = new TokenRequestData(input.Authority, input.ClientId.ToString(),
-                secret, grantTypes, scopes, input.Parameters)
+
+            var tokenRequestData = new TokenRequestData(
+                input.Authority,
+                clientId,
+                secret,
+                grantTypes,
+                scopes,
+                input.Parameters)
             {
                 RequestId = input.RequestId, SaveTokens = input.SaveTokens
             };

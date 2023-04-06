@@ -1,7 +1,8 @@
 using System.Runtime.InteropServices;
 using IdOps.Abstractions;
+using IdOps.Models;
 
-namespace IdOps.Models
+namespace IdOps
 {
     public class DefaultShellService : IDefaultShellService
     {

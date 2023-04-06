@@ -1,8 +1,9 @@
 using System.Text;
 using IdOps.Abstractions;
+using IdOps.Models;
 using Serilog;
 
-namespace IdOps.Models
+namespace IdOps.Certification
 {
     public class KeyRingUserDataProtector : IUserDataProtector
     {
