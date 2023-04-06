@@ -11,14 +11,18 @@ namespace IdOps.GraphQL;
 
 public class TokenRequestDataFactory : IFactory<TokenRequestData, TokenRequestInput>
 {
-    private IEncryptionService _encryptionService;
-    private IClientService _clientService;
+    private readonly IEncryptionService _encryptionService;
+    private readonly IClientService _clientService;
+    private readonly IApiScopeService _scopeService;
 
-    public TokenRequestDataFactory(IEncryptionService encryptionService,
-        IClientService clientService)
+    public TokenRequestDataFactory(
+        IEncryptionService encryptionService,
+        IClientService clientService,
+        IApiScopeService apiScopeService)
     {
         _encryptionService = encryptionService;
         _clientService = clientService;
+        _scopeService = apiScopeService;
     }
 
 
@@ -31,7 +35,6 @@ public class TokenRequestDataFactory : IFactory<TokenRequestData, TokenRequestIn
             throw new ArgumentNullException($"Element with ID {input.ClientId} not found.");
         }
 
-
         var clientId = client.ClientId;
 
         string secretEncrypted =
@@ -41,16 +44,18 @@ public class TokenRequestDataFactory : IFactory<TokenRequestData, TokenRequestIn
 
         var grantTypes = client.AllowedGrantTypes.First();
 
-        //var scopes = client.AllowedScopes.Cast<string>();
-        var scopes = new List<string> { "api.read" };
-
+        var scopeIds =
+            client.AllowedScopes.ToList().ConvertAll(clientScope => clientScope.Id );
+        var scopes =
+            await _scopeService.GetByIdsAsync(scopeIds,cancellationToken);
+        var scopeNames = scopes.Select(scope => scope.Name).ToList();
 
         var tokenRequestData =
             new TokenRequestData(
                 input.Authority,
                 clientId, secretDecrypted,
                 grantTypes,
-                scopes,
+                scopeNames,
                 input.Parameters)
                 { RequestId = input.RequestId,
                     SaveTokens = input.SaveTokens };
