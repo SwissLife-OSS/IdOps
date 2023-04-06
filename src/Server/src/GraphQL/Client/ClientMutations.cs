@@ -60,35 +60,12 @@ namespace IdOps.GraphQL
         [AuthorizeClientAuthoring(AccessMode.Write, includeTenantAuth: false)]
         public async Task<RequestTokenPayload> RequestTokenAsync(
             [Service] IIdentityService identityService,
-            [Service] IEncryptionService encryptionService, TokenRequestInput input,
+            [Service] IFactory<TokenRequestData, TokenRequestInput> requestFactory,
+            TokenRequestInput input,
             CancellationToken cancellationToken)
         {
-            Client? client = await _clientService.GetByIdAsync(input.ClientId, cancellationToken);
-
-            var clientId = client.ClientId;
-
-            Secret clientSecret =
-                client.ClientSecrets.First(secret => secret.Id.Equals(input.SecretId));
-            var secret =
-                await encryptionService.DecryptAsync(clientSecret.EncryptedSecret,
-                    cancellationToken);
-
-            var grantTypes = client.AllowedGrantTypes.First();
-
-            //var scopes = client.AllowedScopes.Cast<string>();
-            var scopes = new List<string>{"api.read"};
-
-
-            var tokenRequestData = new TokenRequestData(
-                input.Authority,
-                clientId,
-                secret,
-                grantTypes,
-                scopes,
-                input.Parameters)
-            {
-                RequestId = input.RequestId, SaveTokens = input.SaveTokens
-            };
+            var tokenRequestData =
+                await requestFactory.Create(input,cancellationToken);
 
 
             RequestTokenResult tokenResult =
