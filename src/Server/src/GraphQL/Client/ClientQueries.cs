@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate.Types;
+using IdOps.Data.Errors;
+using IdOps.Exceptions;
 using IdOps.Model;
 
 namespace IdOps.GraphQL
@@ -12,8 +14,7 @@ namespace IdOps.GraphQL
     {
         private readonly IClientService _clientService;
 
-        public ClientQueries(
-            IClientService clientService)
+        public ClientQueries(IClientService clientService)
         {
             _clientService = clientService;
         }
@@ -37,13 +38,34 @@ namespace IdOps.GraphQL
         }
 
         [AuthorizeClientAuthoring(AccessMode.Read, includeTenantAuth: true)]
-        public async Task<SearchResult<Client>> SearchClientsAsync(
-            SearchClientsRequest input,
+        public async Task<SearchResult<Client>> SearchClientsAsync(SearchClientsRequest input,
             CancellationToken cancellationToken)
         {
-            return await _clientService.SearchClientsAsync(
-                input,
-                cancellationToken);
+            return await _clientService.SearchClientsAsync(input, cancellationToken);
+        }
+
+        [AuthorizeClientAuthoring(AccessMode.Read, includeTenantAuth: true)]
+        public async Task<GetClientSecretPayload> GetClientSecretAsync(GetClientSecretRequest input,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                (Client client, string secret) =
+                    await _clientService.GetClientSecretAsync(input, cancellationToken);
+                return new GetClientSecretPayload(client, secret);
+            }
+            catch (ErrorException e)
+            {
+                Client client =
+                    await _clientService.GetByIdAsync(input.ClientId, cancellationToken);
+
+                if (e.Error is NoEncryptedSecretError error)
+                {
+                    return new GetClientSecretPayload(client, "", error);
+                }
+
+                throw new InvalidOperationException();
+            }
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
+namespace IdOps.Encryption;
+
 public interface IEncryptionService
 {
     Task<string> GetEncryptionKeyNameBase64Async();

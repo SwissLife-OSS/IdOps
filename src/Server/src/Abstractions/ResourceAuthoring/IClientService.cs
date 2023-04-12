@@ -13,6 +13,7 @@ namespace IdOps
         Task<Client> CreateClientAsync(Client client, CancellationToken cancellationToken);
         IReadOnlyList<string> GetClientIdGenerators();
         IReadOnlyList<string> GetSharedSecretGenerators();
+        Task<(Client, string)> GetClientSecretAsync(GetClientSecretRequest request, CancellationToken cancellationToken);
         Task<Client> RemoveClientSecretAsync(RemoveClientSecretRequest request, CancellationToken cancellationToken);
         Task<SearchResult<Client>> SearchClientsAsync(SearchClientsRequest request, CancellationToken cancellationToken);
         Task<Client> UpdateClientAsync(UpdateClientRequest request, CancellationToken cancellationToken);
