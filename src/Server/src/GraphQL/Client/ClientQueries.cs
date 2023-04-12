@@ -44,7 +44,7 @@ namespace IdOps.GraphQL
             return await _clientService.SearchClientsAsync(input, cancellationToken);
         }
 
-        [AuthorizeClientAuthoring(AccessMode.Read, includeTenantAuth: false)]
+        [AuthorizeClientAuthoring(AccessMode.Read, includeTenantAuth: true)]
         public async Task<GetClientSecretPayload> GetClientSecretAsync(GetClientSecretRequest input,
             CancellationToken cancellationToken)
         {
