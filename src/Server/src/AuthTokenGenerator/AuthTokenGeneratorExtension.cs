@@ -13,6 +13,7 @@ public static class AuthTokenGeneratorExtension
         services.AddSingleton<IDefaultShellService, DefaultShellService>();
         services.AddSingleton<ITokenAnalyzer, TokenAnalyzer>();
         services.AddSingleton<ISettingsStore, SettingsStore>();
+        services.AddSingleton<IHttpClientWrapper, HttpClientWrapper>();
         services.AddSingleton<IUserSettingsManager, UserSettingsManager>();
         services.AddSingleton<IIdentityService, IdentityService>();
         services.AddSingleton<IAuthTokenStore, UserDataAuthTokenStore>();

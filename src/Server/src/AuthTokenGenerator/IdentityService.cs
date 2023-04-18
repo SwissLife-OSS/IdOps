@@ -7,46 +7,22 @@ namespace IdOps
 {
     public class IdentityService : IIdentityService
     {
+        //TODO: Extract clientFactory (& tokenAnalyzer) into OidcController for easier mock
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IHttpClientWrapper _httpClientWrapper;
         private readonly ITokenAnalyzer _tokenAnalyzer;
         private readonly IAuthTokenStore _authTokenStore;
 
         public IdentityService(
             IHttpClientFactory httpClientFactory,
+            IHttpClientWrapper httpClientWrapper,
             ITokenAnalyzer tokenAnalyzer,
             IAuthTokenStore authTokenStore)
         {
             _httpClientFactory = httpClientFactory;
+            _httpClientWrapper = httpClientWrapper;
             _tokenAnalyzer = tokenAnalyzer;
             _authTokenStore = authTokenStore;
-        }
-
-        public async Task<UserInfoResult> GetUserInfoAsync(
-            string token,
-            CancellationToken cancellationToken)
-        {
-            var handler = new JwtSecurityTokenHandler();
-            JwtSecurityToken? jwt = handler.ReadToken(token) as JwtSecurityToken;
-
-            if (jwt is { })
-            {
-                var issuer = jwt.Claims.Single(x => x.Type == "iss").Value;
-
-                var client = new HttpClient();
-                UserInfoResponse? response = await client.GetUserInfoAsync(
-                    new UserInfoRequest
-                    {
-                        Address = issuer.Trim('/') + "/connect/userinfo",
-                        Token = token
-                    }, cancellationToken);
-
-                return new UserInfoResult(response.Error)
-                {
-                    Claims = response.Claims.Select(x => new UserClaim(x.Type, x.Value))
-                };
-            }
-
-            return new UserInfoResult("InvalidToken");
         }
 
         public async Task<RequestTokenResult> RequestTokenAsync(
@@ -126,49 +102,7 @@ namespace IdOps
 
             await _authTokenStore.StoreAsync(model, cancellationToken);
         }
-
-        public async Task<IEnumerable<TokenInfo>> RefreshTokenAsync(
-            IdentityRequestItemData identityRequest,
-            string refreshToken,
-            CancellationToken cancellationToken)
-        {
-            var tokens = new List<TokenInfo>();
-
-            HttpClient? httpClient = _httpClientFactory.CreateClient();
-            DiscoveryDocumentResponse? disco = await GetDiscoveryDocumentAsync(
-                identityRequest.Authority,
-                cancellationToken);
-
-            TokenResponse tokenResponse = await httpClient.RequestRefreshTokenAsync(
-                new RefreshTokenRequest
-                {
-                    Address = disco.TokenEndpoint,
-                    ClientId = identityRequest.ClientId,
-                    ClientSecret = identityRequest.Secret,
-                    RefreshToken = refreshToken
-                }, cancellationToken);
-
-            if (tokenResponse.IsError)
-            {
-                throw new ApplicationException(
-                    $"Could not refresh token. {tokenResponse.Error}");
-            }
-
-            tokens.Add(new TokenInfo(TokenType.Refresh, tokenResponse.RefreshToken));
-            tokens.Add(new TokenInfo(TokenType.Access, tokenResponse.AccessToken)
-            {
-                ExpiresAt = DateTimeOffset.UtcNow.AddSeconds(tokenResponse.ExpiresIn)
-            });
-
-            if (tokenResponse.IdentityToken is { })
-            {
-                tokens.Add(new TokenInfo(TokenType.Id, tokenResponse.IdentityToken));
-            }
-
-            return tokens;
-        }
-
-
+        
         public async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(
             string authority,
             CancellationToken cancellationToken)
