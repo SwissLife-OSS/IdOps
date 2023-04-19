@@ -114,7 +114,8 @@ namespace IdOps
                 .SetSource(request.Source)
                 .SetTenant(request.Tenant)
                 .SetAllowedApplications(request.AllowedApplicationIds)
-                .SetAllowedScopes(request.AllowedScopes);
+                .SetAllowedScopes(request.AllowedScopes)
+                .SetHashAlgorithm(request.HashAlgorithm);
 
             foreach (var (type, value) in request.ClaimsExtensions)
             {
