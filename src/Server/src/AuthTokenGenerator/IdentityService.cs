@@ -7,19 +7,15 @@ namespace IdOps
 {
     public class IdentityService : IIdentityService
     {
-        //TODO: Extract clientFactory (& tokenAnalyzer) into OidcController for easier mock
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IHttpClientWrapper _httpClientWrapper;
         private readonly ITokenAnalyzer _tokenAnalyzer;
         private readonly IAuthTokenStore _authTokenStore;
 
         public IdentityService(
-            IHttpClientFactory httpClientFactory,
             IHttpClientWrapper httpClientWrapper,
             ITokenAnalyzer tokenAnalyzer,
             IAuthTokenStore authTokenStore)
         {
-            _httpClientFactory = httpClientFactory;
             _httpClientWrapper = httpClientWrapper;
             _tokenAnalyzer = tokenAnalyzer;
             _authTokenStore = authTokenStore;
@@ -29,15 +25,14 @@ namespace IdOps
             TokenRequestData request,
             CancellationToken cancellationToken)
         {
-            HttpClient httpClient = _httpClientFactory.CreateClient();
-            DiscoveryDocumentResponse disco = await GetDiscoveryDocumentAsync(
+            DiscoveryDocumentResponse disco = await _httpClientWrapper.GetDiscoveryDocumentAsync(
                 request.Authority,
                 cancellationToken);
             TokenResponse? response = null;
 
             if (request.GrantType == "client_credentials")
             {
-                response = await httpClient.RequestClientCredentialsTokenAsync(
+                response = await _httpClientWrapper.RequestClientCredentialsTokenAsync(
                     new ClientCredentialsTokenRequest
                     {
                         Address = disco.TokenEndpoint,
@@ -45,7 +40,7 @@ namespace IdOps
                         ClientSecret = request.Secret,
                         GrantType = request.GrantType,
                         Scope = request.Scopes.Any() ? string.Join(" ", request.Scopes) : null
-                    });
+                    }, CancellationToken.None);
             }
             else
             {
@@ -56,7 +51,7 @@ namespace IdOps
                     pars.Add("scope", string.Join(" ", request.Scopes));
                 }
 
-                response = await httpClient.RequestTokenAsync(
+                response = await _httpClientWrapper.RequestTokenAsync(
                     new TokenRequest
                     {
                         Address = disco.TokenEndpoint,
@@ -64,7 +59,7 @@ namespace IdOps
                         ClientSecret = request.Secret,
                         GrantType = request.GrantType,
                         Parameters = new Parameters(pars)
-                    });
+                    }, CancellationToken.None);
             }
 
             if (!response!.IsError)
@@ -101,17 +96,6 @@ namespace IdOps
             });
 
             await _authTokenStore.StoreAsync(model, cancellationToken);
-        }
-        
-        public async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(
-            string authority,
-            CancellationToken cancellationToken)
-        {
-            HttpClient httpClient = _httpClientFactory.CreateClient();
-            DiscoveryDocumentResponse disco = await httpClient
-                .GetDiscoveryDocumentAsync(authority, cancellationToken);
-
-            return disco;
         }
     }
 }

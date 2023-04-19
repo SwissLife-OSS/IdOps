@@ -10,68 +10,179 @@ namespace IdOps
 {
     public class IdentityServiceTests
     {
-        [Fact]
-        public async Task RequestTokenAsync_WithValidRequest_ShouldReturnToken()
+        private Mock<IHttpClientWrapper> _httpClientWrapperMock;
+        private Mock<ITokenAnalyzer> _tokenAnalyzerMock;
+        private Mock<IAuthTokenStore> _authTokenStoreMock;
+
+
+        [Theory]
+        [InlineData("client_credentials", 0, 1)]
+        [InlineData("foobar", 1, 0)]
+        public async Task RequestTokenAsync_WithValidRequest_ShouldReturnToken(
+            string grantType,
+            int timesTokenRequest, 
+            int timesCredentialsRequest)
         {
             //Arrange
-            var tokenRequestData = new TokenRequestData("http://localhost:1234",
-                "11111111111111111111111111111111",
-                "thisIsATestSecret" +
-                "111111111111111111111111111111111111111111111111111111111111111111111",
-                "client_credentials", new[] { "scope1", "scope2" },
-                new[] { new TokenRequestParameter("test") });
+            initializeMocks();
 
-            var tokenResponse = new DummyTokenResponse(JsonDocument.Parse(
-                    "{\"access_token\": \"eyJhbGciOiJSUzI1NiIsImtpZCI6IjE1QTg3QThCNkRCMzZEQTE2OURCMDU1M0VERkYwOERCIiwidHlwIjoiYXQrand0In0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDEiLCJuYmYiOjE2ODEzNjY5MzksImlhdCI6MTY4MTM2NjkzOSwiZXhwIjoxNjgxMzcwNTM5LCJzY29wZSI6WyJhcGkucmVhZCJdLCJjbGllbnRfaWQiOiI3OWRjMTNmNDdmZDI0MTQ4YjRhYmE2ZTZlNzk3ODc2YSIsImp0aSI6IjU5NUVEMjhCODY3REJDRkQxQkY2RUZCOUY0REY5RkI0In0.VbCNgtoBCWpumUjSaMrdrAksyTuko7Np0ieAIfddrUKw6EDROqsyN2mtwQ5F2IFGiFjHRlrUQUHGxgxY-d4jR2tLz9N7mPMmXMYRX3Vsf14gULnGy7lcX2y3LCBmZPeLzf0MLDMeDScCWMUQCxI3ZynrGKNsqMLO5FOGNSDPDCRk7ig8NX34PfXZmqM_Wd8KSvOwQbMqTU2JtNu5DCoX9M36To_5W3otO-IPpQZMz8GkEVIyPlGjknlhA40XSo19FlsxNdLEnKQJYlMyI9WKpAdsbVYjgQqGHjzZaGpE2h1hz6EQX8yVUNQ4_u3XtninbTrPNftLvuQkj4DZtsdQrg\",  \"expires_in\": 3600,  \"token_type\": \"Bearer\",  \"scope\": \"api.read\"}")
-                .RootElement);
+            //Setup httpClientWrapperMock
+            _httpClientWrapperMock
+                .Setup(wrapper =>
+                    wrapper.RequestTokenAsync(It.IsAny<TokenRequest>(),
+                        It.IsAny<CancellationToken>())).ReturnsAsync(CreateToken);
 
-            var httpClientMock = new Mock<HttpClient>(MockBehavior.Strict);
+            _httpClientWrapperMock
+                .Setup(wrapper =>
+                    wrapper.GetDiscoveryDocumentAsync(It.IsAny<string>(),
+                        It.IsAny<CancellationToken>())).ReturnsAsync(CreateDiscoveryResponse());
 
-            httpClientMock.Setup(client => client.SendAsync(It.IsAny<HttpRequestMessage>(), CancellationToken.None))
-                .ReturnsAsync(new HttpResponseMessage(){RequestMessage = new HttpRequestMessage(HttpMethod.Post, "/test"),Content = JsonContent.Create<string>("{\"test\": \"value\"}")});
-            
+            _httpClientWrapperMock
+                .Setup(wrapper => wrapper.RequestClientCredentialsTokenAsync(
+                    It.IsAny<ClientCredentialsTokenRequest>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(CreateClientCredentialsResponse);
 
-            HttpClient httpClient = httpClientMock.Object;
-
-            var httpClientFactoryMock = new Mock<IHttpClientFactory>(MockBehavior.Strict);
-            httpClientFactoryMock.Setup(factory => factory.CreateClient(It.IsAny<string>())).Returns(httpClient);
-            IHttpClientFactory httpClientFactory = httpClientFactoryMock.Object;
-
-            var tokenAnalyzerMock = new Mock<ITokenAnalyzer>(MockBehavior.Strict);
-            tokenAnalyzerMock.Setup(analyzer =>
-                    analyzer.Analyze(It.Is<string>(s => s.Equals(tokenResponse.AccessToken))))
+            //Setup tokenAnalyzerMock
+            _tokenAnalyzerMock.Setup(analyzer => analyzer.Analyze(It.IsAny<string>()))
                 .Returns(new TokenModel());
-            ITokenAnalyzer tokenAnalyzer = tokenAnalyzerMock.Object;
 
-            var authTokenStoreMock = new Mock<IAuthTokenStore>(MockBehavior.Strict);
-            IAuthTokenStore authTokenStore = authTokenStoreMock.Object;
+            _tokenAnalyzerMock.Setup(analyzer => analyzer.Analyze(It.IsAny<string>()))
+                .Returns(new TokenModel());
 
-
-            var identityService =
-                new IdentityService(httpClientFactory, tokenAnalyzer, authTokenStore);
+            //Setup identityService
+            var identityService = new IdentityService(_httpClientWrapperMock.Object,
+                _tokenAnalyzerMock.Object, _authTokenStoreMock.Object);
 
             //Act
             RequestTokenResult _ =
-                await identityService.RequestTokenAsync(tokenRequestData, CancellationToken.None);
+                await identityService.RequestTokenAsync(CreateTokenRequestData(grantType),
+                    CancellationToken.None);
 
             //Assert
-            httpClientMock.VerifyAll();
-            httpClientFactoryMock.VerifyAll();
-            tokenAnalyzerMock.VerifyAll();
-            authTokenStoreMock.VerifyAll();
+            _httpClientWrapperMock.Verify(
+                wrapper => wrapper.RequestClientCredentialsTokenAsync(
+                    It.IsAny<ClientCredentialsTokenRequest>(), It.IsAny<CancellationToken>()),
+                Times.Exactly(timesCredentialsRequest));
+            _httpClientWrapperMock.Verify(
+                wrapper => wrapper.RequestTokenAsync(
+                    It.IsAny<TokenRequest>(), It.IsAny<CancellationToken>()),
+                Times.Exactly(timesTokenRequest));
+            _tokenAnalyzerMock.VerifyAll();
+            _authTokenStoreMock.VerifyAll();
         }
-    }
 
-    class DummyTokenResponse : TokenResponse
-    {
-        public DummyTokenResponse(JsonElement jsonElement)
+        private void initializeMocks()
         {
-            Json = jsonElement;
+            _httpClientWrapperMock = new Mock<IHttpClientWrapper>(MockBehavior.Strict);
+            _tokenAnalyzerMock = new Mock<ITokenAnalyzer>(MockBehavior.Strict);
+            _authTokenStoreMock = new Mock<IAuthTokenStore>(MockBehavior.Strict);
         }
-    }
 
-    interface IDummyHttpClinetDiscoveryExtensions
-    {
-        static Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(HttpClient client, string address = null, CancellationToken cancellationToken = default)
+        private TokenRequestData CreateTokenRequestData(string grantType)
+        {
+            var tokenRequestData = new TokenRequestData("http://localhost:1234",
+                "11111111111111111111111111111111",
+                "thisIsATestSecret" +
+                "111111111111111111111111111111111111111111111111111111111111111111111", grantType,
+                new[] { "scope1", "scope2" }, new[] { new TokenRequestParameter("test") });
+            return tokenRequestData;
+        }
+
+        private DiscoveryDocumentResponse CreateDiscoveryResponse()
+        {
+            var discoveryResponse = new DummyDiscoveryDocument(JsonDocument
+                .Parse("{\"issuer\":\"http://localhost:5001\"," +
+                       "\"jwks_uri\":\"http://localhost:5001/.well-known/openid-configuration/jwks\"," +
+                       "\"authorization_endpoint\":\"http://localhost:5001/connect/authorize\"," +
+                       "\"token_endpoint\":\"http://localhost:5001/connect/token\"," +
+                       "\"userinfo_endpoint\":\"http://localhost:5001/connect/userinfo\"," +
+                       "\"end_session_endpoint\":\"http://localhost:5001/connect/endsession\"," +
+                       "\"check_session_iframe\":\"http://localhost:5001/connect/checksession\"," +
+                       "\"revocation_endpoint\":\"http://localhost:5001/connect/revocation\"," +
+                       "\"introspection_endpoint\":\"http://localhost:5001/connect/introspect\"," +
+                       "\"device_authorization_endpoint\":\"http://localhost:5001/connect/deviceauthorization\"," +
+                       "\"backchannel_authentication_endpoint\":\"http://localhost:5001/connect/ciba\"," +
+                       "\"frontchannel_logout_supported\":true," +
+                       "\"frontchannel_logout_session_supported\":true," +
+                       "\"backchannel_logout_supported\":true," +
+                       "\"backchannel_logout_session_supported\":true," +
+                       "\"scopes_supported\":[\"openid\",\"api.read\",\"offline_access\"]," +
+                       "\"claims_supported\":[\"sub\"]," +
+                       "\"grant_types_supported\":[\"authorization_code\",\"client_credentials\",\"refresh_token\",\"implicit\",\"urn:ietf:params:oauth:grant-type:device_code\",\"urn:openid:params:grant-type:ciba\",\"personal_access_token\"]," +
+                       "\"response_types_supported\":[\"code\",\"token\",\"id_token\",\"id_token token\",\"code id_token\",\"code token\",\"code id_token token\"]," +
+                       "\"response_modes_supported\":[\"form_post\",\"query\",\"fragment\"],\"token_endpoint_auth_methods_supported\":[\"client_secret_basic\",\"client_secret_post\"]," +
+                       "\"id_token_signing_alg_values_supported\":[\"RS256\"]," +
+                       "\"subject_types_supported\":[\"public\"],\"" +
+                       "code_challenge_methods_supported\":[\"plain\",\"S256\"]," +
+                       "\"request_parameter_supported\":true," +
+                       "\"request_object_signing_alg_values_supported\":[\"RS256\",\"RS384\",\"RS512\",\"PS256\",\"PS384\",\"PS512\",\"ES256\",\"ES384\",\"ES512\",\"HS256\",\"HS384\",\"HS512\"]," +
+                       "\"authorization_response_iss_parameter_supported\":true,\"backchannel_token_delivery_modes_supported\":[\"poll\"],\"backchannel_user_code_parameter_supported\":true}")
+                .RootElement);
+
+            return discoveryResponse;
+        }
+
+        private TokenResponse CreateToken()
+        {
+            var token = new DummyTokenResponse(JsonDocument.Parse(
+                    "{\"issuer\":\"http://localhost:5001\"," +
+                    "\"jwks_uri\":\"http://localhost:5001/.well-known/openid-configuration/jwks\"," +
+                    "\"authorization_endpoint\":\"http://localhost:5001/connect/authorize\"," +
+                    "\"token_endpoint\":\"http://localhost:5001/connect/token\"," +
+                    "\"userinfo_endpoint\":\"http://localhost:5001/connect/userinfo\"," +
+                    "\"end_session_endpoint\":\"http://localhost:5001/connect/endsession\"," +
+                    "\"check_session_iframe\":\"http://localhost:5001/connect/checksession\"," +
+                    "\"revocation_endpoint\":\"http://localhost:5001/connect/revocation\"," +
+                    "\"introspection_endpoint\":\"http://localhost:5001/connect/introspect\"," +
+                    "\"device_authorization_endpoint\":\"http://localhost:5001/connect/deviceauthorization\"," +
+                    "\"backchannel_authentication_endpoint\":\"http://localhost:5001/connect/ciba\"," +
+                    "\"frontchannel_logout_supported\":true," +
+                    "\"frontchannel_logout_session_supported\":true," +
+                    "\"backchannel_logout_supported\":true," +
+                    "\"backchannel_logout_session_supported\":true," +
+                    "\"scopes_supported\":[\"openid\",\"api.read\",\"offline_access\"]," +
+                    "\"claims_supported\":[\"sub\"]," +
+                    "\"grant_types_supported\":[\"authorization_code\",\"client_credentials\",\"refresh_token\",\"implicit\",\"urn:ietf:params:oauth:grant-type:device_code\",\"urn:openid:params:grant-type:ciba\",\"personal_access_token\"]," +
+                    "\"response_types_supported\":[\"code\",\"token\",\"id_token\",\"id_token token\",\"code id_token\",\"code token\",\"code id_token token\"]," +
+                    "\"response_modes_supported\":[\"form_post\",\"query\",\"fragment\"],\"token_endpoint_auth_methods_supported\":[\"client_secret_basic\",\"client_secret_post\"]," +
+                    "\"id_token_signing_alg_values_supported\":[\"RS256\"]," +
+                    "\"subject_types_supported\":[\"public\"],\"" +
+                    "code_challenge_methods_supported\":[\"plain\",\"S256\"]," +
+                    "\"request_parameter_supported\":true," +
+                    "\"request_object_signing_alg_values_supported\":[\"RS256\",\"RS384\",\"RS512\",\"PS256\",\"PS384\",\"PS512\",\"ES256\",\"ES384\",\"ES512\",\"HS256\",\"HS384\",\"HS512\"]," +
+                    "\"authorization_response_iss_parameter_supported\":true,\"backchannel_token_delivery_modes_supported\":[\"poll\"],\"backchannel_user_code_parameter_supported\":true}")
+                .RootElement);
+            return token;
+        }
+
+        private TokenResponse CreateClientCredentialsResponse()
+        {
+            var clientCredentialToken = new DummyTokenResponse(JsonDocument.Parse(
+                "{\"access_token\": \"eyJhbGciOiJSUzI1NiIsImtpZCI6IjE1QTg3QThCNkRCMzZEQTE2OURCMDU1M0VERkYwOERCIiwidHlwIjoiYXQrand0In0." +
+                "eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDEiLCJuYmYiOjE2ODEzNjY5MzksImlhdCI6MTY4MTM2NjkzOSwiZXhwIjoxNjgxMzcwNTM5LCJzY29wZSI6WyJhcGkucmVhZCJdLCJjbGllbnRfaWQiOiI3" +
+                "OWRjMTNmNDdmZDI0MTQ4YjRhYmE2ZTZlNzk3ODc2YSIsImp0aSI6IjU5NUVEMjhCODY3REJDRkQxQkY2RUZCOUY0REY5RkI0In0." +
+                "VbCNgtoBCWpumUjSaMrdrAksyTuko7Np0ieAIfddrUKw6EDROqsyN2mtwQ5F2IFGiFjHRlrUQUHGxgxY-d4jR2tLz9N7mPMmXMYRX3Vsf14gULnGy7lcX2y3LCBmZ" +
+                "PeLzf0MLDMeDScCWMUQCxI3ZynrGKNsqMLO5FOGNSDPDCRk7ig8NX34PfXZmqM_Wd8KSvOwQbMqTU2JtNu5DCoX9M36To_5W3otO-IPpQZMz8GkEVIyPlGjknlhA40XSo19FlsxNdLEnKQJYlMyI9WKpAdsbVYjgQqGHjzZaGpE2h1hz" +
+                "6EQX8yVUNQ4_u3XtninbTrPNftLvuQkj4DZtsdQrg\"," + "  \"expires_in\": 3600," +
+                "  \"token_type\": \"Bearer\"," + "  \"scope\": \"api.read\"}").RootElement);
+            return clientCredentialToken;
+        }
+
+        class DummyTokenResponse : TokenResponse
+        {
+            public DummyTokenResponse(JsonElement jsonElement)
+            {
+                Json = jsonElement;
+            }
+        }
+
+
+        class DummyDiscoveryDocument : DiscoveryDocumentResponse
+        {
+            public DummyDiscoveryDocument(JsonElement jsonElement)
+            {
+                Json = jsonElement;
+            }
+        }
     }
 }
