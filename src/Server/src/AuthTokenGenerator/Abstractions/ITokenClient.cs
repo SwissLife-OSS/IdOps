@@ -2,7 +2,7 @@
 
 namespace IdOps.Abstractions;
 
-public interface IHttpClientWrapper
+public interface ITokenClient
 {
     Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(
         string address = null, 

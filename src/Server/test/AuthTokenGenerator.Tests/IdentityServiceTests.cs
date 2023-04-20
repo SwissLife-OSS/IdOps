@@ -10,7 +10,7 @@ namespace IdOps
 {
     public class IdentityServiceTests
     {
-        private Mock<IHttpClientWrapper> _httpClientWrapperMock;
+        private Mock<ITokenClient> _httpClientWrapperMock;
         private Mock<ITokenAnalyzer> _tokenAnalyzerMock;
 
         [Theory]
@@ -70,7 +70,7 @@ namespace IdOps
 
         private void initializeMocks()
         {
-            _httpClientWrapperMock = new Mock<IHttpClientWrapper>(MockBehavior.Strict);
+            _httpClientWrapperMock = new Mock<ITokenClient>(MockBehavior.Strict);
             _tokenAnalyzerMock = new Mock<ITokenAnalyzer>(MockBehavior.Strict);
         }
 

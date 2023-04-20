@@ -62,12 +62,12 @@ namespace IdOps.GraphQL
         [AuthorizeClientAuthoring(AccessMode.Write, includeTenantAuth: false)]
         public async Task<RequestTokenPayload> RequestTokenAsync(
             [Service] IIdentityService identityService,
-            [Service] IFactory<TokenRequestData, TokenRequestInput> requestFactory,
+            [Service] IResultFactory<TokenRequestData, TokenRequestInput> requestResultFactory,
             TokenRequestInput input,
             CancellationToken cancellationToken)
         {
             var tokenRequestData =
-                await requestFactory.Create(input,cancellationToken);
+                await requestResultFactory.Create(input,cancellationToken);
 
 
             RequestTokenResult tokenResult =

@@ -3,22 +3,22 @@ using IdOps.Abstractions;
 
 namespace IdOps.Certification;
 
-public class HttpClientWrapper : IHttpClientWrapper
+public class TokenClient : ITokenClient
 {
     private readonly IHttpClientFactory _httpClientFactory;
 
-    public HttpClientWrapper(IHttpClientFactory factory)
+    public TokenClient(IHttpClientFactory factory)
     {
         _httpClientFactory = factory;
     }
 
     public async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(
-        string authority,
-        CancellationToken cancellationToken)
+        string address = null,
+        CancellationToken cancellationToken = default)
     {
         using HttpClient httpClient = _httpClientFactory.CreateClient();
         DiscoveryDocumentResponse disco =
-            await httpClient.GetDiscoveryDocumentAsync(authority, cancellationToken);
+            await httpClient.GetDiscoveryDocumentAsync(address, cancellationToken);
 
         return disco;
     }

@@ -10,13 +10,13 @@ using IdOps.Models;
 
 namespace IdOps.GraphQL;
 
-public class TokenRequestDataFactory : IFactory<TokenRequestData, TokenRequestInput>
+public class TokenRequestDataResultFactory : IResultFactory<TokenRequestData, TokenRequestInput>
 {
     private readonly IEncryptionService _encryptionService;
     private readonly IClientService _clientService;
     private readonly IApiScopeService _scopeService;
 
-    public TokenRequestDataFactory(
+    public TokenRequestDataResultFactory(
         IEncryptionService encryptionService,
         IClientService clientService,
         IApiScopeService apiScopeService)

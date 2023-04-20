@@ -10,7 +10,7 @@ public static class AuthTokenGeneratorExtension
     public static IServiceCollection AddAuthTokenGenerator(this IServiceCollection services)
     {
         services.AddSingleton<ITokenAnalyzer, TokenAnalyzer>();
-        services.AddSingleton<IHttpClientWrapper, HttpClientWrapper>();
+        services.AddSingleton<ITokenClient, TokenClient>();
         services.AddSingleton<IIdentityService, IdentityService>();
         services.AddHttpClient();
         

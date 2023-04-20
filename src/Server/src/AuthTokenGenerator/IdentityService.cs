@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using IdentityModel.Client;
 using IdOps.Abstractions;
@@ -7,14 +8,14 @@ namespace IdOps
 {
     public class IdentityService : IIdentityService
     {
-        private readonly IHttpClientWrapper _httpClientWrapper;
+        private readonly ITokenClient _tokenClient;
         private readonly ITokenAnalyzer _tokenAnalyzer;
 
         public IdentityService(
-            IHttpClientWrapper httpClientWrapper,
+            ITokenClient tokenClient,
             ITokenAnalyzer tokenAnalyzer)
         {
-            _httpClientWrapper = httpClientWrapper;
+            _tokenClient = tokenClient;
             _tokenAnalyzer = tokenAnalyzer;
         }
 
@@ -22,59 +23,63 @@ namespace IdOps
             TokenRequestData request,
             CancellationToken cancellationToken)
         {
-            DiscoveryDocumentResponse disco = await _httpClientWrapper.GetDiscoveryDocumentAsync(
+            DiscoveryDocumentResponse disco = await _tokenClient.GetDiscoveryDocumentAsync(
                 request.Authority,
                 cancellationToken);
-            TokenResponse? response = null;
 
-            if (request.GrantType == "client_credentials")
+            TokenResponse? response = request.GrantType switch
             {
-                response = await _httpClientWrapper.RequestClientCredentialsTokenAsync(
-                    new ClientCredentialsTokenRequest
-                    {
-                        Address = disco.TokenEndpoint,
-                        ClientId = request.ClientId,
-                        ClientSecret = request.Secret,
-                        GrantType = request.GrantType,
-                        Scope = request.Scopes.Any() ? string.Join(" ", request.Scopes) : null
-                    }, CancellationToken.None);
+                "client_credentials" => await RequestClientCredentialTokenAsync(request, disco),
+                _ => await RequestOtherGrantTypeTokenAsync(request, disco)
+            };
+
+            if (response!.IsError)
+            {
+                return new RequestTokenResult(false) { ErrorMessage = response.Error };
             }
-            else
+            
+            TokenModel? accessToken = _tokenAnalyzer.Analyze(response.AccessToken);
+            return new RequestTokenResult(true)
             {
-                var pars = request.Parameters.ToDictionary(k => k.Name, v => v.Value);
+                AccessToken = accessToken
+            };
+        }
 
-                if (request.Scopes is { } s && s.Any())
+        private async Task<TokenResponse> RequestClientCredentialTokenAsync(
+            TokenRequestData request, 
+            DiscoveryDocumentResponse disco)
+        {
+            return await _tokenClient.RequestClientCredentialsTokenAsync(
+                new ClientCredentialsTokenRequest
                 {
-                    pars.Add("scope", string.Join(" ", request.Scopes));
-                }
+                    Address = disco.TokenEndpoint,
+                    ClientId = request.ClientId,
+                    ClientSecret = request.Secret,
+                    GrantType = request.GrantType,
+                    Scope = request.Scopes.Any() ? string.Join(" ", request.Scopes) : null
+                }, CancellationToken.None);
+        }
 
-                response = await _httpClientWrapper.RequestTokenAsync(
-                    new TokenRequest
-                    {
-                        Address = disco.TokenEndpoint,
-                        ClientId = request.ClientId,
-                        ClientSecret = request.Secret,
-                        GrantType = request.GrantType,
-                        Parameters = new Parameters(pars)
-                    }, CancellationToken.None);
+        private async Task<TokenResponse> RequestOtherGrantTypeTokenAsync(
+            TokenRequestData request,
+            DiscoveryDocumentResponse disco)
+        {
+            var pars = request.Parameters.ToDictionary(k => k.Name, v => v.Value);
+
+            if (request.Scopes is { } s && s.Any())
+            {
+                pars.Add("scope", string.Join(" ", request.Scopes));
             }
 
-            if (!response!.IsError)
-            {
-                TokenModel? accessToken = _tokenAnalyzer.Analyze(response.AccessToken);
-                
-                return new RequestTokenResult(true)
+            return await _tokenClient.RequestTokenAsync(
+                new TokenRequest
                 {
-                    AccessToken = accessToken
-                };
-            }
-            else
-            {
-                return new RequestTokenResult(false)
-                {
-                    ErrorMessage = response.Error
-                };
-            }
+                    Address = disco.TokenEndpoint,
+                    ClientId = request.ClientId,
+                    ClientSecret = request.Secret,
+                    GrantType = request.GrantType,
+                    Parameters = new Parameters(pars)
+                }, CancellationToken.None);
         }
     }
 }
