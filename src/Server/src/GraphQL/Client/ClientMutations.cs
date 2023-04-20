@@ -22,7 +22,7 @@ namespace IdOps.GraphQL
         }
 
         [AuthorizeClientAuthoring(AccessMode.Write, includeTenantAuth: true)]
-        public async Task<SaveClientPayload> CreateClien.tAsync(CreateClientRequest input,
+        public async Task<SaveClientPayload> CreateClientAsync(CreateClientRequest input,
             CancellationToken cancellationToken)
         {
             Client client = await _clientService.CreateClientAsync(input, cancellationToken);
