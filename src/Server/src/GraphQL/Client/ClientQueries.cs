@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate.Types;
 using IdOps.Data.Errors;
+
 using IdOps.Model;
 
 namespace IdOps.GraphQL
@@ -43,7 +44,7 @@ namespace IdOps.GraphQL
             return await _clientService.SearchClientsAsync(input, cancellationToken);
         }
 
-        [AuthorizeClientAuthoring(AccessMode.Read, includeTenantAuth: false)]
+        [AuthorizeClientAuthoring(AccessMode.Read, includeTenantAuth: true)]
         public async Task<GetClientSecretPayload> GetClientSecretAsync(GetClientSecretRequest input,
             CancellationToken cancellationToken)
         {
