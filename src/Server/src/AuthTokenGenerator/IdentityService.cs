@@ -9,16 +9,13 @@ namespace IdOps
     {
         private readonly IHttpClientWrapper _httpClientWrapper;
         private readonly ITokenAnalyzer _tokenAnalyzer;
-        private readonly IAuthTokenStore _authTokenStore;
 
         public IdentityService(
             IHttpClientWrapper httpClientWrapper,
-            ITokenAnalyzer tokenAnalyzer,
-            IAuthTokenStore authTokenStore)
+            ITokenAnalyzer tokenAnalyzer)
         {
             _httpClientWrapper = httpClientWrapper;
             _tokenAnalyzer = tokenAnalyzer;
-            _authTokenStore = authTokenStore;
         }
 
         public async Task<RequestTokenResult> RequestTokenAsync(
@@ -65,12 +62,7 @@ namespace IdOps
             if (!response!.IsError)
             {
                 TokenModel? accessToken = _tokenAnalyzer.Analyze(response.AccessToken);
-
-                if ( request.SaveTokens && request.RequestId.HasValue)
-                {
-                    await SaveTokenAsync(request, accessToken, cancellationToken);
-                }
-
+                
                 return new RequestTokenResult(true)
                 {
                     AccessToken = accessToken
@@ -83,19 +75,6 @@ namespace IdOps
                     ErrorMessage = response.Error
                 };
             }
-        }
-
-        private async Task SaveTokenAsync(TokenRequestData request, TokenModel? accessToken, CancellationToken cancellationToken)
-        {
-            var model = new TokenStoreModel($"R-{request.RequestId:N}", DateTime.UtcNow);
-            model.RequestId = request.RequestId;
-
-            model.Tokens.Add(new TokenInfo(TokenType.Access, accessToken!.Token!)
-            {
-                ExpiresAt = accessToken.ValidTo
-            });
-
-            await _authTokenStore.StoreAsync(model, cancellationToken);
         }
     }
 }

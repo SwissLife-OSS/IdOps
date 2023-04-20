@@ -12,8 +12,6 @@ namespace IdOps
     {
         private Mock<IHttpClientWrapper> _httpClientWrapperMock;
         private Mock<ITokenAnalyzer> _tokenAnalyzerMock;
-        private Mock<IAuthTokenStore> _authTokenStoreMock;
-
 
         [Theory]
         [InlineData("client_credentials", 0, 1)]
@@ -51,7 +49,7 @@ namespace IdOps
 
             //Setup identityService
             var identityService = new IdentityService(_httpClientWrapperMock.Object,
-                _tokenAnalyzerMock.Object, _authTokenStoreMock.Object);
+                _tokenAnalyzerMock.Object);
 
             //Act
             RequestTokenResult _ =
@@ -68,14 +66,12 @@ namespace IdOps
                     It.IsAny<TokenRequest>(), It.IsAny<CancellationToken>()),
                 Times.Exactly(timesTokenRequest));
             _tokenAnalyzerMock.VerifyAll();
-            _authTokenStoreMock.VerifyAll();
         }
 
         private void initializeMocks()
         {
             _httpClientWrapperMock = new Mock<IHttpClientWrapper>(MockBehavior.Strict);
             _tokenAnalyzerMock = new Mock<ITokenAnalyzer>(MockBehavior.Strict);
-            _authTokenStoreMock = new Mock<IAuthTokenStore>(MockBehavior.Strict);
         }
 
         private TokenRequestData CreateTokenRequestData(string grantType)

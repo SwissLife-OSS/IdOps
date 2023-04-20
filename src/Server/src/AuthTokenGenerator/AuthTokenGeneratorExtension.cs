@@ -16,7 +16,6 @@ public static class AuthTokenGeneratorExtension
         services.AddSingleton<IHttpClientWrapper, HttpClientWrapper>();
         services.AddSingleton<IUserSettingsManager, UserSettingsManager>();
         services.AddSingleton<IIdentityService, IdentityService>();
-        services.AddSingleton<IAuthTokenStore, UserDataAuthTokenStore>();
         services.AddHttpClient();
 
         services.AddSingleton<ICertificateManager, CertificateManager>();
