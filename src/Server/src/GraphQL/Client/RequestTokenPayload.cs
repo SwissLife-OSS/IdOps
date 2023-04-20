@@ -1,4 +1,5 @@
 ﻿using IdOps.Abstractions;
+using IdOps.Models;
 
 namespace IdOps.GraphQL
 {

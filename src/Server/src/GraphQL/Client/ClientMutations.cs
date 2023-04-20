@@ -7,6 +7,7 @@ using HotChocolate.Types;
 using IdOps.Abstractions;
 using IdOps.Encryption;
 using IdOps.Model;
+using IdOps.Models;
 
 namespace IdOps.GraphQL
 {

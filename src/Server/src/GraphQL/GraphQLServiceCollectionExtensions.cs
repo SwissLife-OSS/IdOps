@@ -9,6 +9,7 @@ using IdOps.GraphQL.GraphQL.Serialization;
 using IdOps.GraphQL.Hashing;
 using IdOps.GraphQL.Publish;
 using IdOps.Model;
+using IdOps.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdOps.GraphQL

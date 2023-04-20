@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using IdOps.Abstractions;
+using IdOps.Models;
 
 namespace IdOps.GraphQL
 {

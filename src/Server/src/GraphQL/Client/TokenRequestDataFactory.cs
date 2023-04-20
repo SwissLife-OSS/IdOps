@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using IdOps.Abstractions;
 using IdOps.Encryption;
 using IdOps.Model;
+using IdOps.Models;
 
 namespace IdOps.GraphQL;
 
