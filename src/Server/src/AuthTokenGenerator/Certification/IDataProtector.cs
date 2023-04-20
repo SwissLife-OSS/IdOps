@@ -8,7 +8,7 @@ namespace IdOps.Certification
 
         void Setup(EncryptionKeySetting settings);
         EncryptionKeySetting SetupNew();
-        byte[] UnProtect(byte[] data);
+        byte[] Unprotect(byte[] data);
         byte[] Protect(byte[] data);
     }
 }

@@ -109,7 +109,7 @@ namespace IdOps.Certification
 
             InitializeProtector(pt!.KeyId);
 
-            return _initializedProtectors[pt.KeyId].UnProtect(pt.Data);
+            return _initializedProtectors[pt.KeyId].Unprotect(pt.Data);
         }
 
 

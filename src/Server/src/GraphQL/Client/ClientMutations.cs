@@ -39,7 +39,8 @@ namespace IdOps.GraphQL
         }
 
         [AuthorizeClientAuthoring(AccessMode.Write, includeTenantAuth: false)]
-        public async Task<AddClientSecretPayload> AddClientSecretAsync(AddClientSecretRequest input,
+        public async Task<AddClientSecretPayload> AddClientSecretAsync(
+            AddClientSecretRequest input,
             CancellationToken cancellationToken)
         {
             (Client client, string secret) result =

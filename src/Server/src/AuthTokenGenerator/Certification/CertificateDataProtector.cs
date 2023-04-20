@@ -141,7 +141,7 @@ namespace IdOps.Certification
             }
         }
 
-        public byte[] UnProtect(byte[] data)
+        public byte[] Unprotect(byte[] data)
         {
             EncryptedDataEnvelope envelope = new EncryptedDataEnvelope(data, "AES256");
             var decrypted = _symmetricEncryption.DecryptFile(envelope, _key);
