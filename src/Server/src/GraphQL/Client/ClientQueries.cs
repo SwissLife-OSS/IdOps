@@ -43,29 +43,5 @@ namespace IdOps.GraphQL
         {
             return await _clientService.SearchClientsAsync(input, cancellationToken);
         }
-
-        [AuthorizeClientAuthoring(AccessMode.Read, includeTenantAuth: true)]
-        public async Task<GetClientSecretPayload> GetClientSecretAsync(GetClientSecretRequest input,
-            CancellationToken cancellationToken)
-        {
-            try
-            {
-                (Client client, string secret) =
-                    await _clientService.GetClientSecretAsync(input, cancellationToken);
-                return new GetClientSecretPayload(client, secret);
-            }
-            catch (ErrorException e)
-            {
-                Client client =
-                    await _clientService.GetByIdAsync(input.ClientId, cancellationToken);
-
-                if (e.Error is NoEncryptedSecretError error)
-                {
-                    return new GetClientSecretPayload(client, "", error);
-                }
-
-                throw new InvalidOperationException();
-            }
-        }
     }
 }

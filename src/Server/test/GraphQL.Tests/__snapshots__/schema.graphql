@@ -269,12 +269,6 @@ type ExpiresAtInvalid implements Error & CreatePersonalAccessTokenError {
   message: String!
 }
 
-type GetClientSecretPayload {
-  client: Client
-  secret: String
-  errors: [Error!]!
-}
-
 type GrantType {
   id: String!
   name: String!
@@ -468,7 +462,6 @@ type Query @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) {
   sharedSecretGenerators: [String!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   client(id: Uuid!): Client! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   searchClients(input: SearchClientsInput!): SearchResultOfClient! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
-  clientSecret(input: GetClientSecretRequestInput!): GetClientSecretPayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   application(id: Uuid!): Application!
   searchApplications(input: SearchApplicationsInput!): SearchResultOfApplication!
   searchUnMappedClients(tenant: String!): [Client!]!
@@ -872,11 +865,6 @@ input GetApiResourcesInput {
 
 input GetApiScopesInput {
   tenants: [String!]!
-}
-
-input GetClientSecretRequestInput {
-  clientId: Uuid!
-  id: Uuid!
 }
 
 input GetDependenciesInput {
