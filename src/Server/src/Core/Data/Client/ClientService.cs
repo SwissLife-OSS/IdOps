@@ -203,21 +203,6 @@ namespace IdOps
             return result.Resource;
         }
 
-        public async Task<(Client, string)> GetClientSecretAsync(GetClientSecretRequest request,
-            CancellationToken cancellationToken)
-        {
-            ResourceChangeContext<Client> context = await _resourceManager
-                .GetExistingOrCreateNewAsync<Client>(request.ClientId, cancellationToken);
-
-            Secret secret = context.Resource.ClientSecrets.First(secret => secret.Id == request.Id);
-            string secretValue = await _secretService.GetDecryptedSecretAsync(secret, cancellationToken);
-
-            SaveResourceResult<Client> result = await _resourceManager
-                .SaveAsync(context, cancellationToken);
-
-            return (result.Resource, secretValue);
-        }
-
         private static ICollection<ClientScope> BuildScopes(
             IReadOnlyList<Guid> apiScopes,
             IReadOnlyList<Guid> identityScopes)
