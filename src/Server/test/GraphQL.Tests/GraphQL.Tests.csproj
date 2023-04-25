@@ -32,9 +32,5 @@
     <ProjectReference Include="..\..\src\Store.Mongo\Store.Mongo.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="__snapshots__\" />
-  </ItemGroup>
-
 
 </Project>
