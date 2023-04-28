@@ -138,6 +138,7 @@ namespace IdOps
             context.Resource.SlidingRefreshTokenLifetime = request.SlidingRefreshTokenLifetime;
             context.Resource.ConsentLifetime = request.ConsentLifetime;
             context.Resource.RefreshTokenExpiration = request.RefreshTokenExpiration;
+            context.Resource.RefreshTokenUsage = request.RefreshTokenUsage;
             context.Resource.UserSsoLifetime = request.UserSsoLifetime;
             context.Resource.DeviceCodeLifetime = request.DeviceCodeLifetime;
             context.Resource.AccessTokenType = request.AccessTokenType;
