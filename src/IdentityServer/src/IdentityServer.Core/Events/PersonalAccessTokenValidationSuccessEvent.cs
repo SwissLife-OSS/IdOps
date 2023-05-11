@@ -1,7 +1,7 @@
-using System.Collections;
+
 using System.Collections.Generic;
+using System.Linq;
 using Duende.IdentityServer.Events;
-using Enumerable = System.Linq.Enumerable;
 
 namespace IdOps.IdentityServer.Events
 {
