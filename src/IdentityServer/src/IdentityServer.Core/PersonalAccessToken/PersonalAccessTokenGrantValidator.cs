@@ -40,7 +40,7 @@ namespace IdOps.IdentityServer
                         .New(
                             context.Request.ClientId,
                             userName,
-                            "The username or Token seems to be empty or white space",
+                            "The username or token is null or empty",
                             context.Request.RequestedScopes,
                             null)
                         .RaiseAsync(_eventService);
@@ -62,7 +62,7 @@ namespace IdOps.IdentityServer
                         .New(
                             context.Request.ClientId,
                             userName,
-                            "The access token validation failed",
+                            "The PAT validation failed",
                             context.Request.RequestedScopes,
                             null)
                         .RaiseAsync(_eventService);
@@ -74,7 +74,7 @@ namespace IdOps.IdentityServer
                     .New(
                         context.Request.ClientId,
                         userName,
-                        string.Join(",", validationContext.RequestedScopes))
+                        context.Request.RequestedScopes)
                     .RaiseAsync(_eventService);
 
                 context.Result = patValidationResult.GrantValidationResult;
