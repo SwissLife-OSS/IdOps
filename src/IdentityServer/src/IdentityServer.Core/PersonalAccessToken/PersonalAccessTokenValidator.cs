@@ -68,9 +68,21 @@ namespace IdOps.IdentityServer
             PersonalAccessTokenValidationResult result =
                 await source.ValidateAsync(context, personalAccessToken);
 
-            if (result.IsValid && !await ValidateOneTimeAndUpdate(personalAccessToken))
+            if (result.IsValid)
             {
-                return PersonalAccessTokenValidationResult.Invalid;
+                if (!await ValidateOneTimeAndUpdate(personalAccessToken))
+                {
+                    await PersonalAccessTokenValidationFailedEvent
+                        .New(
+                            context?.Client?.ClientId ?? "-",
+                            context.UserName,
+                            "The PAT is OneTime an was already used",
+                            context.RequestedScopes,
+                            null)
+                        .RaiseAsync(_eventService);
+
+                    return PersonalAccessTokenValidationResult.Invalid;
+                }
             }
             else
             {
@@ -78,10 +90,12 @@ namespace IdOps.IdentityServer
                     .New(
                         context?.Client?.ClientId ?? "-",
                         context.UserName,
-                        "The pat validation failed for user " + context.UserName,
+                        $"PAT validation source: {source.Kind} returned Invalid",
                         context.RequestedScopes,
                         null)
                     .RaiseAsync(_eventService);
+
+                return PersonalAccessTokenValidationResult.Invalid;
             }
 
             return result;
