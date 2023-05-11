@@ -83,22 +83,20 @@ namespace IdOps.IdentityServer
 
                     return PersonalAccessTokenValidationResult.Invalid;
                 }
-            }
-            else
-            {
-                await PersonalAccessTokenValidationFailedEvent
-                    .New(
-                        context?.Client?.ClientId ?? "-",
-                        context.UserName,
-                        $"PAT validation source: {source.Kind} returned Invalid",
-                        context.RequestedScopes,
-                        null)
-                    .RaiseAsync(_eventService);
 
-                return PersonalAccessTokenValidationResult.Invalid;
+                return result;
             }
 
-            return result;
+            await PersonalAccessTokenValidationFailedEvent
+                .New(
+                    context?.Client?.ClientId ?? "-",
+                    context.UserName,
+                    $"PAT validation source: {source.Kind} returned Invalid",
+                    context.RequestedScopes,
+                    null)
+                .RaiseAsync(_eventService);
+
+            return PersonalAccessTokenValidationResult.Invalid;
         }
 
         private async Task<PersonalAccessTokenMatch?> TryResolverPersonalAccessToken(
@@ -112,8 +110,8 @@ namespace IdOps.IdentityServer
             foreach (IdOpsPersonalAccessToken tokenDefinition in possibleTokens)
             {
                 if (_hashAlgorithmResolver.TryResolve(
-                    tokenDefinition.HashAlgorithm,
-                    out IHashAlgorithm? validator))
+                        tokenDefinition.HashAlgorithm,
+                        out IHashAlgorithm? validator))
                 {
                     foreach (IdOpsHashedToken possibleToken in tokenDefinition.Tokens)
                     {
@@ -147,10 +145,7 @@ namespace IdOps.IdentityServer
                 }
 
 
-                patToken.Definition.Tokens[index] = patToken.Definition.Tokens[index] with
-                {
-                    IsUsed = true
-                };
+                patToken.Definition.Tokens[index] = patToken.Definition.Tokens[index] with { IsUsed = true };
 
                 await _patTokenRepository.SaveAsync(patToken.Definition, default);
             }
