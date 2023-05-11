@@ -11,5 +11,9 @@ namespace IdOps.Server.Storage
         Task<SearchResult<Client>> SearchAsync(
             SearchClientsRequest request,
             CancellationToken cancellationToken);
+
+        Task<IReadOnlyList<Client>> GetByAllowedScopesAsync(
+            Guid apiScopeId,
+            CancellationToken cancellationToken);
     }
 }

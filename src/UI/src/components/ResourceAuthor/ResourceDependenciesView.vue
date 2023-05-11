@@ -39,10 +39,10 @@ export default {
   watch: {
     resourceId: {
       immediate: true,
-      handler: function () {
+      handler: function() {
         this.getDependencies();
-      },
-    },
+      }
+    }
   },
   data() {
     return {
@@ -50,9 +50,9 @@ export default {
       loading: false,
       input: {
         id: null,
-        type: null,
+        type: null
       },
-      nodes: [],
+      nodes: []
     };
   },
 
@@ -72,16 +72,24 @@ export default {
         const mapping = {
           apiResources: {
             title: "API Resources",
-            route: "ApiResource_Edit",
+            route: "ApiResource_Edit"
           },
           apiScopes: {
             title: "API Scopes",
-            route: "ApiScope_Edit",
+            route: "ApiScope_Edit"
           },
           identityResources: {
             title: "Identity Resources",
-            route: "IdentityResource_Edit",
+            route: "IdentityResource_Edit"
           },
+          clients: {
+            title: "Clients",
+            route: "Client_Edit"
+          },
+          personalAccessTokens: {
+            title: "Personal Access Token",
+            route: "PersonalAccessToken_Edit"
+          }
         };
 
         for (const key in mapping) {
@@ -93,15 +101,15 @@ export default {
                 id: map.title,
                 name: map.title,
                 type: "DIRECTORY",
-                children: [],
+                children: []
               };
 
               if (deps) {
-                node.children = deps.map((x) => {
+                node.children = deps.map(x => {
                   return {
                     name: x.title,
                     id: x.id,
-                    route: map.route,
+                    route: map.route
                   };
                 });
 
@@ -119,16 +127,15 @@ export default {
         });
       }
     },
-    onSelect: function (nodes) {
+    onSelect: function(nodes) {
       const node = nodes[0];
       this.$router.replace({
         name: node.route,
-        params: { id: node.id },
+        params: { id: node.id }
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>

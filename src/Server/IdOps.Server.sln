@@ -44,6 +44,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphQL.Tests", "test\Graph
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hashing", "..\IdentityServer\src\Hashing\Hashing.csproj", "{6F54E528-51F5-4BDC-809E-D3235958C479}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store.Mongo.Tests", "test\Store.Mongo.Tests\Store.Mongo.Tests.csproj", "{4E77F56A-FF24-473A-96FF-6EB94BE97552}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -102,6 +104,10 @@ Global
 		{6F54E528-51F5-4BDC-809E-D3235958C479}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F54E528-51F5-4BDC-809E-D3235958C479}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F54E528-51F5-4BDC-809E-D3235958C479}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E77F56A-FF24-473A-96FF-6EB94BE97552}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E77F56A-FF24-473A-96FF-6EB94BE97552}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E77F56A-FF24-473A-96FF-6EB94BE97552}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E77F56A-FF24-473A-96FF-6EB94BE97552}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -119,6 +125,7 @@ Global
 		{8BEE729F-5112-40F6-B6C1-6AC9D778C801} = {788D8B33-B20E-47F7-842F-0864D1AC26D1}
 		{BC25D0B1-1596-4600-A90C-D525F49E37FD} = {6D0AA81C-9C76-421F-8CA0-38EDC8FD32C0}
 		{168C2909-BB11-4E53-A363-B196B70456BB} = {6D0AA81C-9C76-421F-8CA0-38EDC8FD32C0}
+		{4E77F56A-FF24-473A-96FF-6EB94BE97552} = {6D0AA81C-9C76-421F-8CA0-38EDC8FD32C0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {848DADC1-7FED-4B69-B03E-3F9F43FF3EFC}
