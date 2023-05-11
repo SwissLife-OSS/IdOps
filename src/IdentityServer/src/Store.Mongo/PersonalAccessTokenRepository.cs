@@ -28,7 +28,7 @@ namespace IdOps.IdentityServer.Storage.Mongo
                 Filter.Eq(WellKnownPatFields.IsUsed, false);
 
             return await _context.PersonalAccessTokens
-                .Find(filter)
+                .Find(filter, new FindOptions {Collation = MongoCollations.CaseInsensitive})
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
         }

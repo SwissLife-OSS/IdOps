@@ -410,6 +410,10 @@ type Mutation @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) {
   removeApiSecret(input: RemoveApiSecretInput!): SaveApiResourcePayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
 }
 
+type NoEncryptedSecretError implements Error {
+  message: String!
+}
+
 type PersonalAccessToken implements IResource {
   dependencies: [IResource!]!
   tenantInfo: Tenant!
@@ -643,6 +647,8 @@ type Secret {
   id: Uuid!
   description: String
   value: String!
+  encryptedSecret: String
+  encryptionKeyId: String
   expiration: DateTime
   type: String!
 }

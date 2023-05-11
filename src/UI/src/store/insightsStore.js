@@ -6,6 +6,7 @@ const insightsStore = {
     state: () => ({
         idEvents: {
             loading: false,
+            hasMore: false,
             filter: {
                 pageNr: 0,
                 pageSize: 100,
@@ -19,6 +20,7 @@ const insightsStore = {
     mutations: {
         ID_EVENTS_LOADED(state, events) {
             state.idEvents.items = events.items;
+            state.idEvents.hasMore = events.hasMore;
             state.idEvents.loading = false;
         },
         ID_EVENTS_LOADING_SET(state, value) {

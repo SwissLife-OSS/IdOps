@@ -2,6 +2,7 @@ using System;
 using HotChocolate.Execution.Configuration;
 using HotChocolate.Types;
 using IdOps.Authorization;
+using IdOps.Data.Errors;
 using IdOps.GraphQL.DataLoaders;
 using IdOps.GraphQL.GraphQL.Serialization;
 using IdOps.GraphQL.Hashing;
@@ -129,7 +130,9 @@ namespace IdOps.GraphQL
                 .AddInterfaceType<ICreatePersonalAccessTokenError>(
                     x => x.Name("CreatePersonalAccessTokenError"))
                 .AddType<ExpiresAtInvalid>()
-                .AddType<HashAlgorithmNotFound>();
+                .AddType<HashAlgorithmNotFound>()
+                .AddType<NoEncryptedSecretError>();
+
 
             return builder;
         }

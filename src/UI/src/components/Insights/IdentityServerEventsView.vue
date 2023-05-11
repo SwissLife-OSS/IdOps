@@ -8,6 +8,7 @@
             :height="tableHeight"
             :items="events"
             :options.sync="options"
+            :server-items-length="serverItems"
             :loading="loading"
             @click:row="onClickRow"
             item-key="id"
@@ -36,6 +37,7 @@
               {{ item.timeStamp | dateformat }}
             </template>
             <template v-slot:footer.page-text="{}">
+              <span :style="{'margin-right': '25px'}">Page {{options.page}}</span>
               <v-icon @click="onClickRefresh">mdi-reload</v-icon>
             </template>
 
@@ -240,6 +242,10 @@ export default {
   computed: {
     ...mapState("insights", {
       events: state => state.idEvents.items,
+      serverItems (state) {
+        const items = state.idEvents.items.length * this.options.page;
+        return state.idEvents.hasMore ? items + 1 : items;
+      },
       loading: state => state.idEvents.loading
     }),
     headers: function() {
@@ -352,6 +358,7 @@ export default {
     onClickRefresh: function() {
       this.userSearchTriggered = true;
       this.details = null;
+      this.options.page = 1;
       this.searchIdentityServerEvents(this.filter);
     },
     navigateToFullView: function() {

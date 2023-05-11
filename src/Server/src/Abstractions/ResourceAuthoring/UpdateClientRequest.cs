@@ -126,6 +126,6 @@ namespace IdOps
     }
 
     public record RemoveClientSecretRequest(Guid ClientId, Guid Id);
-
+    
     public record RemoveApiSecretRequest(Guid ApiResourceId, Guid Id);
 }

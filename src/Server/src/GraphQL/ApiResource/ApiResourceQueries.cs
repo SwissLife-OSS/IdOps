@@ -1,4 +1,6 @@
 using System;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -18,6 +20,7 @@ namespace IdOps.GraphQL
             GetApiResourcesInput? input,
             CancellationToken cancellationToken)
         {
+
             return await apiResourceService.GetByTenantsAsync(
                 null,
                 input?.Tenants ?? Array.Empty<string>(),

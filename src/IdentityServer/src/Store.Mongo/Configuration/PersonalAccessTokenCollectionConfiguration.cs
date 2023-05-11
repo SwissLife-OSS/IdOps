@@ -37,7 +37,12 @@ namespace IdOps.IdentityServer.Storage.Mongo
                 new(IndexKeys.Combine(IndexKeys.Ascending(WellKnownPatFields.IsUsed),
                         IndexKeys.Ascending(WellKnownPatFields.ExpiresAt),
                         IndexKeys.Ascending(x => x.UserName)),
-                    new CreateIndexOptions { Unique = true, Name = "PAT-Token-Search" })
+                    new CreateIndexOptions
+                    {
+                        Unique = true,
+                        Name = "PAT-Token-Search_i",
+                        Collation = MongoCollations.CaseInsensitive
+                    })
             };
 
             collection.Indexes.CreateMany(index);
