@@ -33,7 +33,9 @@
     <v-card-text>
       <slot v-if="view === 'DEFAULT'"></slot>
       <div v-if="view === 'AUDIT'">
-        <resource-audit-list :resourceId="resource.id"></resource-audit-list>
+        <resource-audit-list
+         :resourceId="resource.id"
+         ></resource-audit-list>
       </div>
       <div v-if="view === 'INSIGHTS'">
         <identity-server-events-view
@@ -53,7 +55,14 @@
         ></resource-dependencies-view>
       </div>
       <div v-if="view === 'LOG'">
-        <resource-log-view :resourceId="resource.id"></resource-log-view>
+        <resource-log-view
+         :resourceId="resource.id"
+         ></resource-log-view>
+      </div>
+      <div v-if="view === 'TOKEN'">
+        <resource-token-view
+         :id="resource.id"
+         ></resource-token-view>
       </div>
     </v-card-text>
   </v-card>
@@ -64,6 +73,7 @@ import ResourceAuditList from "./ResourceAuditList.vue";
 import ResourcePublishView from "./ResourcePublishView.vue";
 import ResourceLogView from "./ResourceLogView.vue";
 import ResourceDependenciesView from "./ResourceDependenciesView.vue";
+import ResourceTokenView from "./ResourceTokenView.vue";
 import hash from "object-hash";
 import IdentityServerEventsView from "../Insights/IdentityServerEventsView.vue";
 
@@ -73,6 +83,7 @@ export default {
     ResourcePublishView,
     ResourceLogView,
     ResourceDependenciesView,
+    ResourceTokenView,
     IdentityServerEventsView
   },
   props: {
@@ -115,6 +126,10 @@ export default {
         DEPENDENCIES: {
           icon: "mdi-graph-outline",
           title: "Dependencies"
+        },
+        TOKEN: {
+          icon: "mdi-cookie-cog-outline",
+          title: "Token Settings"
         },
         PUBLISH: {
           icon: "mdi-rocket-launch-outline",

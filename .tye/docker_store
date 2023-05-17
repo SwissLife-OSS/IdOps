@@ -1,0 +1,6 @@
+{"container":"mongo_474a4afc-2"}
+{"container":"rabbitmq_3d4fac1d-a"}
+{"container":"idopsfrontend-proxy_9823b962-c"}
+{"container":"idopsbackend-proxy_2a7d5080-4"}
+{"container":"iddev-proxy_e56684a3-f"}
+{"container":"idstaging-proxy_d8c4b29e-9"}

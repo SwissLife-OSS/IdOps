@@ -3,7 +3,7 @@
     :title="client.name"
     :loading="loading"
     :resource="client"
-    :tools="['DEPENDENCIES', 'PUBLISH', 'INSIGHTS', 'AUDIT', 'LOG']"
+    :tools="['DEPENDENCIES', 'PUBLISH', 'INSIGHTS', 'AUDIT', 'LOG', 'TOKEN']"
     type="Client"
     @Save="onSave"
   >
