@@ -5,9 +5,9 @@
       <v-switch label="Log allowTokenGeneration" @click="log({ allowTokenGeneration })"></v-switch>
     </div>
     <v-toolbar
-     elevation="0"
-      color="grey lighten-6"
-      height="38">
+    elevation="0"
+    color="grey lighten-6"
+    height="38">
       <v-toolbar-title>Available Tokenflows</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-icon @click="log({ grantTypes })">mdi-refresh</v-icon>
@@ -23,7 +23,9 @@
           <td>{{ item.id }}</td>
         </template>
         <template v-slot:item.action="{ item }">
-          <v-btn :disabled="!allowTokenGeneration">
+          <v-btn
+          @click="startTokenFlow(item.id)"
+          :disabled="!allowTokenGeneration">
             {{ item.action }}
           </v-btn>
         </template>
@@ -38,6 +40,7 @@
 
 <script>
 import { getClientById } from "../../services/idResourceService";
+import { startTokenFlow } from "../../services/tokenFlowService";
 
 export default {
   props: ["id"],
@@ -64,26 +67,23 @@ export default {
   },
   computed: {
     secrets: function () {
-      return this.client.clientSecrets
+      return this.client.clientSecrets;
     },
     hasSavedSecrets: function () {
       //undefined if client hasn't been set because of async
       if (!this.secrets) return false;
-      return this.secrets.some(secret => secret.encryptedSecret !== null)
+      return this.secrets.some(secret => secret.encryptedSecret !== null);
     },
     grantTypes: function () {
       //undefined if client hasn't been set because of async
       if (!this.client.allowedGrantTypes) return [];
-      return this.client.allowedGrantTypes
+      return this.client.allowedGrantTypes;
     },
     listItems: function () {
-      console.log('grantTypes:', this.grantTypes);
-      const items = this.grantTypes.map(grantType => ({
+      return this.grantTypes.map(grantType => ({
         id: grantType,
         action: "Generate " + grantType + " Token"
       }));
-      console.log('listItems:', items);
-      return items;
     }
   },
   methods: {
@@ -96,10 +96,12 @@ export default {
 
       delete this.client.__typename;
     },
+    async startTokenFlow(grantType) {
+      await startTokenFlow(grantType)
+    },
     log(message) {
-      console.log(message)
+      console.log(message);
     }
-
   },
   watch: {
     id: {

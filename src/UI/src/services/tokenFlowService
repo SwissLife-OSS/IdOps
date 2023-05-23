@@ -1,0 +1,27 @@
+export const startTokenFlow = async input => {
+  switch (input) {
+    case "client_credentials":
+      await clientCredenitialsFlow()
+      break
+    case "authorization_code":
+      await authorizationCodeFlow()
+      break
+    case "hybrid":
+      await hybridflow()
+      break
+    default:
+      console.error("flow type not found")
+  }
+}
+
+async function clientCredenitialsFlow() {
+  console.log("this is the client_credentials flow")
+}
+
+async function authorizationCodeFlow() {
+  console.log("this is the authorization_code flow")
+}
+
+async function hybridflow() {
+  console.log("this is the hybrid flow")
+}
