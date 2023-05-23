@@ -555,7 +555,7 @@ type ResourcePublishLog {
   publishedAt: DateTime!
   requestedBy: String!
   operation: String!
-  errorMessage: String!
+  errorMessage: String
 }
 
 type ResourceVersion {

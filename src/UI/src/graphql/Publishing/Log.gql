@@ -3,5 +3,7 @@ query resourcePublishingLog($input: ResourcePublishingLogInput!) {
     version
     publishedAt
     requestedBy
+    operation
+    errorMessage
   }
 }

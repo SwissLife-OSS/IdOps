@@ -146,7 +146,8 @@ namespace IdOps
                     ResourceType = resource.GetType().Name,
                     UserId = UserContext.UserId,
                     Timestamp = DateTime.UtcNow,
-                    Action = SaveResourceAction.Updated.ToString()
+                    Action = SaveResourceAction.Updated.ToString(),
+                    Changes = Array.Empty<ResourceChange>()
                 };
 
                 await _resourceAuditStore.CreateAsync(audit, cancellationToken);

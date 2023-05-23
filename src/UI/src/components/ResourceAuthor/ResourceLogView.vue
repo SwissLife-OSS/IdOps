@@ -61,6 +61,13 @@ export default {
         },
         { text: "Version", align: "center", value: "version", sortable: false },
         {
+          text: "Error",
+          width: "20%",
+          align: "center",
+          value: "error",
+          sortable: false
+        },
+        {
           text: "Timestamp",
           align: "center",
           value: "timestamp",
@@ -82,7 +89,8 @@ export default {
           user: log.requestedBy,
           timestamp: log.approvedAt,
           operation: "Approved",
-          version: log.version
+          version: log.version,
+          error: ""
         });
       });
       const publishingLog = await getResourcePublishingLog({
@@ -92,8 +100,9 @@ export default {
         this.items.push({
           user: log.requestedBy,
           timestamp: log.publishedAt,
-          operation: "Published",
-          version: log.version
+          operation: log.operation,
+          version: log.version,
+          error: log.errorMessage
         });
       });
       return this.items;
