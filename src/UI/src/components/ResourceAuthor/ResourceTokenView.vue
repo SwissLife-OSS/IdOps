@@ -25,12 +25,12 @@
         </v-data-table>
       </v-card-text>
     </v-card>
-      <ClientCredentialsTokenAlert
+      <TokenRequestDialog
      :client = "client"
      :activator.sync= "openTokenAlert"
      :grantType.sync="currentGrantType"
      >
-    </ClientCredentialsTokenAlert>
+    </TokenRequestDialog>
   </div>
 
 </template>
@@ -41,13 +41,12 @@
 
 <script>
 import { getClientById } from "../../services/idResourceService";
-import { startTokenFlow } from "../../services/tokenFlowService";
-import ClientCredentialsTokenAlert from "./TokenFlows/ClientCredentialsTokenAlert";
+import TokenRequestDialog from "./TokenRequestDialog.vue";
 
 export default {
     props: ["id"],
     components:{
-      ClientCredentialsTokenAlert
+      TokenRequestDialog
     },
     data() {
         return {
@@ -105,7 +104,6 @@ export default {
             delete this.client.__typename;
         },
         async startTokenFlow(grantType) {
-            await startTokenFlow(grantType);
             this.currentGrantType = grantType;
             this.openTokenAlert = true;
         },
