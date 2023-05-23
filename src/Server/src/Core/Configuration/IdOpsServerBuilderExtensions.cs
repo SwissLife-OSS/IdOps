@@ -96,6 +96,7 @@ namespace IdOps
         private static void AddConsumers(this IBusRegistrationConfigurator busConfigurator)
         {
             busConfigurator.AddConsumer<ResourcePublishedSuccessConsumer>();
+            busConfigurator.AddConsumer<ResourcePublishedErrorConsumer>();
             busConfigurator.AddConsumer<UiConsoleConsumer>();
             busConfigurator.AddConsumer<IdentityServerEventBatchConsumer>();
         }
