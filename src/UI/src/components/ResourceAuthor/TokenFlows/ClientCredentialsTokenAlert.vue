@@ -15,17 +15,17 @@
 
 <script>
 export default {
-  props: ["id", "grantType", "activator"],
+  props: ["client", "grantType", "activator"],
   data() {
     return {
-      token: this.grantType + " - This is token " + this.id,
+      token: this.grantType + " - This is token " + JSON.stringify(this.client),
     };
   },
   watch: {
     grantType: {
             immediate: true,
             handler: function () {
-                this.token = this.grantType + " - This is token " + this.id;
+                this.token = this.grantType + " - This is token " + JSON.stringify(this.client);
             },
         }
   },

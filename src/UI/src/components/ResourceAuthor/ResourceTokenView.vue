@@ -26,7 +26,7 @@
       </v-card-text>
     </v-card>
       <ClientCredentialsTokenAlert
-     :id = "id"
+     :client = "client"
      :activator.sync= "openTokenAlert"
      :grantType.sync="currentGrantType"
      >
