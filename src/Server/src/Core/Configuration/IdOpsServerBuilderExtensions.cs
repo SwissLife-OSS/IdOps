@@ -40,7 +40,9 @@ namespace IdOps
         {
             services.AddSingleton(options);
             services.AddSingleton<ISharedSecretGenerator, DefaultSharedSecretGenerator>();
-            services.AddSingleton<ISecretService, SecretService>();
+            services.AddSingleton<ISecretService>(sp => new SecretService(
+                sp.GetServices<ISharedSecretGenerator>(),
+                sp.GetService<IEncryptionService>() ?? new NoEncryptionService()));
             services.AddSingleton<IIdentityServerEventMapper>(
                 _ => new IdentityServerEventMapper(options.MutedClients));
 

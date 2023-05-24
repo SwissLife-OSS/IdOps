@@ -14,7 +14,8 @@ public class SecretService : ISecretService
     private readonly IEnumerable<ISharedSecretGenerator> _sharedSecretGenerators;
     private readonly IEncryptionService _encryptionService;
 
-    public SecretService(IEnumerable<ISharedSecretGenerator> sharedSecretGenerators,
+    public SecretService(
+        IEnumerable<ISharedSecretGenerator> sharedSecretGenerators,
         IEncryptionService encryptionService)
     {
         _sharedSecretGenerators = sharedSecretGenerators;
@@ -40,8 +41,8 @@ public class SecretService : ISecretService
 
         secret.Value = secretValue.ToSha256();
 
-
-        if (request.SaveValue.GetValueOrDefault())
+        if (request.SaveValue.GetValueOrDefault() &&
+            _encryptionService is not NoEncryptionService)
         {
             secret.EncryptedSecret = await _encryptionService
                 .EncryptAsync(secretValue, CancellationToken.None);
