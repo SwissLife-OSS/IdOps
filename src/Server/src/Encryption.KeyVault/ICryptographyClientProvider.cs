@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Azure.Security.KeyVault.Keys.Cryptography;
 
-namespace IdOps.Encryption;
+namespace IdOps.Server.Encryption.KeyVault;
 
 public interface ICryptographyClientProvider
 {

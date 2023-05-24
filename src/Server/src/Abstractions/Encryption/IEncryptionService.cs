@@ -1,7 +1,7 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace IdOps.Encryption;
+namespace IdOps;
 
 public interface IEncryptionService
 {

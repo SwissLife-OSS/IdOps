@@ -1,11 +1,13 @@
-﻿using System.Text;
+using System;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Azure.Security.KeyVault.Keys.Cryptography;
-using IdOps;
-using IdOps.Encryption;
 using EncryptionAlgorithm = Azure.Security.KeyVault.Keys.Cryptography.EncryptionAlgorithm;
 
+namespace IdOps.Server.Encryption.KeyVault;
 
-public class KeyVaultEncryptionService : IEncryptionService
+internal class KeyVaultEncryptionService : IEncryptionService
 {
     private readonly ICryptographyClientProvider _cryptographyClientProvider;
 

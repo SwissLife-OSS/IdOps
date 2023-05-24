@@ -1,11 +1,13 @@
-﻿using System.Text;
+using System;
+using System.Text;
+using System.Threading;
 using Azure.Security.KeyVault.Keys;
 using Azure.Security.KeyVault.Keys.Cryptography;
 using FluentAssertions;
-using IdOps;
-using IdOps.Encryption;
 using Moq;
 using Xunit;
+
+namespace IdOps.Server.Encryption.KeyVault.Tests;
 
 public class KeyVaultControllerTests
 {
