@@ -28,8 +28,7 @@ namespace IdOps.Api
             IIdOpsServerBuilder builder = services
                 .AddIdOpsServer(Configuration)
                 .AddMongoStore()
-                .AddGraphQLServer()
-                .AddAzureKeyVault();
+                .AddGraphQLServer();
 
             services.AddMemoryCache();
             services.AddAuthentication(HostEnvironment, builder.Configuration);
