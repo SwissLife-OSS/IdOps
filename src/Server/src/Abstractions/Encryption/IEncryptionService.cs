@@ -1,8 +1,9 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace IdOps.Encryption;
+namespace IdOps;
 
+// TODO: Review the interface, it's to KV specific
 public interface IEncryptionService
 {
     Task<string> GetEncryptionKeyNameBase64Async();

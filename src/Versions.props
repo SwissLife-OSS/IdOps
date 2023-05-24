@@ -5,5 +5,7 @@
     <HotChocolateVersion>12.6.0</HotChocolateVersion>
     <IdentityServerVersion>6.0.4</IdentityServerVersion>
     <SquadronVersion>0.17.0</SquadronVersion>
+    <AzureKeyVault>4.5.0</AzureKeyVault>
+    <AzureIdentity>1.9.0</AzureIdentity>
   </PropertyGroup>
 </Project>

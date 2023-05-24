@@ -1,23 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyName>IdOps.Server.Encryption.KeyVault</AssemblyName>
+    <RootNamespace>IdOps.Server.Encryption.KeyVault</RootNamespace>
+    <PackageId>IdOps.Server.Encryption.KeyVault</PackageId>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Azure.Identity" Version="1.3.0" />
-      <PackageReference Include="Azure.Security.KeyVault.Keys" Version="4.5.0-beta.1" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Microsoft.Extensions.Configuration.Binder" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="$(AzureIdentity)" />
+    <PackageReference Include="Azure.Security.KeyVault.Keys" Version="$(AzureKeyVault)" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="$(AspNetCoreVersion)" />
+  </ItemGroup>
 
 </Project>
