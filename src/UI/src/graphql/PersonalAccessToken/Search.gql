@@ -1,4 +1,3 @@
-#import "./Fragments.gql"
 query SearchPersonalAccessTokens($input: SearchPersonalAccessTokensInput!) {
   searchPersonalAccessTokens(input: $input) {
     hasMore
