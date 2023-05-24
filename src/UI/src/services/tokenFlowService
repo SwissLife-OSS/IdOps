@@ -1,11 +1,9 @@
-export async function clientCredenitialsFlow() {
-  console.log("this is the client_credentials flow")
-}
+import MUTATION_CLIENT_TOKEN_REQUEST from "../graphql/Client/GetToken.gql";
+import apollo from "../apollo";
 
-export async function authorizationCodeFlow() {
-  console.log("this is the authorization_code flow")
-}
-
-export async function hybridflow() {
-  console.log("this is the hybrid flow")
-}
+export const getClientCredentialsToken = async tokenRequestInput => {
+  return await apollo.mutate({
+    mutation: MUTATION_CLIENT_TOKEN_REQUEST,
+    variables: { input: tokenRequestInput }
+  });
+};

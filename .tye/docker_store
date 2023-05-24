@@ -1,6 +1,6 @@
-{"container":"mongo_a75bd016-b"}
-{"container":"rabbitmq_c1418eb3-3"}
-{"container":"idopsfrontend-proxy_0ddd04dc-e"}
-{"container":"idopsbackend-proxy_85975aea-0"}
-{"container":"iddev-proxy_9d4607f3-4"}
-{"container":"idstaging-proxy_b78cd3e8-a"}
+{"container":"mongo_fb2b1fde-6"}
+{"container":"rabbitmq_cbccfb64-2"}
+{"container":"idopsfrontend-proxy_a82818f2-2"}
+{"container":"idopsbackend-proxy_3166d193-5"}
+{"container":"iddev-proxy_338c118c-d"}
+{"container":"idstaging-proxy_c050e231-e"}
