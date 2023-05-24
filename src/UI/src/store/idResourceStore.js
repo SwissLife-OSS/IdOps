@@ -84,7 +84,7 @@ const idResourceStore = {
     personalAccessToken: {
       search: {
         pageNr: 0,
-        pageSize: 500,
+        pageSize: 1000,
         searchText: null,
         environmentId: null
       },
@@ -101,7 +101,7 @@ const idResourceStore = {
       items: [],
       search: {
         pageNr: 0,
-        pageSize: 500,
+        pageSize: 1000,
         searchText: null,
         environmentId: null
       },
@@ -433,11 +433,12 @@ const idResourceStore = {
       commit("CLIENT_FILTER_SET", filter);
       dispatch("searchClients");
     },
-    tenantFilterUpdated: function({ dispatch }) {
+    tenantFilterUpdated: function ({ dispatch }) {
       dispatch("searchClients");
       dispatch("loadApiResources");
       dispatch("loadApiScopes");
       dispatch("loadIdentityResources");
+      dispatch("searchPersonalAccessTokens");
     },
     async createPersonalAccessToken({ commit, dispatch }, input) {
       const result = await excuteGraphQL(

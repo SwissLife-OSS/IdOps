@@ -21,7 +21,7 @@ const applicationStore = {
       items: [],
       filter: {
         pageNr: 0,
-        pageSize: 200,
+        pageSize: 1000,
         searchText: null
       }
     },
