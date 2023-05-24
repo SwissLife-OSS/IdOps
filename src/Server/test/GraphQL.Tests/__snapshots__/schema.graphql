@@ -385,6 +385,7 @@ type Mutation @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) {
   updateClient(input: UpdateClientInput!): SaveClientPayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
   addClientSecret(input: AddClientSecretInput!): AddClientSecretPayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
   removeClientSecret(input: RemoveClientSecretInput!): SaveClientPayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
+  requestToken(input: TokenRequestInput!): RequestTokenPayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
   createApplication(input: CreateApplicationInput!): CreateApplicationPayload!
   updateApplication(input: UpdateApplicationInput!): UpdateApplicationPayload!
   removeClientFromApplication(input: RemoveClientInput!): UpdateApplicationPayload!
@@ -494,6 +495,16 @@ type Query @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) {
 type RemoveSecretPersonalAccessTokenPayload {
   token: PersonalAccessToken
   hash: HashedToken
+}
+
+type RequestTokenPayload {
+  result: RequestTokenResult!
+}
+
+type RequestTokenResult {
+  isSuccess: Boolean!
+  accessToken: TokenModel
+  errorMessage: String
 }
 
 type ResourceApproval {
@@ -674,6 +685,22 @@ type TenantRoleMapping {
 type TenantSetting {
   name: String!
   value: String!
+}
+
+type TokenClaim {
+  type: String!
+  value: String!
+  category: ClaimCategory!
+}
+
+type TokenModel {
+  validFrom: DateTime!
+  validTo: DateTime!
+  claims: [TokenClaim!]!
+  expiresIn: Int!
+  subject: String
+  token: String
+  tokenType: String
 }
 
 type UpdateApplicationPayload {
@@ -1082,6 +1109,20 @@ input TenantSettingInput {
   value: String!
 }
 
+input TokenRequestInput {
+  authority: String!
+  clientId: Uuid!
+  secretId: Uuid!
+  parameters: [TokenRequestParameterInput!]!
+  saveTokens: Boolean!
+  requestId: Uuid
+}
+
+input TokenRequestParameterInput {
+  name: String!
+  value: String
+}
+
 input UpdateApplicationInput {
   id: Uuid!
   name: String!
@@ -1164,6 +1205,11 @@ enum AccessTokenType {
 enum ApplyPolicy {
   BEFORE_RESOLVER
   AFTER_RESOLVER
+}
+
+enum ClaimCategory {
+  PROTOCOL
+  PAYLOAD
 }
 
 enum ClaimRuleMatchMode {

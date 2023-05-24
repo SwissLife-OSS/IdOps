@@ -1,3 +1,4 @@
+using IdOps.Abstractions;
 using IdOps.Api.Security;
 using IdOps.AspNet;
 using IdOps.Authorization;
@@ -30,6 +31,7 @@ namespace IdOps.Api
                 .AddGraphQLServer()
                 .AddAzureKeyVault();
 
+            services.AddAuthTokenGenerator();
             services.AddMemoryCache();
             services.AddAuthentication(HostEnvironment, builder.Configuration);
             services.AddAuthorization(builder.Configuration);
