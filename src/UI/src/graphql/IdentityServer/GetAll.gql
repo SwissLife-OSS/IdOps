@@ -1,0 +1,7 @@
+#import "./Fragments.gql"
+
+query identityServers {
+  identityServers {
+    ...IdentityServer
+  }
+}

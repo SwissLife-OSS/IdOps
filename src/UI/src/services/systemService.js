@@ -2,7 +2,9 @@ import MUTATION_ENVIRONMENT_SAVE from "../graphql/Environment/Save.gql";
 import MUTATION_IDENTITY_SERVER_SAVE from "../graphql/IdentityServer/Save.gql";
 import MUTATION_IDENTITY_SERVER_GROUP_SAVE from "../graphql/IdentityServerGroup/Save.gql";
 import MUTATION_TENANT_SAVE from "../graphql/Tenant/Save.gql";
-import QUERY_IDENTITY_SERVER_GET_BYID from "../graphql/IdentityServer/GetById.gql";
+import QUERY_IDENTITY_SERVER_GET_ALL from "../graphql/IdentityServer/GetAll.gql";
+import QUERY_IDENTITY_SERVER_GET_BY_ID from "../graphql/IdentityServer/GetById.gql";
+import QUERY_IDENTITY_SERVER_GROUP_GET_BY_TENANT from "../graphql/IdentityServerGroup/GetByTenant.gql";
 import QUERY_SYSTEM_DATA from "../graphql/SystemData.gql";
 import QUERY_TENANT_GET_ALL from "../graphql/Tenant/GetAll.gql";
 import apollo from "../apollo";
@@ -57,9 +59,23 @@ export const saveIdentityServerGroup = async (input) => {
   });
 };
 
+export const getIdentityServerGroupByTenant = async (tenant) => {
+  return await apollo.query({
+    query: QUERY_IDENTITY_SERVER_GROUP_GET_BY_TENANT,
+    variables: {tenant}
+  })
+};
+
+export const getAllIdentityServer = async () => {
+  return await apollo.query({
+    query: QUERY_IDENTITY_SERVER_GET_ALL,
+    variables: {}
+  })
+};
+
 export const getIdentityServer = async (id) => {
     return await apollo.query({
-        query: QUERY_IDENTITY_SERVER_GET_BYID,
+        query: QUERY_IDENTITY_SERVER_GET_BY_ID,
         variables: { id }
     });
 };

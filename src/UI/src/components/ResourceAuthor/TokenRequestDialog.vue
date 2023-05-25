@@ -13,6 +13,8 @@
 
 <script>
 import { getClientCredentialsToken } from "../../services/tokenFlowService";
+import { getIdentityServerGroupByTenant } from "../../services/systemService";
+import { getAllIdentityServer } from "../../services/systemService";
 
 export default {
   props: ["client", "grantType", "activator"],
@@ -29,10 +31,10 @@ export default {
 
       const clientId = this.client.id;
       const secretId = this.getLastSavedSecretId();
-      console.log(secretId);
+      const authority = await this.getAuthorityUrl();
 
       const tokenRequestInput = {
-        authority: "http://localhost:5001",
+        authority: authority,
         clientId: clientId,
         requestId: null,
         secretId: secretId,
@@ -44,9 +46,26 @@ export default {
     },
     getLastSavedSecretId() {
       const secret = this.client.clientSecrets.findLast(secret => secret.encryptedSecret !== null);
-      console.log(secret);
       return secret.id;
-    }
+    },
+    async getAuthorityUrl() {
+      const environments = this.client.environments;
+      const environmentId = environments[environments.length - 1];
+      const serverGroups = (await getIdentityServerGroupByTenant(this.client.tenant)).data;
+      const serverGroupId = serverGroups.identityServerGroupByTenant.id
+      const authorities = (await getAllIdentityServer()).data.identityServers;
+      const result = authorities.find(authority => authority.groupId === serverGroupId && authority.environmentId === environmentId).url;
+      console.log("serverGroupId: ");
+      console.log(serverGroupId);
+      console.log("environmentId: ");
+      console.log(environmentId);
+      console.log("authorities: ");
+      console.log(authorities);
+      console.log("result: ");
+      console.log(result);
+
+      return result;
+    },
   },
   watch: {
     grantType: {
