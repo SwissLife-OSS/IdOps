@@ -25,6 +25,15 @@ namespace IdOps.GraphQL
             return await identityServerGroupService.GetGroupsByUserTenants(cancellationToken);
         }
 
+        public async Task<IdentityServerGroup?> GetIdentityServerGroupByTenantAsync(
+            string tenant,
+            [Service] IIdentityServerGroupService identityServerGroupService,
+            CancellationToken cancellationToken)
+        {
+            return await identityServerGroupService.GetGroupByTenantAsync(tenant,
+                cancellationToken);
+        }
+
         public async Task<Model.IdentityServer> GetIdentityServerAsync(
             Guid id,
             [Service] IIdentityServerService identityServerService,
