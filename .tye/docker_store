@@ -1,6 +1,0 @@
-{"container":"mongo_5d6ca074-d"}
-{"container":"rabbitmq_bb58e924-9"}
-{"container":"idopsfrontend-proxy_b2b6e756-2"}
-{"container":"idopsbackend-proxy_7de54c6e-3"}
-{"container":"iddev-proxy_de8ee0d5-d"}
-{"container":"idstaging-proxy_565e2df2-d"}

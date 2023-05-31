@@ -15,6 +15,7 @@
 import { getClientCredentialsToken } from "../../services/tokenFlowService";
 import { getIdentityServerGroupByTenant } from "../../services/systemService";
 import { getAllIdentityServer } from "../../services/systemService";
+import { getPublishedResources } from "../../services/publishingService";
 
 export default {
   props: ["client", "grantType", "activator"],
@@ -42,30 +43,31 @@ export default {
         saveTokens: false
       };
       const result = await getClientCredentialsToken(tokenRequestInput);
-      this.clientCredentialsToken = result.data.requestToken.result.accessToken.token;
+      const token = result.data.requestToken.result.accessToken.token;
+      this.clientCredentialsToken = token === null? "invalid_client" : token;
     },
     getLastSavedSecretId() {
       const secret = this.client.clientSecrets.findLast(secret => secret.encryptedSecret !== null);
       return secret.id;
     },
     async getAuthorityUrl() {
-      const environments = this.client.environments;
-      const environmentId = environments[environments.length - 1];
+      const environmentId = await this.getLastPublishedEnvironmentId();
       const serverGroups = (await getIdentityServerGroupByTenant(this.client.tenant)).data;
       const serverGroupId = serverGroups.identityServerGroupByTenant.id
       const authorities = (await getAllIdentityServer()).data.identityServers;
       const result = authorities.find(authority => authority.groupId === serverGroupId && authority.environmentId === environmentId).url;
-      console.log("serverGroupId: ");
-      console.log(serverGroupId);
-      console.log("environmentId: ");
-      console.log(environmentId);
-      console.log("authorities: ");
-      console.log(authorities);
-      console.log("result: ");
-      console.log(result);
-
+      
       return result;
     },
+    async getLastPublishedEnvironmentId() {
+      const publishedResources = (await getPublishedResources()).data;
+      const lastPublishedResource =
+        publishedResources
+          .publishedResouces.findLast(publishedResource => publishedResource.type === "ApiScope")
+          .environments.findLast(environment => environment.state === "Latest");
+
+      return lastPublishedResource.environment.id;
+    }
   },
   watch: {
     grantType: {
