@@ -8,6 +8,14 @@
         <v-btn color="primary" text @click.native="close">Close</v-btn>
       </v-card-actions>
     </v-card>
+    <v-card height="300" v-else key="default">
+      <v-card-title class="headline">Token</v-card-title>
+      <v-card-text>Grant_Type "{{ grantType }}" not available</v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" text @click.native="close">Close</v-btn>
+      </v-card-actions>
+    </v-card>
   </v-dialog>
 </template>
 
@@ -56,7 +64,7 @@ export default {
       const serverGroupId = serverGroups.identityServerGroupByTenant.id
       const authorities = (await getAllIdentityServer()).data.identityServers;
       const result = authorities.find(authority => authority.groupId === serverGroupId && authority.environmentId === environmentId).url;
-      
+
       return result;
     },
     async getLastPublishedEnvironmentId() {
