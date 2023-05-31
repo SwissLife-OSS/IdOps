@@ -3,10 +3,6 @@
     <v-card flat>
       <div>
         <v-switch label="Enable Token generation" v-model="allowTokenGeneration" :disabled="!hasSavedSecrets"></v-switch>
-        <v-switch label="Log allowTokenGeneration" @click="log({ allowTokenGeneration })"></v-switch>
-        <v-switch label="Log openTokenAlert" @click="log({ openTokenAlert })"></v-switch>
-        <v-switch label="Log currentGrantType" @click="log({ currentGrantType })"></v-switch>
-        <v-switch label="Log client" @click="log({ client })"></v-switch>
       </div>
       <v-toolbar elevation="0" color="grey lighten-6" height="38">
         <v-toolbar-title>Available Tokenflows</v-toolbar-title>
