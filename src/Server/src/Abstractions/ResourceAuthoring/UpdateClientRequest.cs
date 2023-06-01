@@ -37,6 +37,8 @@ namespace IdOps
         public bool AllowPlainTextPkce { get; init; }
 
         public bool RequireRequestObject { get; init; }
+        
+        public bool AllowTokenGeneration { get; init; }
 
         public bool AllowAccessTokensViaBrowser { get; init; }
 
