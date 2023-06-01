@@ -61,7 +61,7 @@
       </div>
       <div v-if="view === 'TOKEN'">
         <resource-token-view
-         :id="resource.id"
+         :client.sync="resource"
          ></resource-token-view>
       </div>
     </v-card-text>

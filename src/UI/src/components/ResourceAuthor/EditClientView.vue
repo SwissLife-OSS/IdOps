@@ -602,6 +602,7 @@ export default {
         postLogoutRedirectUris: [],
         redirectUris: [],
         allowedCorsOrigins: [],
+        allowTokenGeneration: false,
         requireClientSecret: true,
         requirePkce: true,
         allowPlainTextPkce: false,
