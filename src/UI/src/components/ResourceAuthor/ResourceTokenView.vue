@@ -4,7 +4,6 @@
       <div>
         <v-switch label="Enable Token generation" v-model="client.allowTokenGeneration"
           :disabled="!hasSavedSecrets"></v-switch>
-        <v-switch label="Log allowTokenGeneration" @click="log({ allowTokenGeneration })"></v-switch>
       </div>
       <v-toolbar elevation="0" color="grey lighten-6" height="38">
         <v-toolbar-title>Available Tokenflows</v-toolbar-title>
@@ -87,9 +86,6 @@ export default {
     async startTokenFlow(grantType) {
       this.currentGrantType = grantType;
       this.openTokenAlert = true;
-    },
-    log(obj) {
-      console.log(obj)
     }
   },
   watch: {
@@ -104,12 +100,7 @@ export default {
       handler: async function () {
         const update = Object.assign({}, this.client);
         delete update.clientId;
-        console.log("local update");
-        console.log(update);
-        const result = await this.updateClient(update)
-        console.log("fetched client");
-        console.log(result.allowTokenGeneration)
-        console.log(result);
+        await this.updateClient(update)
       }
     }
   }
