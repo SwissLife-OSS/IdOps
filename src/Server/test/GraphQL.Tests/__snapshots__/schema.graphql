@@ -1150,6 +1150,7 @@ input UpdateClientInput {
   requirePkce: Boolean!
   allowPlainTextPkce: Boolean!
   requireRequestObject: Boolean!
+  allowTokenGeneration: Boolean!
   allowAccessTokensViaBrowser: Boolean!
   redirectUris: [String!]!
   postLogoutRedirectUris: [String!]!
