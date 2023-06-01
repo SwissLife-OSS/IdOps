@@ -2,7 +2,9 @@
   <div>
     <v-card flat>
       <div>
-        <v-switch label="Enable Token generation" v-model="client.allowTokenGeneration" :disabled="!hasSavedSecrets"></v-switch>
+        <v-switch label="Enable Token generation" v-model="client.allowTokenGeneration"
+          :disabled="!hasSavedSecrets"></v-switch>
+        <v-switch label="Log allowTokenGeneration" @click="log({ allowTokenGeneration })"></v-switch>
       </div>
       <v-toolbar elevation="0" color="grey lighten-6" height="38">
         <v-toolbar-title>Available Tokenflows</v-toolbar-title>
@@ -20,9 +22,7 @@
         </v-data-table>
       </v-card-text>
     </v-card>
-    <TokenRequestDialog v-if="openTokenAlert === true"
-      :client="client"
-      :activator.sync="openTokenAlert"
+    <TokenRequestDialog v-if="openTokenAlert === true" :client="client" :activator.sync="openTokenAlert"
       :grantType.sync="currentGrantType">
     </TokenRequestDialog>
   </div>
@@ -34,6 +34,7 @@
 
 <script>
 import TokenRequestDialog from "./TokenRequestDialog.vue";
+import { mapActions } from "vuex";
 
 export default {
   props: ["client"],
@@ -80,16 +81,35 @@ export default {
     }
   },
   methods: {
+    ...mapActions("idResource", [
+      "updateClient",
+    ]),
     async startTokenFlow(grantType) {
       this.currentGrantType = grantType;
       this.openTokenAlert = true;
     },
+    log(obj) {
+      console.log(obj)
+    }
   },
   watch: {
-    client:{
+    client: {
       immediate: true,
-      handler: function (){
+      handler: function () {
         this.client.clientSecrets
+      }
+    },
+    allowTokenGeneration: {
+      immediate: true,
+      handler: async function () {
+        const update = Object.assign({}, this.client);
+        delete update.clientId;
+        console.log("local update");
+        console.log(update);
+        const result = await this.updateClient(update)
+        console.log("fetched client");
+        console.log(result.allowTokenGeneration)
+        console.log(result);
       }
     }
   }
