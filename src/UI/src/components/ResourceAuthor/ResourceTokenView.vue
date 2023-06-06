@@ -21,7 +21,7 @@
         </v-data-table>
       </v-card-text>
     </v-card>
-    <TokenRequestDialog v-if="openTokenAlert === true" :client="client" :activator.sync="openTokenAlert"
+    <TokenRequestDialog v-if="openTokenAlert === true" :client.sync="client" :activator.sync="openTokenAlert"
       :grantType.sync="currentGrantType">
     </TokenRequestDialog>
   </div>
@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     ...mapActions("idResource", [
-      "updateClient",
+      "updateClient"
     ]),
     async startTokenFlow(grantType) {
       this.currentGrantType = grantType;

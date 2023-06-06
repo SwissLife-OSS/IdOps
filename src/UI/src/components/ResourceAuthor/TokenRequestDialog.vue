@@ -42,6 +42,10 @@ export default {
       const secretId = this.getLastSavedSecretId();
       const authority = await this.getAuthorityUrl();
 
+      console.log("client id: " + clientId);
+      console.log("secret id: " + secretId);
+      console.log("authority: " + authority);
+
       const tokenRequestInput = {
         authority: authority,
         clientId: clientId,
@@ -52,7 +56,7 @@ export default {
       };
       const result = await getClientCredentialsToken(tokenRequestInput);
       const token = result.data.requestToken.result.accessToken.token;
-      this.clientCredentialsToken = token === null? "invalid_client" : token;
+      this.clientCredentialsToken = token === null ? "invalid_client" : token;
     },
     getLastSavedSecretId() {
       const secret = this.client.clientSecrets.findLast(secret => secret.encryptedSecret !== null);
@@ -69,11 +73,10 @@ export default {
     },
     async getLastPublishedEnvironmentId() {
       const publishedResources = (await getPublishedResources()).data;
-      const lastPublishedResource =
-        publishedResources
-          .publishedResouces.findLast(publishedResource => publishedResource.type === "ApiScope")
-          .environments.findLast(environment => environment.state === "Latest");
 
+      const lastPublishedResource = publishedResources.publishedResouces
+        .findLast(publishedResource => publishedResource.type === "Client").environments
+        .findLast(environment => environment.state === "Latest");
       return lastPublishedResource.environment.id;
     }
   },
