@@ -51,8 +51,8 @@ export default {
         saveTokens: false
       };
       const result = await getClientCredentialsToken(tokenRequestInput);
-      const token = result.data.requestToken.result.accessToken.token;
-      this.clientCredentialsToken = token === null ? "invalid_client" : token;
+      const accessToken = result.data.requestToken.result.accessToken;
+      this.clientCredentialsToken = accessToken === null ? "invalid_client" : accessToken.token;
     },
     getLastSavedSecretId() {
       const secret = this.client.clientSecrets.findLast(secret => secret.encryptedSecret !== null);
