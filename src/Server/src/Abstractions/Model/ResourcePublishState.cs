@@ -37,7 +37,7 @@ namespace IdOps.Model
 
         public string Operation { get; set; }
 
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
     }
 
     public class ResourceApprovalState

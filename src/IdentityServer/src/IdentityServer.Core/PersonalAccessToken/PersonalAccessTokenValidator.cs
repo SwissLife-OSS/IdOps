@@ -68,23 +68,35 @@ namespace IdOps.IdentityServer
             PersonalAccessTokenValidationResult result =
                 await source.ValidateAsync(context, personalAccessToken);
 
-            if (result.IsValid && !await ValidateOneTimeAndUpdate(personalAccessToken))
+            if (result.IsValid)
             {
-                return PersonalAccessTokenValidationResult.Invalid;
-            }
-            else
-            {
-                await PersonalAccessTokenValidationFailedEvent
-                    .New(
-                        context?.Client?.ClientId ?? "-",
-                        context.UserName,
-                        "The pat validation failed for user " + context.UserName,
-                        context.RequestedScopes,
-                        null)
-                    .RaiseAsync(_eventService);
+                if (!await ValidateOneTimeAndUpdate(personalAccessToken))
+                {
+                    await PersonalAccessTokenValidationFailedEvent
+                        .New(
+                            context?.Client?.ClientId ?? "-",
+                            context.UserName,
+                            "The PAT is OneTime an was already used",
+                            context.RequestedScopes,
+                            null)
+                        .RaiseAsync(_eventService);
+
+                    return PersonalAccessTokenValidationResult.Invalid;
+                }
+
+                return result;
             }
 
-            return result;
+            await PersonalAccessTokenValidationFailedEvent
+                .New(
+                    context?.Client?.ClientId ?? "-",
+                    context.UserName,
+                    $"PAT validation source: {source.Kind} returned Invalid",
+                    context.RequestedScopes,
+                    null)
+                .RaiseAsync(_eventService);
+
+            return PersonalAccessTokenValidationResult.Invalid;
         }
 
         private async Task<PersonalAccessTokenMatch?> TryResolverPersonalAccessToken(
@@ -98,8 +110,8 @@ namespace IdOps.IdentityServer
             foreach (IdOpsPersonalAccessToken tokenDefinition in possibleTokens)
             {
                 if (_hashAlgorithmResolver.TryResolve(
-                    tokenDefinition.HashAlgorithm,
-                    out IHashAlgorithm? validator))
+                        tokenDefinition.HashAlgorithm,
+                        out IHashAlgorithm? validator))
                 {
                     foreach (IdOpsHashedToken possibleToken in tokenDefinition.Tokens)
                     {
@@ -133,10 +145,7 @@ namespace IdOps.IdentityServer
                 }
 
 
-                patToken.Definition.Tokens[index] = patToken.Definition.Tokens[index] with
-                {
-                    IsUsed = true
-                };
+                patToken.Definition.Tokens[index] = patToken.Definition.Tokens[index] with { IsUsed = true };
 
                 await _patTokenRepository.SaveAsync(patToken.Definition, default);
             }

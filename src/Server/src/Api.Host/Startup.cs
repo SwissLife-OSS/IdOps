@@ -3,6 +3,7 @@ using IdOps.Api.Security;
 using IdOps.AspNet;
 using IdOps.Authorization;
 using IdOps.GraphQL;
+using IdOps.Server.Encryption.KeyVault;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,8 +29,7 @@ namespace IdOps.Api
             IIdOpsServerBuilder builder = services
                 .AddIdOpsServer(Configuration)
                 .AddMongoStore()
-                .AddGraphQLServer()
-                .AddAzureKeyVault();
+                .AddGraphQLServer();
 
             services.AddAuthTokenGenerator();
             services.AddMemoryCache();

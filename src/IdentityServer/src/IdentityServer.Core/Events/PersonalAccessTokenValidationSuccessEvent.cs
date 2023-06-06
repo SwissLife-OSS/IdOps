@@ -1,3 +1,6 @@
+
+using System.Collections.Generic;
+using System.Linq;
 using Duende.IdentityServer.Events;
 
 namespace IdOps.IdentityServer.Events
@@ -10,7 +13,7 @@ namespace IdOps.IdentityServer.Events
             string? scopes)
             : base(
                 "PersonalAccessToken",
-                "Token validation Success",
+                "PAT validation Success",
                 EventTypes.Success,
                 IdOpsEventIds.PersonalAccessTokenValidationSuccess)
         {
@@ -28,6 +31,9 @@ namespace IdOps.IdentityServer.Events
         public static PersonalAccessTokenValidationSuccessEvent New(
             string clientId,
             string userName,
-            string? scopes) => new(clientId, userName, scopes);
+            IEnumerable<string>? scopes) => new(
+                clientId,
+                userName,
+                string.Join(",", scopes ?? Enumerable.Empty<string>()));
     }
 }

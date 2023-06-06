@@ -16,7 +16,7 @@ namespace IdOps.IdentityServer.Events
             IList<ValidationFailure>? errors)
             : base(
                 "PersonalAccessToken",
-                "Token validation failed",
+                "PAT validation failed",
                 EventTypes.Failure,
                 IdOpsEventIds.PersonalAccessTokenValidationFailed,
                 errorMessage)

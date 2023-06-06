@@ -250,6 +250,8 @@ type Dependency {
   apiScopes: [ApiScope!]
   identityResources: [IdentityResource!]
   apiResources: [ApiResource!]
+  clients: [Client!]
+  personalAccessTokens: [PersonalAccessToken!]
 }
 
 type EnabledProvider {
@@ -564,7 +566,7 @@ type ResourcePublishLog {
   publishedAt: DateTime!
   requestedBy: String!
   operation: String!
-  errorMessage: String!
+  errorMessage: String
 }
 
 type ResourceVersion {

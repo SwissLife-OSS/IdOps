@@ -139,6 +139,7 @@ namespace IdOps
             context.Resource.SlidingRefreshTokenLifetime = request.SlidingRefreshTokenLifetime;
             context.Resource.ConsentLifetime = request.ConsentLifetime;
             context.Resource.RefreshTokenExpiration = request.RefreshTokenExpiration;
+            context.Resource.RefreshTokenUsage = request.RefreshTokenUsage;
             context.Resource.UserSsoLifetime = request.UserSsoLifetime;
             context.Resource.DeviceCodeLifetime = request.DeviceCodeLifetime;
             context.Resource.AccessTokenType = request.AccessTokenType;
@@ -211,12 +212,14 @@ namespace IdOps
             List<ClientScope> scopes = new();
             scopes.AddRange(apiScopes.Select(x => new ClientScope
             {
-                Type = ScopeType.Resource, Id = x
+                Type = ScopeType.Resource,
+                Id = x
             }));
 
             scopes.AddRange(identityScopes.Select(x => new ClientScope
             {
-                Type = ScopeType.Identity, Id = x
+                Type = ScopeType.Identity,
+                Id = x
             }));
 
             return scopes;

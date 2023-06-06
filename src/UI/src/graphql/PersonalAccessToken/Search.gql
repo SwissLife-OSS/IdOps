@@ -1,9 +1,16 @@
-#import "./Fragments.gql"
 query SearchPersonalAccessTokens($input: SearchPersonalAccessTokensInput!) {
   searchPersonalAccessTokens(input: $input) {
     hasMore
     items {
-      ... PersonalAccessToken
+      id
+      userName
+      environmentId
+      createdAt
+      tenant
+      tenantInfo {
+        color
+        id
+      }
     }
   }
 }
