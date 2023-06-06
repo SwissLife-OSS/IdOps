@@ -42,10 +42,6 @@ export default {
       const secretId = this.getLastSavedSecretId();
       const authority = await this.getAuthorityUrl();
 
-      console.log("client id: " + clientId);
-      console.log("secret id: " + secretId);
-      console.log("authority: " + authority);
-
       const tokenRequestInput = {
         authority: authority,
         clientId: clientId,
