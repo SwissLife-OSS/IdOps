@@ -307,6 +307,8 @@ namespace IdOps.Model
         public ICollection<Guid> GetEnvironmentIds() => Environments;
 
         public ClientDependencies ClientDependencies { get; set; }
+
+        public ICollection<string>? IpAddressWhitelist { get; set; }
     }
 
     /// <summary>
