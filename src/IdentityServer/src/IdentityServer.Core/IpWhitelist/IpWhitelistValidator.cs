@@ -45,17 +45,18 @@ public class IpWhitelistValidator : IIpWhitelistValidator
 
     private IPAddress? GetIncomingIpAddress()
     {
-        string? ipAddress = _accessor.HttpContext?.Request.Headers["X-Forwarded-For"] ??
-                            _accessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
+        string? ipAddress = _accessor.HttpContext?.Request.Headers["X-Forwarded-For"];
 
-        if (!string.IsNullOrEmpty(ipAddress) && !ipAddress.Contains(','))
+        if (!string.IsNullOrEmpty(ipAddress) && ipAddress.Contains(','))
         {
             // X-Forwarded-For can contain multiple IP addresses when multiple proxies are involved
             // The leftmost IP address is the IP address of the originating client
             ipAddress = ipAddress.Split(',').First();
         }
 
-        return ipAddress is null ? null : IPAddress.Parse(ipAddress);
+        return ipAddress is null
+            ? _accessor.HttpContext?.Connection.RemoteIpAddress
+            : IPAddress.Parse(ipAddress);
     }
 
     private List<IPAddress> GetWhitelistFromClient(IdOpsClient client)
