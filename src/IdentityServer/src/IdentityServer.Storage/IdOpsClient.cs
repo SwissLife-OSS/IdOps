@@ -15,5 +15,6 @@ namespace IdOps.IdentityServer.Model
 
         public PublishSource Source { get; set; }
 
+        public ICollection<string>? IpAddressWhitelist { get; set; }
     }
 }
