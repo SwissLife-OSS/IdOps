@@ -79,10 +79,12 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.Services.AddSingleton<IEventSink, IdOpsEventSink>();
             builder.Services.AddSingleton<IIdOpsEventSink, BusEventSink>();
             builder.Services.AddTransient<IExtensionGrantValidator, PersonalAccessTokenGrantValidator>();
+            builder.Services.AddSingleton<IIpWhitelistValidator, IpWhitelistValidator>();
             builder.Services
                 .AddSingleton<IPersonalAccessTokenValidator, PersonalAccessTokenValidator>();
             builder.Services.AddSingleton<IPersonalAccessTokenSource, LocalAccessTokenSource>();
             builder.Services.RegisterHashAlgorithms();
+            builder.Services.AddHttpContextAccessor();
 
             if (builder.Options.EnableDataConnectors)
             {
