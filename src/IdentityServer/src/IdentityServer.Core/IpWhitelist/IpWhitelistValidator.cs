@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -47,11 +48,20 @@ public class IpWhitelistValidator
     {
         string? ipAddress = _accessor.HttpContext?.Request.Headers["X-Forwarded-For"];
 
-        if (!string.IsNullOrEmpty(ipAddress) && ipAddress.Contains(','))
+        if (!string.IsNullOrEmpty(ipAddress) && ipAddress.Contains(
+                ',',
+                StringComparison.InvariantCultureIgnoreCase))
         {
             // X-Forwarded-For can contain multiple IP addresses when multiple proxies are involved
             // The leftmost IP address is the IP address of the originating client
             ipAddress = ipAddress.Split(',').First();
+        }
+
+        if (!string.IsNullOrEmpty(ipAddress) && ipAddress.Contains(
+                ':',
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            ipAddress = ipAddress.Split(':').First();
         }
 
         return ipAddress is null

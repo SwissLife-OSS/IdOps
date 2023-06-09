@@ -215,4 +215,24 @@ public class IpWhiteListValidatorTests
         // Assert
         Assert.True(result);
     }
+
+    [Fact]
+    public void GivenWhitelistWithIncomingIPWithPort_WhenIsValidCalled_ThenReturnTrue()
+    {
+        // Arrange
+        Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor("192.168.1.1:8080");
+
+        var client = new IdOpsClient
+        {
+            IpAddressWhitelist = new List<string> { "192.168.1.1" }
+        };
+
+        var validator = new IpWhitelistValidator(mockHttpContextAccessor.Object);
+
+        // Act
+        var result = validator.IsValid(client, out _);
+
+        // Assert
+        Assert.True(result);
+    }
 }
