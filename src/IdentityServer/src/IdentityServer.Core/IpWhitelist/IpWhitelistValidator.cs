@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace IdOps.IdentityServer;
 
-public class IpWhitelistValidator : IIpWhitelistValidator
+public class IpWhitelistValidator
 {
     private readonly IHttpContextAccessor _accessor;
 
