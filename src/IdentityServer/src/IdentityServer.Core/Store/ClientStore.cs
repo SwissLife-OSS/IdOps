@@ -11,12 +11,12 @@ namespace IdOps.IdentityServer.Storage
     public class ClientStore : IClientStore, IManageClientStore
     {
         private readonly IClientRepository _clientRepository;
-        private readonly IIpWhitelistValidator _ipWhitelistValidator;
+        private readonly IpWhitelistValidator _ipWhitelistValidator;
         private readonly IEventService _eventService;
 
         public ClientStore(
             IClientRepository clientRepository,
-            IIpWhitelistValidator ipWhitelistValidator,
+            IpWhitelistValidator ipWhitelistValidator,
             IEventService eventService)
         {
             _clientRepository = clientRepository;
