@@ -8,7 +8,7 @@ using System.Net;
 
 namespace IdOps;
 
-public class IpWhiteListValidatorTests
+public class IpAllowListValidatorTests
 {
     private static Mock<IHttpContextAccessor> SetupMockHttpContextAccessor(
         string? xForwardedFor,
@@ -40,12 +40,12 @@ public class IpWhiteListValidatorTests
         // Arrange
         Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor("192.168.1.1");
 
-        var client = new IdOpsClient
+        var client = new IpAddressFilter
         {
-            IpAddressWhitelist = null
+            Policy = IpFilterPolicy.Public
         };
 
-        var validator = new IpWhitelistValidator(mockHttpContextAccessor.Object);
+        var validator = new IpAllowListValidator(mockHttpContextAccessor.Object, new InternalIpFilterConfiguration());
 
         // Act
         var result = validator.IsValid(client, out _);
@@ -60,12 +60,13 @@ public class IpWhiteListValidatorTests
         // Arrange
         Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor("192.168.1.1");
 
-        var client = new IdOpsClient
+        var client = new IpAddressFilter
         {
-            IpAddressWhitelist = new List<string> { "192.168.1.1" }
+            AllowList = new List<string> { "192.168.1.1" },
+            Policy = IpFilterPolicy.AllowList            
         };
 
-        var validator = new IpWhitelistValidator(mockHttpContextAccessor.Object);
+        var validator = new IpAllowListValidator(mockHttpContextAccessor.Object, new InternalIpFilterConfiguration());
 
         // Act
         var result = validator.IsValid(client, out _);
@@ -80,12 +81,13 @@ public class IpWhiteListValidatorTests
         // Arrange
         Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor("192.168.1.1");
 
-        var client = new IdOpsClient
+        var client = new IpAddressFilter
         {
-            IpAddressWhitelist = new List<string> { "192.168.1.2", "192.168.1.3" }
+            AllowList = new List<string> { "192.168.1.2", "192.168.1.3" },
+            Policy = IpFilterPolicy.AllowList            
         };
 
-        var validator = new IpWhitelistValidator(mockHttpContextAccessor.Object);
+        var validator = new IpAllowListValidator(mockHttpContextAccessor.Object, new InternalIpFilterConfiguration());
 
         // Act
         var result = validator.IsValid(client, out string message);
@@ -101,12 +103,13 @@ public class IpWhiteListValidatorTests
         // Arrange
         Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor("192.168.1.1");
 
-        var client = new IdOpsClient
+        var client = new IpAddressFilter
         {
-            IpAddressWhitelist = new List<string>()
+            AllowList = new List<string>(),
+            Policy = IpFilterPolicy.AllowList            
         };
 
-        var validator = new IpWhitelistValidator(mockHttpContextAccessor.Object);
+        var validator = new IpAllowListValidator(mockHttpContextAccessor.Object, new InternalIpFilterConfiguration());
 
         // Act
         var result = validator.IsValid(client, out _);
@@ -121,12 +124,13 @@ public class IpWhiteListValidatorTests
         // Arrange
         Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor(null);
 
-        var client = new IdOpsClient
+        var client = new IpAddressFilter
         {
-            IpAddressWhitelist = new List<string> { "192.168.1.2", "192.168.1.3" }
+            AllowList = new List<string> { "192.168.1.2", "192.168.1.3" },
+            Policy = IpFilterPolicy.AllowList            
         };
 
-        var validator = new IpWhitelistValidator(mockHttpContextAccessor.Object);
+        var validator = new IpAllowListValidator(mockHttpContextAccessor.Object, new InternalIpFilterConfiguration());
 
         // Act
         var result = validator.IsValid(client, out string message);
@@ -142,12 +146,13 @@ public class IpWhiteListValidatorTests
         // Arrange
         Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor("192.168.1.2");
 
-        var client = new IdOpsClient
+        var client = new IpAddressFilter
         {
-            IpAddressWhitelist = new List<string> { "192.168.1.2", "InvalidIPAddress" }
+            AllowList = new List<string> { "192.168.1.2", "InvalidIPAddress" },
+            Policy = IpFilterPolicy.AllowList            
         };
 
-        var validator = new IpWhitelistValidator(mockHttpContextAccessor.Object);
+        var validator = new IpAllowListValidator(mockHttpContextAccessor.Object, new InternalIpFilterConfiguration());
 
         // Act
         var result = validator.IsValid(client, out _);
@@ -162,12 +167,13 @@ public class IpWhiteListValidatorTests
         // Arrange
         Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor("192.168.1.1, 192.168.1.2");
 
-        var client = new IdOpsClient
+        var client = new IpAddressFilter
         {
-            IpAddressWhitelist = new List<string> { "192.168.1.1" }
+            AllowList = new List<string> { "192.168.1.1" },
+            Policy = IpFilterPolicy.AllowList            
         };
 
-        var validator = new IpWhitelistValidator(mockHttpContextAccessor.Object);
+        var validator = new IpAllowListValidator(mockHttpContextAccessor.Object, new InternalIpFilterConfiguration());
 
         // Act
         var result = validator.IsValid(client, out _);
@@ -182,12 +188,13 @@ public class IpWhiteListValidatorTests
         // Arrange
         Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor("192.168.1.1");
 
-        var client = new IdOpsClient
+        var client = new IpAddressFilter
         {
-            IpAddressWhitelist = new List<string> { "192.168.1.1" }
+            AllowList = new List<string> { "192.168.1.1" },
+            Policy = IpFilterPolicy.AllowList            
         };
 
-        var validator = new IpWhitelistValidator(mockHttpContextAccessor.Object);
+        var validator = new IpAllowListValidator(mockHttpContextAccessor.Object, new InternalIpFilterConfiguration());
 
         // Act
         var result = validator.IsValid(client, out _);
@@ -202,12 +209,13 @@ public class IpWhiteListValidatorTests
         // Arrange
         Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor(null, "192.168.1.1");
 
-        var client = new IdOpsClient
+        var client = new IpAddressFilter
         {
-            IpAddressWhitelist = new List<string> { "192.168.1.1" }
+            AllowList = new List<string> { "192.168.1.1" },
+            Policy = IpFilterPolicy.AllowList            
         };
 
-        var validator = new IpWhitelistValidator(mockHttpContextAccessor.Object);
+        var validator = new IpAllowListValidator(mockHttpContextAccessor.Object, new InternalIpFilterConfiguration());
 
         // Act
         var result = validator.IsValid(client, out _);
@@ -222,12 +230,13 @@ public class IpWhiteListValidatorTests
         // Arrange
         Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor("192.168.1.1:8080");
 
-        var client = new IdOpsClient
+        var client = new IpAddressFilter
         {
-            IpAddressWhitelist = new List<string> { "192.168.1.1" }
+            AllowList = new List<string> { "192.168.1.1" },
+            Policy = IpFilterPolicy.AllowList            
         };
 
-        var validator = new IpWhitelistValidator(mockHttpContextAccessor.Object);
+        var validator = new IpAllowListValidator(mockHttpContextAccessor.Object, new InternalIpFilterConfiguration());
 
         // Act
         var result = validator.IsValid(client, out _);
@@ -235,4 +244,6 @@ public class IpWhiteListValidatorTests
         // Assert
         Assert.True(result);
     }
+
+    // TODO: Add test for Internal Policy
 }

@@ -81,7 +81,7 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.Services.AddSingleton<IEventSink, IdOpsEventSink>();
             builder.Services.AddSingleton<IIdOpsEventSink, BusEventSink>();
             builder.Services.AddTransient<IExtensionGrantValidator, PersonalAccessTokenGrantValidator>();
-            builder.Services.AddSingleton<IpWhitelistValidator>();
+            builder.Services.AddSingleton<IpAllowListValidator>();
             builder.Services.AddSingleton<ClientIdExtractor>();
             builder.Services
                 .AddSingleton<IPersonalAccessTokenValidator, PersonalAccessTokenValidator>();
@@ -188,7 +188,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IApplicationBuilder UseIpWhitelistForIdOpsClients(
             this IApplicationBuilder app)
         {
-            return app.UseMiddleware<IpWhitelistMiddleware>();
+            return app.UseMiddleware<IpAllowListMiddleware>();
         }
     }
 }

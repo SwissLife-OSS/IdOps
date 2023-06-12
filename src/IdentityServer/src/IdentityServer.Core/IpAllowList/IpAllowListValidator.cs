@@ -7,20 +7,24 @@ using Microsoft.AspNetCore.Http;
 
 namespace IdOps.IdentityServer;
 
-public class IpWhitelistValidator
+public class IpAllowListValidator
 {
     private readonly IHttpContextAccessor _accessor;
+    private readonly InternalIpFilterConfiguration _configuration;
 
-    public IpWhitelistValidator(IHttpContextAccessor accessor)
+    public IpAllowListValidator(
+        IHttpContextAccessor accessor,
+        InternalIpFilterConfiguration configuration)
     {
         _accessor = accessor;
+        _configuration = configuration;
     }
 
-    public bool IsValid(IdOpsClient client, out string message)
+    public bool IsValid(IpAddressFilter filter, out string message)
     {
         message = string.Empty;
 
-        if (client.IpAddressWhitelist == null)
+        if (filter.Policy == IpFilterPolicy.Public)
         {
             return true;
         }
@@ -33,7 +37,7 @@ public class IpWhitelistValidator
             return false;
         }
 
-        List<IPAddress> whitelist = GetWhitelistFromClient(client);
+        List<IPAddress> whitelist = GetAllowListFromFilter(filter);
 
         if (whitelist.Contains(ipAddress))
         {
@@ -69,10 +73,18 @@ public class IpWhitelistValidator
             : IPAddress.Parse(ipAddress);
     }
 
-    private List<IPAddress> GetWhitelistFromClient(IdOpsClient client)
+    private List<IPAddress> GetAllowListFromFilter(IpAddressFilter filter)
     {
-        return client.IpAddressWhitelist?.Select(
+        ICollection<string> allowList = filter.Policy switch
+        {
+            IpFilterPolicy.Internal => _configuration.InternalIpAllowList,
+            IpFilterPolicy.AllowList => filter.AllowList,
+            _ => throw new InvalidOperationException(
+                $"There is no allowList for IpFilterPolicy: {filter.Policy}")
+        };
+
+        return allowList.Select(
                 a => IPAddress.TryParse(a, out IPAddress? ipAddress) ? ipAddress : null)
-            .OfType<IPAddress>().ToList() ?? new List<IPAddress>();
+            .OfType<IPAddress>().ToList();
     }
 }

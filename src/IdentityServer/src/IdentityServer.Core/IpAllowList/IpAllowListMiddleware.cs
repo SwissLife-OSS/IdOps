@@ -10,16 +10,16 @@ using IdOps.IdentityServer.IpWhitelist;
 
 namespace IdOps.IdentityServer;
 
-public class IpWhitelistMiddleware
+public class IpAllowListMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly IpWhitelistValidator _validator;
+    private readonly IpAllowListValidator _validator;
     private readonly IEventService _eventService;
     private readonly ClientIdExtractor _clientIdExtractor;
 
-    public IpWhitelistMiddleware(
+    public IpAllowListMiddleware(   
         RequestDelegate next,
-        IpWhitelistValidator validator,
+        IpAllowListValidator validator,
         IEventService eventService,
         ClientIdExtractor clientIdExtractor)
     {
@@ -31,19 +31,24 @@ public class IpWhitelistMiddleware
 
     public async Task InvokeAsync(HttpContext context, IClientStore clientStore)
     {
+        // TODO: get request -> wireguard ip mit als default. get request authorise call
+
         var clientId = _clientIdExtractor.GetClientId(context);
 
         if (!string.IsNullOrEmpty(clientId))
         {
             Client client = await clientStore.FindEnabledClientByIdAsync(clientId);
 
-            if (client is IdOpsClient { IpAddressWhitelist: not null } idOpsClient)
+            if (client is IdOpsClient { IpAddressFilter: { } ipAddressFilter })
             {
-                if (!_validator.IsValid(idOpsClient, out var message))
+                if (!_validator.IsValid(ipAddressFilter, out var message))
                 {
                     await IpValidationFailedEvent.New(clientId, message).RaiseAsync(_eventService);
-                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    return;
+                    if (!ipAddressFilter.WarnOnly)
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        return;
+                    }
                 }
             }
         }
