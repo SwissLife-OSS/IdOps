@@ -163,6 +163,7 @@ namespace IdOps
             context.Resource.Claims = request.Claims ?? new List<ClientClaim>();
             context.Resource.DataConnectors = request.DataConnectors?.ToList();
             context.Resource.EnabledProviders = request.EnabledProviders?.ToList();
+            context.Resource.IpAddressFilter = request.IpAddressFilter;
 
             SaveResourceResult<Client> result = await _resourceManager
                 .SaveAsync(context, cancellationToken);
