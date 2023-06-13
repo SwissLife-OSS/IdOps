@@ -4,7 +4,7 @@ using System;
 using Microsoft.AspNetCore.Http;
 using static Microsoft.Net.Http.Headers.HeaderNames;
 
-namespace IdOps.IdentityServer.IpWhitelist;
+namespace IdOps.IdentityServer.IpAllowList;
 
 public class ClientIdExtractor
 {

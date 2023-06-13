@@ -35,7 +35,7 @@ public class IpAllowListValidatorTests
     }
 
     [Fact]
-    public void GivenNoWhitelist_WhenIsValidCalled_ThenReturnTrue()
+    public void GivenNoAllowList_WhenIsValidCalled_ThenReturnTrue()
     {
         // Arrange
         Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor("192.168.1.1");
@@ -55,7 +55,7 @@ public class IpAllowListValidatorTests
     }
 
     [Fact]
-    public void GivenWhitelistWithIncomingIP_WhenIsValidCalled_ThenReturnTrue()
+    public void GivenAllowListWithIncomingIP_WhenIsValidCalled_ThenReturnTrue()
     {
         // Arrange
         Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor("192.168.1.1");
@@ -76,7 +76,7 @@ public class IpAllowListValidatorTests
     }
 
     [Fact]
-    public void GivenWhitelistWithoutIncomingIP_WhenIsValidCalled_ThenReturnFalseWithCorrectErrorMessage()
+    public void GivenAllowListWithoutIncomingIP_WhenIsValidCalled_ThenReturnFalseWithCorrectErrorMessage()
     {
         // Arrange
         Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor("192.168.1.1");
@@ -94,11 +94,11 @@ public class IpAllowListValidatorTests
 
         // Assert
         Assert.False(result);
-        Assert.Equal("192.168.1.1 was not part of whitelist 192.168.1.2, 192.168.1.3", message);
+        Assert.Equal("192.168.1.1 was not part of allow list 192.168.1.2, 192.168.1.3", message);
     }
 
     [Fact]
-    public void GivenEmptyClientIpWhitelist_WhenIsValidCalled_ThenReturnFalse()
+    public void GivenEmptyClientIpAllowList_WhenIsValidCalled_ThenReturnFalse()
     {
         // Arrange
         Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor("192.168.1.1");
@@ -141,7 +141,7 @@ public class IpAllowListValidatorTests
     }
 
     [Fact]
-    public void GivenInvalidWhitelistIPs_WhenIsValidCalled_ThenConsiderOnlyValidIPs()
+    public void GivenInvalidAllowListIPs_WhenIsValidCalled_ThenConsiderOnlyValidIPs()
     {
         // Arrange
         Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor("192.168.1.2");
@@ -225,7 +225,7 @@ public class IpAllowListValidatorTests
     }
 
     [Fact]
-    public void GivenWhitelistWithIncomingIPWithPort_WhenIsValidCalled_ThenReturnTrue()
+    public void GivenAllowListWithIncomingIPWithPort_WhenIsValidCalled_ThenReturnTrue()
     {
         // Arrange
         Mock<IHttpContextAccessor> mockHttpContextAccessor = SetupMockHttpContextAccessor("192.168.1.1:8080");

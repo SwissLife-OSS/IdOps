@@ -6,7 +6,7 @@ using Duende.IdentityServer.Models;
 using IdOps.IdentityServer.Model;
 using Duende.IdentityServer.Services;
 using IdOps.IdentityServer.Events;
-using IdOps.IdentityServer.IpWhitelist;
+using IdOps.IdentityServer.IpAllowList;
 
 namespace IdOps.IdentityServer;
 

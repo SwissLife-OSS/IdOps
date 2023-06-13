@@ -6,7 +6,7 @@ using IdOps.IdentityServer;
 using IdOps.IdentityServer.DataConnector;
 using IdOps.IdentityServer.Events;
 using IdOps.IdentityServer.Hashing;
-using IdOps.IdentityServer.IpWhitelist;
+using IdOps.IdentityServer.IpAllowList;
 using IdOps.IdentityServer.ResourceUpdate;
 using IdOps.IdentityServer.Services;
 using IdOps.IdentityServer.Storage;
@@ -188,7 +188,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-        public static IApplicationBuilder UseIpWhitelistForIdOpsClients(
+        public static IApplicationBuilder UseIpAllowListForIdOpsClients(
             this IApplicationBuilder app)
         {
             return app.UseMiddleware<IpAllowListMiddleware>();

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using IdOps.IdentityServer.IpWhitelist;
+using IdOps.IdentityServer.IpAllowList;
 using Microsoft.AspNetCore.Http;
 using Xunit;
 

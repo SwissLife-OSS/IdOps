@@ -37,14 +37,14 @@ public class IpAllowListValidator
             return false;
         }
 
-        List<IPAddress> whitelist = GetAllowListFromFilter(filter);
+        List<IPAddress> allowList = GetAllowListFromFilter(filter);
 
-        if (whitelist.Contains(ipAddress))
+        if (allowList.Contains(ipAddress))
         {
             return true;
         }
 
-        message = $"{ipAddress} was not part of whitelist {string.Join(", ", whitelist)}";
+        message = $"{ipAddress} was not part of allow list {string.Join(", ", allowList)}";
         return false;
     }
 
