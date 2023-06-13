@@ -3,7 +3,6 @@ using IdOps.Api.Security;
 using IdOps.AspNet;
 using IdOps.Authorization;
 using IdOps.GraphQL;
-using IdOps.Server.Encryption.KeyVault;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

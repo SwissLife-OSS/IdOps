@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.csproj" />
-    <ProjectReference Include="..\..\src\Encryption.KeyVault\Encryption.KeyVault.csproj" />
   </ItemGroup>
 
 </Project>

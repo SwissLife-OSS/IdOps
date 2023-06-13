@@ -36,8 +36,8 @@ public class TokenRequestDataResultFactory : IResultFactory<TokenRequestData, To
 
         var clientId = client.ClientId;
 
-        string secretEncrypted =
-            client.ClientSecrets.First(secret => secret.Id.Equals(input.SecretId)).EncryptedSecret;
+        var secretEncrypted =
+            client.ClientSecrets.First(secret => secret.Id.Equals(input.SecretId)).EncryptedValue;
         var secretDecrypted =
             await _encryptionService.DecryptAsync(secretEncrypted, cancellationToken);
 

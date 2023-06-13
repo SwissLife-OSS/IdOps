@@ -28,7 +28,7 @@ namespace IdOps
                 $"Configuration not found in path: '{configSectionName}' " +
                 $"please check your settings.");
 
-            builder.Services.AddCoreServices(options);
+            builder.Services.AddCoreServices(options, configuration);
             builder.Services.AddMessaging(options.Messaging);
 
             return builder;
@@ -36,13 +36,15 @@ namespace IdOps
 
         private static IServiceCollection AddCoreServices(
             this IServiceCollection services,
-            IdOpsServerOptions options)
+            IdOpsServerOptions options,
+            IConfiguration configuration)
         {
             services.AddSingleton(options);
             services.AddSingleton<ISharedSecretGenerator, DefaultSharedSecretGenerator>();
-            services.AddSingleton<ISecretService>(sp => new SecretService(
-                sp.GetServices<ISharedSecretGenerator>(),
-                sp.GetService<IEncryptionService>() ?? new NoEncryptionService()));
+            services.AddEncryptionProvider<KeyvaultEncryptionProvider>(isDefault: true);
+            services.AddAzureKeyVault(configuration);
+            services.AddEncryptionProvider<NoEncryptionProvider>(isDefault: false);
+            services.AddSingleton<ISecretService, SecretService>();
             services.AddSingleton<IIdentityServerEventMapper>(
                 _ => new IdentityServerEventMapper(options.MutedClients));
 

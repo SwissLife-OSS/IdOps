@@ -42,13 +42,10 @@ public class SecretService : ISecretService
         secret.Value = secretValue.ToSha256();
 
         if (request.SaveValue.GetValueOrDefault() &&
-            _encryptionService is not NoEncryptionService)
+            _encryptionService is not NoEncryptionProvider)
         {
-            secret.EncryptedSecret = await _encryptionService
+            secret.EncryptedValue = await _encryptionService
                 .EncryptAsync(secretValue, CancellationToken.None);
-
-            secret.EncryptionKeyId = await _encryptionService
-                .GetEncryptionKeyNameBase64Async();
         }
 
         return (secret, secretValue);
@@ -58,7 +55,7 @@ public class SecretService : ISecretService
         Secret secret,
         CancellationToken cancellationToken)
     {
-        var encryptedValue = secret.EncryptedSecret;
+        var encryptedValue = secret.EncryptedValue;
         if (encryptedValue == null)
         {
             ErrorException.Throw(new NoEncryptedSecretError());
