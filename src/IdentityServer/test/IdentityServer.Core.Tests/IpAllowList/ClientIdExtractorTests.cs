@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using IdOps.IdentityServer.IpWhitelist;
@@ -73,5 +74,30 @@ public class ClientIdExtractorTests
 
         // Assert
         Assert.Equal(string.Empty, result);
+    }
+
+    [Fact]
+    public void HttpContextWithQueryParameter_GetClientIdIsCalled_QueryParameterClientIdIsReturned()
+    {
+        // Arrange
+        var context = new DefaultHttpContext
+        {
+            Request =
+            {
+                Query = new QueryCollection(
+                    new Dictionary<string, Microsoft.Extensions.Primitives.StringValues>
+                    {
+                        { "client_id", "query_client_id" }
+                    })
+            }
+        };
+
+        var extractor = new ClientIdExtractor();
+
+        // Act
+        var result = extractor.GetClientId(context);
+
+        // Assert
+        Assert.Equal("query_client_id", result);
     }
 }

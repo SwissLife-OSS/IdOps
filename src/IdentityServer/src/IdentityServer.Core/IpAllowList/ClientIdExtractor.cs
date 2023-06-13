@@ -2,6 +2,7 @@ using System.Linq;
 using System.Text;
 using System;
 using Microsoft.AspNetCore.Http;
+using static Microsoft.Net.Http.Headers.HeaderNames;
 
 namespace IdOps.IdentityServer.IpWhitelist;
 
@@ -14,7 +15,7 @@ public class ClientIdExtractor
     {
         var clientId = string.Empty;
 
-        var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
+        var authHeader = context.Request.Headers[Authorization].FirstOrDefault();
         if (authHeader != null && authHeader.StartsWith(
                 BasicPrefix,
                 StringComparison.InvariantCultureIgnoreCase))
@@ -31,6 +32,11 @@ public class ClientIdExtractor
             {
                 clientId = context.Request.Form[ClientId];
             }
+        }
+
+        if (string.IsNullOrEmpty(clientId))
+        {
+            clientId =  context.Request.Query[ClientId].ToString();
         }
 
         return clientId;

@@ -30,9 +30,7 @@ public class IpAllowListMiddleware
     }
 
     public async Task InvokeAsync(HttpContext context, IClientStore clientStore)
-    {
-        // TODO: get request -> wireguard ip mit als default. get request authorise call
-
+    {                
         var clientId = _clientIdExtractor.GetClientId(context);
 
         if (!string.IsNullOrEmpty(clientId))
