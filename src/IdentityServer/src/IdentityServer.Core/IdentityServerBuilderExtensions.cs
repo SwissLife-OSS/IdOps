@@ -83,6 +83,9 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.Services.AddTransient<IExtensionGrantValidator, PersonalAccessTokenGrantValidator>();
             builder.Services.AddSingleton<IpAllowListValidator>();
             builder.Services.AddSingleton<ClientIdExtractor>();
+            builder.Services.AddSingleton(
+                builder.Configuration?.GetSection("InternalIpFilter").Get<InternalIpFilterConfiguration>() ??
+                new InternalIpFilterConfiguration());
             builder.Services
                 .AddSingleton<IPersonalAccessTokenValidator, PersonalAccessTokenValidator>();
             builder.Services.AddSingleton<IPersonalAccessTokenSource, LocalAccessTokenSource>();
