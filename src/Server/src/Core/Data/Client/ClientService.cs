@@ -72,6 +72,12 @@ namespace IdOps
             context.Resource.Name = request.Name;
             context.Resource.AllowedGrantTypes = request.AllowedGrantTypes?.ToList();
             context.Resource.AllowedScopes = BuildScopes(request.ApiScopes, request.IdentityScopes);
+            context.Resource.IpAddressFilter = new IpAddressFilter
+            {
+                WarnOnly = false,
+                AllowList = new List<string>(),
+                Policy = IpFilterPolicy.Internal
+            };
 
             if (request.ClientId is { })
             {
