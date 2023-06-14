@@ -567,7 +567,7 @@
             <v-row>
               <v-col md="12">
                 <combo-box-editor
-                v-if="client.ipAddressFilter.policy == 'ALLOWLIST'"
+                v-if="client.ipAddressFilter.policy == 'ALLOW_LIST'"
                 label="Allow List"
                 v-model="client.ipAddressFilter.allowList"
               ></combo-box-editor>                
