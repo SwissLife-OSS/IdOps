@@ -670,6 +670,7 @@ export default {
         dataConnectors: [],
         enabledProviders: [],
         application: null,
+        ipAddressFilter: {policy: "PUBLIC", warnOnly: true, allowList: []}
       },
     };
   },

@@ -81,6 +81,7 @@ namespace IdOps.IdentityServer.Samples
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseIpAllowListForIdOpsClients();
             app.UseIdentityServer();
 
             app.UseAuthorization();
