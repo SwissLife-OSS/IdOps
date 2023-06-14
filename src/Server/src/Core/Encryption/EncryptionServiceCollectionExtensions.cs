@@ -10,27 +10,23 @@ public static class EncryptionServiceCollectionExtensions
 {
     public static IServiceCollection AddEncryptionProvider<T>(
         this IServiceCollection services,
-        bool isDefault = false)
-        where T : class, IEncryptionProvider
+        bool isDefault = false) where T : class, IEncryptionProvider
     {
         services.AddSingleton<IEncryptionProvider, T>();
         services.TryAddSingleton<IEncryptionService, EncryptionService>();
 
-        services
-            .AddOptions<EncryptionServiceOptions>()
-            .Configure<IEnumerable<IEncryptionProvider>>(
-                (options, providers) =>
+        services.AddOptions<EncryptionServiceOptions>().Configure<IEnumerable<IEncryptionProvider>>(
+            (options, providers) =>
+            {
+                if (isDefault)
                 {
-                    if (isDefault)
-                    {
-                        options.DefaultProvider = providers.OfType<T>().First();
-                    }
-                });
+                    options.DefaultProvider = providers.OfType<T>().First();
+                }
+            });
 
-        services.TryAddSingleton(sp
-            => sp.GetRequiredService<IOptions<EncryptionServiceOptions>>().Value);
+        services.TryAddSingleton(sp =>
+            sp.GetRequiredService<IOptions<EncryptionServiceOptions>>().Value);
 
         return services;
     }
 }
-

@@ -7,9 +7,6 @@ namespace IdOps.Server.Storage.Mongo.Configuration
     internal class ClientCollectionConfiguration :
         IMongoCollectionConfiguration<Client>
     {
-        
-        private const string MongoDiscriminator = "_t";
-        
         public void OnConfiguring(
             IMongoCollectionBuilder<Client> builder)
         {
@@ -30,8 +27,6 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                 {
                     cm.AutoMap();
                     cm.SetIsRootClass(true);
-                    //cm.SetDiscriminator(MongoDiscriminator);
-                    //cm.AddKnownType(typeof(KeyvaultEncryptedValue));
                     cm.SetIgnoreExtraElements(true);
                 })  
                 .AddBsonClassMap<KeyvaultEncryptedValue>(cm =>

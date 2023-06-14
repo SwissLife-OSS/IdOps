@@ -7,7 +7,8 @@ namespace IdOps;
 
 public static class AzureKeyVaultExtension
 {
-    public static IServiceCollection AddAzureKeyVault(this IServiceCollection services,
+    public static IServiceCollection AddAzureKeyVault(
+        this IServiceCollection services,
         IConfiguration configuration)
     {
         AzureKeyVaultOptions options = configuration

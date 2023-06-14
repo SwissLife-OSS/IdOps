@@ -19,21 +19,21 @@ public class EncryptionService : IEncryptionService
         _providers = providers.ToDictionary(x => x.Kind);
     }
 
-    public async Task<EncryptedValue> EncryptAsync(string value, CancellationToken cancellationToken)
+    public async Task<EncryptedValue> EncryptAsync(string value,
+        CancellationToken cancellationToken)
     {
         return await _options.DefaultProvider.EncryptAsync(value, cancellationToken);
     }
 
-    public async Task<string> DecryptAsync(EncryptedValue value, CancellationToken cancellationToken)
+    public async Task<string> DecryptAsync(EncryptedValue value,
+        CancellationToken cancellationToken)
     {
         if (!_providers.TryGetValue(value.Kind, out var provider))
         {
-            throw new ArgumentException(
-                $"The encryption provider {value.Kind} is not supported.",
+            throw new ArgumentException($"The encryption provider {value.Kind} is not supported.",
                 nameof(value));
         }
 
         return await provider.DecryptAsync(value, cancellationToken);
     }
 }
-
