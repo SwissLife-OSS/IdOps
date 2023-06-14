@@ -720,7 +720,7 @@ export default {
     ipFilterPolicy: function() {
       return [
         {text: "Internal", value: "INTERNAL"}, 
-        {text: "Allowlist", value: "ALLOWLIST"}, 
+        {text: "Allowlist", value: "ALLOW_LIST"}, 
         {text: "Public", value: "PUBLIC"}]
     }
   },
