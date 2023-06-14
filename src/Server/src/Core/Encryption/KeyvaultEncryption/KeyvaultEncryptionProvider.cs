@@ -31,7 +31,7 @@ public sealed class KeyvaultEncryptionProvider : IGenericEncryptionProvider<Keyv
     public async Task<string> DecryptAsync(KeyvaultEncryptedValue value, CancellationToken cancellationToken)
     {
         DecryptResult result =  await _cryptographyClient.DecryptAsync(_encryptionAlgorithm,
-            value.EncryptResult.Ciphertext, cancellationToken);
+            value.CipherText, cancellationToken);
         string plainText = Encoding.UTF8.GetString(result.Plaintext);
         return plainText;
     }

@@ -658,11 +658,15 @@ type Secret {
   id: Uuid!
   description: String
   value: String!
-  encryptedSecret: String
-  encryptionKeyId: String
+  encryptedValue: EncryptedValue
   expiration: DateTime
   type: String!
 }
+
+type EncryptedValue {
+  kind: String!
+}
+
 
 type Tenant {
   id: String!

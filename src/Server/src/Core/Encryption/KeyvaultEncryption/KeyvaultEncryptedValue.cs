@@ -7,15 +7,15 @@ public class KeyvaultEncryptedValue : EncryptedValue
 {
     public KeyvaultEncryptedValue(EncryptResult result)
     {
-        EncryptResult = result;
+        KeyId = result.KeyId;
+        CipherText = result.Ciphertext;
     }
+
+    public string KeyId { get; private set; }
     
-    public EncryptResult EncryptResult { get; }
-
+    public byte[] CipherText { get; private set; }
+    
     public override string Kind => nameof(KeyvaultEncryptedValue);
-
-
-    public string KeyId => EncryptResult.KeyId;
-
-    public string Value => Convert.ToBase64String(EncryptResult.Ciphertext);
+    
+    public string Value => Convert.ToBase64String(CipherText);
 }
