@@ -16,6 +16,11 @@ mutation () {
       environments
       apiScopes
       identityScopes
+      ipAddressFilter {
+        policy
+        warnOnly
+        allowList
+      }
     }
   }
 }
