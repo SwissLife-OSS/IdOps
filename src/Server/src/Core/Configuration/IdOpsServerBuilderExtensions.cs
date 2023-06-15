@@ -30,7 +30,7 @@ namespace IdOps
 
             builder.Services.AddCoreServices(options, configuration);
             builder.Services.AddMessaging(options.Messaging);
-
+            builder.Services.AddEncryptionProviders(configuration);
             return builder;
         }
 
@@ -41,9 +41,6 @@ namespace IdOps
         {
             services.AddSingleton(options);
             services.AddSingleton<ISharedSecretGenerator, DefaultSharedSecretGenerator>();
-            services.AddEncryptionProvider<KeyvaultEncryptionProvider>(isDefault: true);
-            services.AddAzureKeyVault(configuration);
-            services.AddEncryptionProvider<NoEncryptionProvider>(isDefault: false);
             services.AddSingleton<ISecretService, SecretService>();
             services.AddSingleton<IIdentityServerEventMapper>(
                 _ => new IdentityServerEventMapper(options.MutedClients));
@@ -95,6 +92,15 @@ namespace IdOps
             services.AddSingleton<IHashAlgorithmResolver, HashAlgorithmResolver>();
             services.AddSingleton<IPasswordProvider, PasswordProvider>();
             services.RegisterHashAlgorithms();
+        }
+
+        private static void AddEncryptionProviders(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            services.AddAzureKeyVault(configuration);
+            services.AddEncryptionProvider<KeyvaultEncryptionProvider>(isDefault: true);
+            services.AddEncryptionProvider<NoEncryptionProvider>(isDefault: false);
         }
 
         private static void AddConsumers(this IBusRegistrationConfigurator busConfigurator)

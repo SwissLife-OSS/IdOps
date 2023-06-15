@@ -119,6 +119,7 @@ type Client implements IResource {
   protocolType: String
   clientSecrets: [Secret!]
   requireClientSecret: Boolean!
+  allowTokenGeneration: Boolean!
   name: String!
   description: String
   clientUri: String
@@ -258,6 +259,10 @@ type EnabledProvider {
   name: String!
   requestMfa: Boolean!
   userIdClaimType: String
+}
+
+type EncryptedValue {
+  kind: String!
 }
 
 type Environment {
@@ -478,6 +483,7 @@ type Query @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) {
   me: User!
   identityServers: [IdentityServer!]!
   identityServersGroups: [IdentityServerGroup!]!
+  identityServerGroupByTenant(tenant: String!): IdentityServerGroup
   identityServer(id: Uuid!): IdentityServer!
   clientTemplates: [ClientTemplate!]! @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
   clientTemplateById(id: Uuid!): ClientTemplate! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringRead", apply: BEFORE_RESOLVER)
@@ -658,15 +664,10 @@ type Secret {
   id: Uuid!
   description: String
   value: String!
-  encryptedValue: EncryptedValue
+  encryptedValue: EncryptedValue!
   expiration: DateTime
   type: String!
 }
-
-type EncryptedValue {
-  kind: String!
-}
-
 
 type Tenant {
   id: String!
