@@ -50,7 +50,7 @@ namespace IdOps.GraphQL.Tests
             serviceCollection.AddLogging();
             serviceCollection.AddSingleton(UserContextFactory(permission));
 
-            
+            RemoveSpecificEncryptionProvider(serviceCollection);
             
 
             Services = serviceCollection.BuildServiceProvider();
@@ -59,7 +59,7 @@ namespace IdOps.GraphQL.Tests
         protected virtual void RemoveSpecificEncryptionProvider(
             IServiceCollection services)
         {
-            //Removes the use of Azure Keyvault in tests, should be overwritten if use is desired
+            //Removes Azure Keyvault in tests, should be overwritten if use is desired
             services.Remove(ServiceDescriptor
                 .Singleton<ICryptographyClientProvider, AzureKeyvaultCryptographyClientProvider>());
             var cryptographyClientProvider = Mock.Of<ICryptographyClientProvider>();

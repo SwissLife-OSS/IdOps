@@ -1,5 +1,5 @@
 namespace IdOps;
-public class AzureKeyVaultOptions
+internal class AzureKeyVaultOptions
 {
     public string KeyVaultUri { get; set; }
 

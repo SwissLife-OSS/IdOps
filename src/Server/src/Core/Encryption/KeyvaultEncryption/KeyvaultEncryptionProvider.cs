@@ -5,7 +5,7 @@ using Azure.Security.KeyVault.Keys.Cryptography;
 
 namespace IdOps;
 
-public sealed class KeyvaultEncryptionProvider : IGenericEncryptionProvider<KeyvaultEncryptedValue>
+internal sealed class KeyvaultEncryptionProvider : IGenericEncryptionProvider<KeyvaultEncryptedValue>
 {
     public string Kind => nameof(KeyvaultEncryptedValue);
 
