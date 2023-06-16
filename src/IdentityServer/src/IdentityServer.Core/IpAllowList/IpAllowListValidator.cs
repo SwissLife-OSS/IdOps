@@ -37,7 +37,7 @@ public class IpAllowListValidator
             return false;
         }
 
-        List<IPAddress> allowList = GetAllowListFromFilter(filter);
+        IList<IPAddress> allowList = GetAllowListFromFilter(filter);
 
         if (allowList.Contains(ipAddress))
         {
@@ -73,18 +73,16 @@ public class IpAllowListValidator
             : IPAddress.Parse(ipAddress);
     }
 
-    private List<IPAddress> GetAllowListFromFilter(IpAddressFilter filter)
+    private IList<IPAddress> GetAllowListFromFilter(IpAddressFilter filter)
     {
-        ICollection<string> allowList = filter.Policy switch
+        return filter.Policy switch
         {
-            IpFilterPolicy.Internal => _configuration.InternalIpAllowList,
-            IpFilterPolicy.AllowList => filter.AllowList,
+            IpFilterPolicy.Internal => _configuration.InternalIpAllowListParsed.Value,
+            IpFilterPolicy.AllowList => filter.AllowList.Select(
+                    a => IPAddress.TryParse(a, out IPAddress? ipAddress) ? ipAddress : null)
+                .OfType<IPAddress>().ToList(),
             _ => throw new InvalidOperationException(
                 $"There is no allowList for IpFilterPolicy: {filter.Policy}")
         };
-
-        return allowList.Select(
-                a => IPAddress.TryParse(a, out IPAddress? ipAddress) ? ipAddress : null)
-            .OfType<IPAddress>().ToList();
     }
 }
