@@ -6,11 +6,13 @@ using IdOps.IdentityServer;
 using IdOps.IdentityServer.DataConnector;
 using IdOps.IdentityServer.Events;
 using IdOps.IdentityServer.Hashing;
+using IdOps.IdentityServer.IpAllowList;
 using IdOps.IdentityServer.ResourceUpdate;
 using IdOps.IdentityServer.Services;
 using IdOps.IdentityServer.Storage;
 using IdOps.Messages;
 using MassTransit;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -79,10 +81,16 @@ namespace Microsoft.Extensions.DependencyInjection
             builder.Services.AddSingleton<IEventSink, IdOpsEventSink>();
             builder.Services.AddSingleton<IIdOpsEventSink, BusEventSink>();
             builder.Services.AddTransient<IExtensionGrantValidator, PersonalAccessTokenGrantValidator>();
+            builder.Services.AddSingleton<IpAllowListValidator>();
+            builder.Services.AddSingleton<ClientIdExtractor>();
+            builder.Services.AddSingleton(
+                builder.Configuration?.GetSection("InternalIpFilter").Get<InternalIpFilterConfiguration>() ??
+                new InternalIpFilterConfiguration());
             builder.Services
                 .AddSingleton<IPersonalAccessTokenValidator, PersonalAccessTokenValidator>();
             builder.Services.AddSingleton<IPersonalAccessTokenSource, LocalAccessTokenSource>();
             builder.Services.RegisterHashAlgorithms();
+            builder.Services.AddHttpContextAccessor();
 
             if (builder.Options.EnableDataConnectors)
             {
@@ -178,6 +186,12 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddCorsPolicyService<CorsPolicyService>();
 
             return builder;
+        }
+
+        public static IApplicationBuilder UseIpAllowListForIdOpsClients(
+            this IApplicationBuilder app)
+        {
+            return app.UseMiddleware<IpAllowListMiddleware>();
         }
     }
 }

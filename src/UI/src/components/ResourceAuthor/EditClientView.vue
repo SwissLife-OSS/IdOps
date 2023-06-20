@@ -35,6 +35,9 @@
           <v-icon left>mdi-card-account-details-outline</v-icon>
         </v-tab>
         <v-tab>
+          <v-icon left> mdi-ip</v-icon>
+        </v-tab>
+        <v-tab>
           <v-icon left> mdi-bomb</v-icon>
         </v-tab>
         <v-tab-item key="core">
@@ -539,6 +542,38 @@
             :tenant="client.tenant"
           ></identity-providers>
         </v-tab-item>
+        <v-tab-item key="ip">
+          <v-row>
+            <v-col md="12">
+              <h4 class="blue--text text--darken-3">Ip Filter</h4></v-col
+            ></v-row
+          >
+          <v-row>
+            <v-col md="9">
+              <v-select
+              :items="ipFilterPolicy"
+               label="Policy"
+               v-model="client.ipAddressFilter.policy"
+              >
+              </v-select>
+            </v-col>
+            <v-col md="3"
+              ><v-switch
+                label="Warning only"
+                v-model="client.ipAddressFilter.warnOnly"
+              ></v-switch
+            ></v-col>
+            </v-row>
+            <v-row>
+              <v-col md="12">
+                <combo-box-editor
+                v-if="client.ipAddressFilter.policy == 'ALLOW_LIST'"
+                label="Allow List"
+                v-model="client.ipAddressFilter.allowList"
+              ></combo-box-editor>                
+              </v-col>
+            </v-row>
+        </v-tab-item>
         <v-tab-item key="danger"></v-tab-item>
       </v-tabs>
     </v-form>
@@ -636,6 +671,7 @@ export default {
         dataConnectors: [],
         enabledProviders: [],
         application: null,
+        ipAddressFilter: {policy: "PUBLIC", warnOnly: true, allowList: []}
       },
     };
   },
@@ -683,6 +719,12 @@ export default {
     hasApplicationLink: function () {
       return this.client.application != null;
     },
+    ipFilterPolicy: function() {
+      return [
+        {text: "Internal", value: "INTERNAL"}, 
+        {text: "Allowlist", value: "ALLOW_LIST"}, 
+        {text: "Public", value: "PUBLIC"}]
+    }
   },
   methods: {
     ...mapActions("idResource", [

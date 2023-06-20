@@ -101,6 +101,8 @@ namespace IdOps
         public List<DataConnectorOptions>? DataConnectors { get; init; }
 
         public List<EnabledProvider>? EnabledProviders { get; init; }
+
+        public IpAddressFilter IpAddressFilter { get; init; }
     }
 
     public record ClientProperty(string Key, string Value);

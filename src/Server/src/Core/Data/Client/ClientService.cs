@@ -72,6 +72,12 @@ namespace IdOps
             context.Resource.Name = request.Name;
             context.Resource.AllowedGrantTypes = request.AllowedGrantTypes?.ToList();
             context.Resource.AllowedScopes = BuildScopes(request.ApiScopes, request.IdentityScopes);
+            context.Resource.IpAddressFilter = new IpAddressFilter
+            {
+                WarnOnly = false,
+                AllowList = new List<string>(),
+                Policy = IpFilterPolicy.Internal
+            };
 
             if (request.ClientId is { })
             {
@@ -164,6 +170,7 @@ namespace IdOps
             context.Resource.Claims = request.Claims ?? new List<ClientClaim>();
             context.Resource.DataConnectors = request.DataConnectors?.ToList();
             context.Resource.EnabledProviders = request.EnabledProviders?.ToList();
+            context.Resource.IpAddressFilter = request.IpAddressFilter;
 
             SaveResourceResult<Client> result = await _resourceManager
                 .SaveAsync(context, cancellationToken);

@@ -312,6 +312,8 @@ namespace IdOps.Model
         public ICollection<Guid> GetEnvironmentIds() => Environments;
 
         public ClientDependencies ClientDependencies { get; set; }
+
+        public IpAddressFilter IpAddressFilter { get; set; } = new();
     }
 
     /// <summary>

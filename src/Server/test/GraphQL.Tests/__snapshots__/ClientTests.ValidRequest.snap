@@ -2,7 +2,7 @@
   "data": {
     "createClient": {
       "client": {
-        "id": "8611cf2ab8914b93bd05ff3406108869",
+        "id": "a8b5e8ed461d4c3e9033818913b38a40",
         "name": "MyClient",
         "tenant": "TestTenant",
         "allowedGrantTypes": [
@@ -19,7 +19,12 @@
         "identityScopes": [
           "289e4b72eec44a7ead356a50f99070e2",
           "3fb18661a0b243b0abd834e738fe07ae"
-        ]
+        ],
+        "ipAddressFilter": {
+          "policy": "INTERNAL",
+          "warnOnly": false,
+          "allowList": []
+        }
       }
     }
   }

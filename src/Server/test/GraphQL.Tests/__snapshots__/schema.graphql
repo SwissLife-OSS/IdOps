@@ -169,6 +169,7 @@ type Client implements IResource {
   enabledProviders: [EnabledProvider!]
   title: String!
   clientDependencies: ClientDependencies!
+  ipAddressFilter: IpAddressFilter!
 }
 
 type ClientClaim {
@@ -374,6 +375,12 @@ type IdentityServerKey {
   serialNumber: String
   subject: String
   validUntil: DateTime
+}
+
+type IpAddressFilter {
+  policy: IpFilterPolicy!
+  warnOnly: Boolean!
+  allowList: [String!]!
 }
 
 type KeyValuePairOfStringAndObject {
@@ -903,6 +910,12 @@ input IdentityServerGroupInput {
   color: String
 }
 
+input IpAddressFilterInput {
+  policy: IpFilterPolicy!
+  warnOnly: Boolean!
+  allowList: [String!]!
+}
+
 input PublishResourceInput {
   resources: [Uuid!]!
   destinationEnvionmentId: Uuid!
@@ -1189,6 +1202,7 @@ input UpdateClientInput {
   claims: [ClientClaimInput!]
   dataConnectors: [DataConnectorOptionsInput!]
   enabledProviders: [EnabledProviderInput!]
+  ipAddressFilter: IpAddressFilterInput!
 }
 
 input UpdatePersonalAccessTokenInput {
@@ -1233,6 +1247,12 @@ enum ConnectorProfileType {
   USER_INFO
   ACCESS_TOKEN
   IDENTITY_TOKEN
+}
+
+enum IpFilterPolicy {
+  INTERNAL
+  ALLOW_LIST
+  PUBLIC
 }
 
 enum ScopeType {

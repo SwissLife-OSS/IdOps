@@ -90,4 +90,9 @@ fragment Client on Client {
     color
     id
   }
+  ipAddressFilter {
+    policy
+    warnOnly
+    allowList
+  }
 }

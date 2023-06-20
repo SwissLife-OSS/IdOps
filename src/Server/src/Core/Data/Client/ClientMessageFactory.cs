@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdOps.IdentityServer.Model;
 using IdOps.Model;
+using IpFilterPolicy = IdOps.Model.IpFilterPolicy;
 
 namespace IdOps
 {
@@ -81,7 +82,19 @@ namespace IdOps
                 UserCodeType = client.UserCodeType,
                 UserSsoLifetime = client.UserSsoLifetime,
                 Properties = client.Properties,
-                Tenant = client.Tenant
+                Tenant = client.Tenant,
+                IpAddressFilter = new IdentityServer.Model.IpAddressFilter
+                {
+                    WarnOnly = client.IpAddressFilter.WarnOnly,
+                    AllowList = client.IpAddressFilter.AllowList,
+                    Policy = client.IpAddressFilter.Policy switch {
+                      IpFilterPolicy.Internal => IdentityServer.Model.IpFilterPolicy.Internal,
+                      IpFilterPolicy.AllowList => IdentityServer.Model.IpFilterPolicy.AllowList,
+                      IpFilterPolicy.Public => IdentityServer.Model.IpFilterPolicy.Public,
+                      _ => throw new InvalidOperationException(
+                          $"IpFilterPolicy was out of range: {client.IpAddressFilter.Policy}")
+                    }
+                }
             });
     }
 }
