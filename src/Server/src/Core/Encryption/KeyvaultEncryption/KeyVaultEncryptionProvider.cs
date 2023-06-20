@@ -5,31 +5,31 @@ using Azure.Security.KeyVault.Keys.Cryptography;
 
 namespace IdOps;
 
-internal sealed class KeyvaultEncryptionProvider : IGenericEncryptionProvider<KeyvaultEncryptedValue>
+internal sealed class KeyVaultEncryptionProvider : IGenericEncryptionProvider<KeyVaultEncryptedValue>
 {
-    public string Kind => nameof(KeyvaultEncryptedValue);
+    public string Kind => nameof(KeyVaultEncryptedValue);
 
     private readonly CryptographyClient _cryptographyClient;
 
     private EncryptionAlgorithm _encryptionAlgorithm;
 
-    public KeyvaultEncryptionProvider(CryptographyClient cryptographyClient)
+    public KeyVaultEncryptionProvider(CryptographyClient cryptographyClient)
     {
         _cryptographyClient = cryptographyClient;
         _encryptionAlgorithm = EncryptionAlgorithm.RsaOaep;
     }
 
-    public async Task<KeyvaultEncryptedValue> EncryptAsync(string value,
+    public async Task<KeyVaultEncryptedValue> EncryptAsync(string value,
         CancellationToken cancellationToken)
     {
         byte[] bytes = Encoding.UTF8.GetBytes(value);
         EncryptResult result =
             await _cryptographyClient.EncryptAsync(_encryptionAlgorithm, bytes, cancellationToken);
 
-        return new KeyvaultEncryptedValue(result);
+        return new KeyVaultEncryptedValue(result);
     }
 
-    public async Task<string> DecryptAsync(KeyvaultEncryptedValue value,
+    public async Task<string> DecryptAsync(KeyVaultEncryptedValue value,
         CancellationToken cancellationToken)
     {
         DecryptResult result = await _cryptographyClient.DecryptAsync(_encryptionAlgorithm,

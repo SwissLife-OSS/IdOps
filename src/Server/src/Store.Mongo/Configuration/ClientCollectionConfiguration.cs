@@ -29,7 +29,7 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                     cm.SetIsRootClass(true);
                     cm.SetIgnoreExtraElements(true);
                 })  
-                .AddBsonClassMap<KeyvaultEncryptedValue>(cm =>
+                .AddBsonClassMap<KeyVaultEncryptedValue>(cm =>
                     cm.AutoMap()
                     )
                 .WithCollectionSettings(s => s.ReadConcern = ReadConcern.Majority)

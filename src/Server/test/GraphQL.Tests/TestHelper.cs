@@ -61,7 +61,7 @@ namespace IdOps.GraphQL.Tests
         {
             //Removes Azure Keyvault in tests, should be overwritten if use is desired
             services.Remove(ServiceDescriptor
-                .Singleton<ICryptographyClientProvider, AzureKeyvaultCryptographyClientProvider>());
+                .Singleton<ICryptographyClientProvider, AzureKeyVaultCryptographyClientProvider>());
             var cryptographyClientProvider = Mock.Of<ICryptographyClientProvider>();
             services.AddSingleton(p => cryptographyClientProvider);
         }

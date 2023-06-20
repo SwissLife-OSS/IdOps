@@ -5,12 +5,12 @@ using Azure.Security.KeyVault.Keys;
 using Azure.Security.KeyVault.Keys.Cryptography;
 
 namespace IdOps;
-internal class AzureKeyvaultCryptographyClientProvider : ICryptographyClientProvider
+internal class AzureKeyVaultCryptographyClientProvider : ICryptographyClientProvider
 {
     private readonly AzureKeyVaultOptions _options;
     private CryptographyClient? _cryptographyClient;
 
-    public AzureKeyvaultCryptographyClientProvider(AzureKeyVaultOptions options)
+    public AzureKeyVaultCryptographyClientProvider(AzureKeyVaultOptions options)
     {
         _options = options;
     }
