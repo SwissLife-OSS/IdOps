@@ -27,13 +27,13 @@ namespace IdOps
                 request.Authority,
                 cancellationToken);
 
-            TokenResponse? response = request.GrantType switch
+            TokenResponse response = request.GrantType switch
             {
                 "client_credentials" => await RequestClientCredentialTokenAsync(request, disco),
                 _ => await RequestOtherGrantTypeTokenAsync(request, disco)
             };
 
-            if (response!.IsError)
+            if (response.IsError)
             {
                 return new RequestTokenResult(false) { ErrorMessage = response.Error };
             }
