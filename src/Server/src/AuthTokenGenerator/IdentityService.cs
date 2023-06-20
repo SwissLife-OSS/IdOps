@@ -39,6 +39,13 @@ namespace IdOps
             }
             
             TokenModel? accessToken = _tokenAnalyzer.Analyze(response.AccessToken);
+            if (accessToken == null)
+            {
+                return new RequestTokenResult(false)
+                {
+                    ErrorMessage = "Access Token could not be analyzed"
+                };
+            }
             return new RequestTokenResult(true)
             {
                 AccessToken = accessToken

@@ -6,7 +6,7 @@ namespace IdOps;
 
 public interface IGenericEncryptionProvider<T> : IEncryptionProvider where T : EncryptedValue
 {
-    Task<T> EncryptAsync(string value, CancellationToken cancellationToken);
+    new Task<T> EncryptAsync(string value, CancellationToken cancellationToken);
 
     Task<string> DecryptAsync(T value, CancellationToken cancellationToken);
 
