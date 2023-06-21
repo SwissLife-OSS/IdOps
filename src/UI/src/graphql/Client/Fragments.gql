@@ -33,9 +33,6 @@ fragment Client on Client {
   clientSecrets {
     id
     description
-    encryptedValue{
-      kind
-    }
     value
     type
   }

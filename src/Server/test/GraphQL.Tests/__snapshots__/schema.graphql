@@ -262,10 +262,6 @@ type EnabledProvider {
   userIdClaimType: String
 }
 
-type EncryptedValue {
-  kind: String!
-}
-
 type Environment {
   id: Uuid!
   name: String!
@@ -671,7 +667,6 @@ type Secret {
   id: Uuid!
   description: String
   value: String!
-  encryptedValue: EncryptedValue!
   expiration: DateTime
   type: String!
 }
