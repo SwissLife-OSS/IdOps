@@ -50,9 +50,13 @@ export default {
         parameters: [],
         saveTokens: false
       };
-      const result = await getClientCredentialsToken(requestTokenInput);
-      const accessToken = result.data.requestToken.result.accessToken;
-      this.clientCredentialsToken = accessToken === null ? "invalid_client" : accessToken.token;
+      const result = (await getClientCredentialsToken(requestTokenInput)).data.requestToken.result;
+      if(result.isSuccess){
+        this.clientCredentialsFlow = result.accessToken.token;
+      } else {
+        this.close();
+        alert("An error occured: " + result.errorMessage);
+      }
     },
     getLastSavedSecretId() {
       const secret = this.client.clientSecrets.findLast(secret => secret.encryptedSecret !== null);

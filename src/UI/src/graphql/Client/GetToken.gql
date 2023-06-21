@@ -4,6 +4,8 @@ mutation requestToken($input: RequestTokenInput!) {
       accessToken {
         token
       }
+      isSuccess
+      errorMessage
     }
   }
 }
