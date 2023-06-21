@@ -5,9 +5,9 @@ namespace IdOps.Models
 {
     public class TokenAnalyzer : ITokenAnalyzer
     {
-        static IList<ClaimCategoryMap> _categoryMap;
+         private readonly IList<ClaimCategoryMap> _categoryMap;
 
-        static TokenAnalyzer()
+        public TokenAnalyzer()
         {
             _categoryMap = new List<ClaimCategoryMap>
             {
