@@ -29,8 +29,8 @@ namespace IdOps
 
             TokenResponse response = request.GrantType switch
             {
-                "client_credentials" => await RequestClientCredentialTokenAsync(request, disco),
-                _ => await RequestOtherGrantTypeTokenAsync(request, disco)
+                "client_credentials" => await RequestClientCredentialTokenAsync(request, disco,cancellationToken),
+                _ => await RequestOtherGrantTypeTokenAsync(request, disco, cancellationToken)
             };
 
             if (response.IsError)
@@ -54,7 +54,8 @@ namespace IdOps
 
         private async Task<TokenResponse> RequestClientCredentialTokenAsync(
             TokenRequestData request, 
-            DiscoveryDocumentResponse disco)
+            DiscoveryDocumentResponse disco, 
+            CancellationToken cancellationToken)
         {
             return await _tokenClient.RequestClientCredentialsTokenAsync(
                 new ClientCredentialsTokenRequest
@@ -64,12 +65,13 @@ namespace IdOps
                     ClientSecret = request.Secret,
                     GrantType = request.GrantType,
                     Scope = request.Scopes.Any() ? string.Join(" ", request.Scopes) : null
-                }, CancellationToken.None);
+                }, cancellationToken);
         }
 
         private async Task<TokenResponse> RequestOtherGrantTypeTokenAsync(
             TokenRequestData request,
-            DiscoveryDocumentResponse disco)
+            DiscoveryDocumentResponse disco,
+            CancellationToken cancellationToken)
         {
             var pars = request.Parameters.ToDictionary(k => k.Name, v => v.Value);
 
@@ -86,7 +88,7 @@ namespace IdOps
                     ClientSecret = request.Secret,
                     GrantType = request.GrantType,
                     Parameters = new Parameters(pars)
-                }, CancellationToken.None);
+                }, cancellationToken);
         }
     }
 }
