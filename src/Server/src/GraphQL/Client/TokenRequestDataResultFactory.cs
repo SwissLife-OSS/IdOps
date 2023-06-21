@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,6 +39,11 @@ public class TokenRequestDataResultFactory : IResultFactory<TokenRequestData, Re
 
         var secretEncrypted =
             client.ClientSecrets.First(secret => secret.Id.Equals(input.SecretId)).EncryptedValue;
+        if (secretEncrypted == null)
+        {
+            throw new KeyNotFoundException("No encrypted secret found");
+        }
+        
         var secretDecrypted =
             await _encryptionService.DecryptAsync(secretEncrypted, cancellationToken);
 
