@@ -13,8 +13,8 @@ public class TokenClient : ITokenClient
     }
 
     public async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(
-        string address = null,
-        CancellationToken cancellationToken = default)
+        string address,
+        CancellationToken cancellationToken)
     {
         using HttpClient httpClient = _httpClientFactory.CreateClient();
         DiscoveryDocumentResponse disco =
@@ -25,7 +25,7 @@ public class TokenClient : ITokenClient
 
     public async Task<TokenResponse> RequestTokenAsync(
         TokenRequest request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         using HttpClient httpClient = _httpClientFactory.CreateClient();
         var response =  await httpClient.RequestTokenAsync(request, cancellationToken);
@@ -34,7 +34,7 @@ public class TokenClient : ITokenClient
 
     public async Task<TokenResponse> RequestClientCredentialsTokenAsync(
         ClientCredentialsTokenRequest request, 
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         using HttpClient httpClient = _httpClientFactory.CreateClient();
         var response =  await httpClient.RequestClientCredentialsTokenAsync(request, cancellationToken);
