@@ -80,7 +80,7 @@ namespace IdOps
                 "11111111111111111111111111111111",
                 "thisIsATestSecret" +
                 "111111111111111111111111111111111111111111111111111111111111111111111", grantType,
-                new[] { "scope1", "scope2" }, new[] { new TokenRequestParameter("test") });
+                new[] { "scope1", "scope2"});
             return tokenRequestData;
         }
 
