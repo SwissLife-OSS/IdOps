@@ -19,7 +19,7 @@ public static class AzureKeyVaultExtension
         services.AddSingleton<ICryptographyClientProvider, AzureKeyVaultCryptographyClientProvider>();
         services.TryAddSingleton<CryptographyClient>(provider =>
         {
-            var cryptographyClientProvider = provider.GetService<ICryptographyClientProvider>();
+            var cryptographyClientProvider = provider.GetRequiredService<ICryptographyClientProvider>();
             return cryptographyClientProvider.GetCryptographyClientAsync().GetAwaiter().GetResult();
         });
         return services;
