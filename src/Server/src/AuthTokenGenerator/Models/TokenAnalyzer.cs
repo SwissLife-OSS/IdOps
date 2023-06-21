@@ -30,7 +30,7 @@ namespace IdOps.Models
                 return new TokenModel
                 {
                     Token = token,
-                    TokenType = "Reference"
+                    TokenType = TokenType.Reference
                 };
             }
 
@@ -42,7 +42,7 @@ namespace IdOps.Models
                 var model = new TokenModel
                 {
                     Token = token,
-                    TokenType = "Jwt",
+                    TokenType = TokenType.Jwt,
                     ValidFrom = jwt.ValidFrom.ToLocalTime(),
                     ValidTo = jwt.ValidTo.ToLocalTime(),
                     Claims = GetClaims(jwt.Claims)

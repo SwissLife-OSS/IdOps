@@ -13,6 +13,12 @@ namespace IdOps.Models
         public int ExpiresIn { get; set; }
         public string? Subject { get; set; }
         public string? Token { get; set; }
-        public string? TokenType { get; set; }
+        public TokenType? TokenType { get; set; }
+    }
+
+    public enum TokenType
+    {
+        Jwt,
+        Reference
     }
 }
