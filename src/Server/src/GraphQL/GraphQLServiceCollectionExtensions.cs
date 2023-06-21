@@ -32,7 +32,7 @@ namespace IdOps.GraphQL
                 .AddHttpResultSerializer<ForbiddenHttpResultSerializer>();
 
             builder.Services.AddSingleton<
-                IResultFactory<TokenRequestData,TokenRequestInput>,
+                IResultFactory<TokenRequestData,RequestTokenInput>,
                 TokenRequestDataResultFactory>();
 
             return builder;

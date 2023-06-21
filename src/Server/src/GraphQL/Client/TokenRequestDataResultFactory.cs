@@ -8,7 +8,7 @@ using IdOps.Models;
 
 namespace IdOps.GraphQL;
 
-public class TokenRequestDataResultFactory : IResultFactory<TokenRequestData, TokenRequestInput>
+public class TokenRequestDataResultFactory : IResultFactory<TokenRequestData, RequestTokenInput>
 {
     private readonly IEncryptionService _encryptionService;
     private readonly IClientService _clientService;
@@ -25,7 +25,7 @@ public class TokenRequestDataResultFactory : IResultFactory<TokenRequestData, To
     }
 
 
-    public async Task<TokenRequestData> Create(TokenRequestInput input,
+    public async Task<TokenRequestData> Create(RequestTokenInput input,
         CancellationToken cancellationToken)
     {
         Client? client = await _clientService.GetByIdAsync(input.ClientId, cancellationToken);
