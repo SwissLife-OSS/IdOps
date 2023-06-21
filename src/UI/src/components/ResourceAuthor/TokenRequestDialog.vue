@@ -42,7 +42,7 @@ export default {
       const secretId = this.getLastSavedSecretId();
       const authority = await this.getAuthorityUrl();
 
-      const tokenRequestInput = {
+      const requestTokenInput = {
         authority: authority,
         clientId: clientId,
         requestId: null,
@@ -50,7 +50,7 @@ export default {
         parameters: [],
         saveTokens: false
       };
-      const result = await getClientCredentialsToken(tokenRequestInput);
+      const result = await getClientCredentialsToken(requestTokenInput);
       const accessToken = result.data.requestToken.result.accessToken;
       this.clientCredentialsToken = accessToken === null ? "invalid_client" : accessToken.token;
     },

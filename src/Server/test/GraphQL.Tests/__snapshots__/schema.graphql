@@ -399,7 +399,7 @@ type Mutation @authorize(policy: "ApiAccessPolicy", apply: BEFORE_RESOLVER) {
   updateClient(input: UpdateClientInput!): SaveClientPayload! @authorize(policy: "TenantResourceAccess", apply: AFTER_RESOLVER) @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
   addClientSecret(input: AddClientSecretInput!): AddClientSecretPayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
   removeClientSecret(input: RemoveClientSecretInput!): SaveClientPayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
-  requestToken(input: TokenRequestInput!): RequestTokenPayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
+  requestToken(input: RequestTokenInput!): RequestTokenPayload! @authorize(policy: "ResourceAuthoringEdit", apply: BEFORE_RESOLVER)
   createApplication(input: CreateApplicationInput!): CreateApplicationPayload!
   updateApplication(input: UpdateApplicationInput!): UpdateApplicationPayload!
   removeClientFromApplication(input: RemoveClientInput!): UpdateApplicationPayload!
@@ -1129,7 +1129,7 @@ input TenantSettingInput {
   value: String!
 }
 
-input TokenRequestInput {
+input RequestTokenInput {
   authority: String!
   clientId: Uuid!
   secretId: Uuid!

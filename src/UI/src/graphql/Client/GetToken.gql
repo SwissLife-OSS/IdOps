@@ -1,4 +1,4 @@
-mutation requestToken($input: TokenRequestInput!) {
+mutation requestToken($input: RequestTokenInput!) {
   requestToken(input: $input) {
     result {
       accessToken {

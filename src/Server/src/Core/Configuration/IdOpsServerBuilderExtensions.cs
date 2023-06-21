@@ -99,8 +99,8 @@ namespace IdOps
             IConfiguration configuration)
         {
             services.AddAzureKeyVault(configuration);
-            services.AddEncryptionProvider<KeyVaultEncryptionProvider>(isDefault: false);
-            services.AddEncryptionProvider<NoEncryptionProvider>(isDefault: true);
+            services.AddEncryptionProvider<KeyVaultEncryptionProvider>(isDefault: true);
+            services.AddEncryptionProvider<NoEncryptionProvider>(isDefault: false);
         }
 
         private static void AddConsumers(this IBusRegistrationConfigurator busConfigurator)

@@ -5,14 +5,14 @@ namespace IdOps.Abstractions;
 public interface ITokenClient
 {
     Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(
-        string address = null, 
-        CancellationToken cancellationToken = default);
+        string address, 
+        CancellationToken cancellationToken);
 
     Task<TokenResponse> RequestTokenAsync(
         TokenRequest request,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken);
 
     Task<TokenResponse> RequestClientCredentialsTokenAsync(
         ClientCredentialsTokenRequest request, 
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken);
 }
