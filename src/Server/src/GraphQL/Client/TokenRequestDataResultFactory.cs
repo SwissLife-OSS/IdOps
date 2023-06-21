@@ -17,7 +17,7 @@ public class TokenRequestDataResultFactory : IResultFactory<TokenRequestData, Re
 
     public TokenRequestDataResultFactory(
         IEncryptionService encryptionService,
-        IClientService clientService,
+        IClientService clientService, 
         IApiScopeService apiScopeService)
     {
         _encryptionService = encryptionService;
@@ -26,7 +26,8 @@ public class TokenRequestDataResultFactory : IResultFactory<TokenRequestData, Re
     }
 
 
-    public async Task<TokenRequestData> Create(RequestTokenInput input,
+    public async Task<TokenRequestData> Create(
+        RequestTokenInput input,
         CancellationToken cancellationToken)
     {
         Client? client = await _clientService.GetByIdAsync(input.ClientId, cancellationToken);
@@ -37,31 +38,32 @@ public class TokenRequestDataResultFactory : IResultFactory<TokenRequestData, Re
 
         var clientId = client.ClientId;
 
-        var secretEncrypted =
-            client.ClientSecrets.First(secret => secret.Id.Equals(input.SecretId)).EncryptedValue;
+        var secretEncrypted = client.ClientSecrets.First(secret => secret.Id.Equals(input.SecretId))
+            .EncryptedValue;
         if (secretEncrypted == null)
         {
             throw new KeyNotFoundException("No encrypted secret found");
         }
-        
+
         var secretDecrypted =
             await _encryptionService.DecryptAsync(secretEncrypted, cancellationToken);
 
-        var grantTypes = client.AllowedGrantTypes.First();
+        if (client.AllowedGrantTypes == null)
+        {
+            throw new ArgumentNullException("No grant types found");
+        }
 
-        var scopeIds =
-            client.AllowedScopes.ToList().ConvertAll(clientScope => clientScope.Id );
-        var scopes =
-            await _scopeService.GetByIdsAsync(scopeIds,cancellationToken);
+        string grantTypes = string.Join(", ", client.AllowedGrantTypes);
+
+        var scopeIds = client.AllowedScopes.ToList().ConvertAll(clientScope => clientScope.Id);
+        var scopes = await _scopeService.GetByIdsAsync(scopeIds, cancellationToken);
         var scopeNames = scopes.Select(scope => scope.Name).ToList();
 
         var tokenRequestData =
-            new TokenRequestData(
-                input.Authority,
-                clientId, secretDecrypted,
-                grantTypes,
-                scopeNames)
-                { SaveTokens = input.SaveTokens };
+            new TokenRequestData(input.Authority, clientId, secretDecrypted, grantTypes, scopeNames)
+            {
+                SaveTokens = input.SaveTokens
+            };
 
         return tokenRequestData;
     }

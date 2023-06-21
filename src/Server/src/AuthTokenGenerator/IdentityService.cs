@@ -37,18 +37,12 @@ namespace IdOps
             {
                 RequestTokenResult result = new RequestTokenResult(false);
 
-                switch (response.Error)
+                result.ErrorMessage = response.Error switch
                 {
-                    case "Unauthorized":
-                        result.ErrorMessage = "Unauthorized";
-                        break;
-                    case "invalid_client":
-                        result.ErrorMessage = "Invalid_client";
-                        break;
-                    default:
-                        result.ErrorMessage = "Unexpected_error";
-                        break;
-                }
+                    "Unauthorized" => "Unauthorized",
+                    "invalid_client" => "Invalid_client",
+                    _ => "Unexpected_error"
+                };
 
                 return result;
             }
