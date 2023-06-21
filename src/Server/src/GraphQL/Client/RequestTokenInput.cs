@@ -5,11 +5,5 @@ using IdOps.Models;
 
 namespace IdOps.GraphQL
 {
-    public record RequestTokenInput(
-        string Authority,
-        Guid ClientId,
-        Guid SecretId,
-        IEnumerable<TokenRequestParameter> Parameters,
-        bool SaveTokens,
-        Guid? RequestId);
+    public record RequestTokenInput(string Authority, Guid ClientId, Guid SecretId, bool SaveTokens);
 }

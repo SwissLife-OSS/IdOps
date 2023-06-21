@@ -45,9 +45,7 @@ export default {
       const requestTokenInput = {
         authority: authority,
         clientId: clientId,
-        requestId: null,
         secretId: secretId,
-        parameters: [],
         saveTokens: false
       };
       const result = (await getClientCredentialsToken(requestTokenInput)).data.requestToken.result;

@@ -73,7 +73,7 @@ namespace IdOps
             DiscoveryDocumentResponse disco,
             CancellationToken cancellationToken)
         {
-            var pars = request.Parameters.ToDictionary(k => k.Name, v => v.Value);
+            var pars = new Dictionary<string, string>();
 
             if (request.Scopes is { } s && s.Any())
             {

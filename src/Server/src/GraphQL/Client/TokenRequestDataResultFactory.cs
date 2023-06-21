@@ -60,10 +60,8 @@ public class TokenRequestDataResultFactory : IResultFactory<TokenRequestData, Re
                 input.Authority,
                 clientId, secretDecrypted,
                 grantTypes,
-                scopeNames,
-                input.Parameters)
-                { RequestId = input.RequestId,
-                    SaveTokens = input.SaveTokens };
+                scopeNames)
+                { SaveTokens = input.SaveTokens };
 
         return tokenRequestData;
     }

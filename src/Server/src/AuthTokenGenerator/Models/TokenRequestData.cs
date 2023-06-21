@@ -5,10 +5,7 @@ public record TokenRequestData(
     string ClientId,
     string Secret,
     string GrantType,
-    IEnumerable<string> Scopes,
-    IEnumerable<TokenRequestParameter> Parameters)
+    IEnumerable<string> Scopes)
 {
     public bool SaveTokens { get; init; }
-
-    public Guid? RequestId { get; init; }
 }
