@@ -50,7 +50,7 @@ export default {
       };
       const result = (await getClientCredentialsToken(requestTokenInput)).data.requestToken.result;
       if(result.isSuccess){
-        this.clientCredentialsFlow = result.accessToken.token;
+        this.clientCredentialsToken = result.accessToken.token;
       } else {
         this.close();
         alert("An error occured: " + result.errorMessage);

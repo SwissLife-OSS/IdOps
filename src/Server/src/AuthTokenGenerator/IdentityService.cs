@@ -35,7 +35,22 @@ namespace IdOps
 
             if (response.IsError)
             {
-                return new RequestTokenResult(false) { ErrorMessage = response.Error };
+                RequestTokenResult result = new RequestTokenResult(false);
+
+                switch (response.Error)
+                {
+                    case "Unauthorized":
+                        result.ErrorMessage = "Unauthorized";
+                        break;
+                    case "invalid_client":
+                        result.ErrorMessage = "Invalid_client";
+                        break;
+                    default:
+                        result.ErrorMessage = "Unexpected_error";
+                        break;
+                }
+
+                return result;
             }
             
             TokenModel? accessToken = _tokenAnalyzer.Analyze(response.AccessToken);
