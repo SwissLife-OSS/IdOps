@@ -10,9 +10,7 @@ services:
     ports:
       - 8080:8080
     env_file:
-      - ./src/UI/.env
-    env:
-      - DEV_USER=admin
+      - ./src/UI/.env    
   server:
     image: mcr.microsoft.com/devcontainers/dotnet:6.0
     volumes:
