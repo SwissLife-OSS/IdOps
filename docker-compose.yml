@@ -1,0 +1,11 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: src/UI
+      target: development
+    volumes:
+      - ./src/UI/:/workspace
+      - /workspace/node_modules
+    ports:
+      - 8080:8080

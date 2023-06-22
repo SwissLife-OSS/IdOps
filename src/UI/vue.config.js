@@ -20,7 +20,14 @@ module.exports = {
     }
   },
   configureWebpack: {
-    devtool: 'source-map'
+    devtool: 'source-map',
+    devServer: {
+      // Only needed for developing in devContainers on windows
+      watchOptions: {        
+        aggregateTimeout: 500,
+        poll: 1000
+    }    
+  }
   },
   devServer: {
     proxy: {

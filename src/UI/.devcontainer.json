@@ -1,0 +1,13 @@
+{
+  "name": "frontend",
+  "dockerComposeFile": ["../../docker-compose.yml"],
+  "service": "frontend",
+  "shutdownAction": "stopCompose",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "root",
+  "customizations": {
+    "vscode": {
+      "extensions": ["vue.volar", "esbenp.prettier-vscode", "Vue.volar"]
+    }
+  }
+}
