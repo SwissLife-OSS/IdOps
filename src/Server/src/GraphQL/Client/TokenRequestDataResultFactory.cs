@@ -53,14 +53,16 @@ public class TokenRequestDataResultFactory : IResultFactory<TokenRequestData, Re
             throw new ArgumentNullException("No grant types found");
         }
 
-        string grantTypes = string.Join(", ", client.AllowedGrantTypes);
+        string grantType = client.AllowedGrantTypes.Contains(input.grantType)
+            ? input.grantType
+            : throw new ArgumentException("Grant not valid");
 
         var scopeIds = client.AllowedScopes.ToList().ConvertAll(clientScope => clientScope.Id);
         var scopes = await _scopeService.GetByIdsAsync(scopeIds, cancellationToken);
         var scopeNames = scopes.Select(scope => scope.Name).ToList();
 
         var tokenRequestData =
-            new TokenRequestData(input.Authority, clientId, secretDecrypted, grantTypes, scopeNames)
+            new TokenRequestData(input.Authority, clientId, secretDecrypted, grantType, scopeNames)
             {
                 SaveTokens = input.SaveTokens
             };

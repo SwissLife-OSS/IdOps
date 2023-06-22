@@ -46,6 +46,7 @@ export default {
         authority: authority,
         clientId: clientId,
         secretId: secretId,
+        grantType: "client_credentials",
         saveTokens: false
       };
       const result = (await getClientCredentialsToken(requestTokenInput)).data.requestToken.result;
