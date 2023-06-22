@@ -15,6 +15,13 @@ public static class AzureKeyVaultExtension
             .GetSection("IdOps:Azure:SecretEncryption:AzureKeyVault")
             .Get<AzureKeyVaultOptions>();
 
+        //injects null if no KeyVault options configured but KeyVault is registered on startup
+        if (string.IsNullOrEmpty(options.KeyVaultUri) || string.IsNullOrEmpty(options.EncryptionKeyName))
+        {
+            services.TryAddSingleton<CryptographyClient>(provider => null);
+            return services;
+        }
+        
         services.AddSingleton(options);
         services.AddSingleton<ICryptographyClientProvider, AzureKeyVaultCryptographyClientProvider>();
         services.TryAddSingleton<CryptographyClient>(provider =>
