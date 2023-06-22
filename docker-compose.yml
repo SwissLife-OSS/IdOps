@@ -9,3 +9,33 @@ services:
       - /workspace/node_modules
     ports:
       - 8080:8080
+    env_file:
+      - ./src/UI/.env
+    env:
+      - DEV_USER=admin
+  server:
+    image: mcr.microsoft.com/devcontainers/dotnet:6.0
+    volumes:
+      - ./src/:/workspace
+    command: dotnet run -p /workspace/Server/src/Api.Host/Api.Host.csproj --configuration Debug
+    env_file:
+      - ./env/idops.env
+    ports:
+      - 5001:5001
+    depends_on:
+      - mongo
+      - rabbitmq
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27027:27017
+    volumes:
+      - dbdata6:/data/db
+  rabbitmq:
+    image: rabbitmq:3-management    
+    ports:
+      - 5672:5672
+
+volumes:
+  dbdata6:
+
