@@ -70,7 +70,9 @@ namespace IdOps
                 BaseAddress = new Uri(server.Url)
             };
 
-            string json = await httpClient.GetStringAsync(".well-known/openid-configuration");
+            string json = await httpClient.GetStringAsync(
+                ".well-known/openid-configuration", 
+                cancellationToken);
 
             return json;
         }

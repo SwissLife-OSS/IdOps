@@ -3,12 +3,9 @@ using System.Threading.Tasks;
 
 namespace IdOps;
 
-// TODO: Review the interface, it's to KV specific
 public interface IEncryptionService
 {
-    Task<string> GetEncryptionKeyNameBase64Async();
+    Task<EncryptedValue> EncryptAsync(string value, CancellationToken cancellationToken);
 
-    Task<string> EncryptAsync(string input, CancellationToken cancellationToken);
-
-    Task<string> DecryptAsync(string input, CancellationToken cancellationToken);
+    Task<string> DecryptAsync(EncryptedValue value, CancellationToken cancellationToken);
 }

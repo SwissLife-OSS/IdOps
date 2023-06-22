@@ -135,6 +135,7 @@ namespace IdOps
             context.Resource.RequireClientSecret = request.RequireClientSecret;
             context.Resource.AllowPlainTextPkce = request.AllowPlainTextPkce;
             context.Resource.AllowOfflineAccess = request.AllowOfflineAccess;
+            context.Resource.AllowTokenGeneration = request.AllowTokenGeneration;
             context.Resource.AllowAccessTokensViaBrowser = request.AllowAccessTokensViaBrowser;
 
             context.Resource.IdentityTokenLifetime = request.IdentityTokenLifetime;

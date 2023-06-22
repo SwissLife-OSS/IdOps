@@ -5,6 +5,7 @@ fragment Client on Client {
   absoluteRefreshTokenLifetime
   accessTokenLifetime
   accessTokenType
+  allowTokenGeneration
   allowAccessTokensViaBrowser
   allowedCorsOrigins
   allowedGrantTypes

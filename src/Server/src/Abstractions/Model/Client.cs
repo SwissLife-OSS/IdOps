@@ -37,6 +37,11 @@ namespace IdOps.Model
         /// If set to false, no client secret is needed to request tokens at the token endpoint (defaults to <c>true</c>)
         /// </summary>
         public bool RequireClientSecret { get; set; } = true;
+        
+        /// <summary>
+        /// If set to false, no token generation is allowed for this client (defaults to <c>false</c>)
+        /// </summary>
+        public bool AllowTokenGeneration { get; set; } = false;
 
         /// <summary>
         /// Client display name (used for logging and consent screen)

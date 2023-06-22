@@ -44,13 +44,28 @@ namespace IdOps.GraphQL.Tests
             var configurationBuilder = new ConfigurationBuilder();
 
             ConfigureConfiguration(configurationBuilder, MongoResource);
-            new Startup(configurationBuilder.Build(), HostEnvironment).ConfigureServices(serviceCollection);
+            new Startup(configurationBuilder.Build(), HostEnvironment).ConfigureServices(
+                serviceCollection);
 
             serviceCollection.AddLogging();
             serviceCollection.AddSingleton(UserContextFactory(permission));
 
+            RemoveSpecificEncryptionProvider(serviceCollection);
+            
+
             Services = serviceCollection.BuildServiceProvider();
         }
+
+        protected virtual void RemoveSpecificEncryptionProvider(
+            IServiceCollection services)
+        {
+            //Removes Azure Keyvault in tests, should be overwritten if use is desired
+            services.Remove(ServiceDescriptor
+                .Singleton<ICryptographyClientProvider, AzureKeyVaultCryptographyClientProvider>());
+            var cryptographyClientProvider = Mock.Of<ICryptographyClientProvider>();
+            services.AddSingleton(p => cryptographyClientProvider);
+        }
+        
 
         public static IUserContextFactory UserContextFactory(bool permission)
         {
@@ -70,10 +85,10 @@ namespace IdOps.GraphQL.Tests
         {
             get
             {
-                Mock<IWebHostEnvironment> webHostEnv = new Mock<IWebHostEnvironment>(MockBehavior.Strict);
+                Mock<IWebHostEnvironment> webHostEnv =
+                    new Mock<IWebHostEnvironment>(MockBehavior.Strict);
 
-                webHostEnv.Setup(m => m.EnvironmentName)
-                    .Returns("Development"); // Development
+                webHostEnv.Setup(m => m.EnvironmentName).Returns("Development"); // Development
 
                 return webHostEnv.Object;
             }
@@ -81,25 +96,26 @@ namespace IdOps.GraphQL.Tests
 
         public ValueTask<IRequestExecutor> CreateSchema() => Services.GetRequestExecutorAsync();
 
-        public static void ConfigureConfiguration(
-            IConfigurationBuilder builder,
+        public static void ConfigureConfiguration(IConfigurationBuilder builder,
             MongoResource mongoResource)
         {
             builder.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["Tracing:Enabled"] = "false",
-                ["Tracing:Forwarding:0:Regex"] = "Microsoft.AspNetCore.Hosting.Internal.WebHost",
+                ["Tracing:Forwarding:0:Regex"] =
+                    "Microsoft.AspNetCore.Hosting.Internal.WebHost",
                 ["Tracing:Forwarding:0:Level"] = "Warning",
                 ["IdOps:MutedClients:0"] = "Contoso.HealthCheck",
                 ["IdOps:Messaging:Transport"] = "Memory",
-                ["IdOps:Storage:Database:ConnectionString"] =
-                    mongoResource.ConnectionString,
-                ["IdOps:Storage:Database:DatabaseName"] = mongoResource
-                    .CreateDatabase()
-                    .DatabaseNamespace.DatabaseName,
+                ["IdOps:Storage:Database:ConnectionString"] = mongoResource.ConnectionString,
+                ["IdOps:Storage:Database:DatabaseName"] =
+                    mongoResource.CreateDatabase().DatabaseNamespace.DatabaseName,
                 ["IdOps:Security:Authority"] = "",
                 ["IdOps:Security:ClientId"] = null,
-                ["IdOps:Security:Secret"] = null
+                ["IdOps:Security:Secret"] = null,
+                ["IdOps:Azure:SecretEncryption:AzureKeyVault:KeyVaultUri"] = "https://xxx/",
+                ["IdOps:Azure:SecretEncryption:AzureKeyVault:EncryptionKeyName"] = "xxx",
+                    
             });
         }
 
@@ -167,22 +183,14 @@ namespace IdOps.GraphQL.Tests
 
         public async Task InsertTenantIntoDB()
         {
-            Tenant tenant = new Tenant
-            {
-                Id = "TestTenant",
-                Description = "testing"
-            };
+            Tenant tenant = new Tenant { Id = "TestTenant", Description = "testing" };
 
             await DbContext.Tenants.InsertOneAsync(tenant);
         }
 
         public async Task InsertWrongTenantIntoDB()
         {
-            Tenant tenant = new Tenant
-            {
-                Id = "Test",
-                Description = "wrong tenant"
-            };
+            Tenant tenant = new Tenant { Id = "Test", Description = "wrong tenant" };
 
             await DbContext.Tenants.InsertOneAsync(tenant);
         }

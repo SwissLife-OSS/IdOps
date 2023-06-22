@@ -23,6 +23,15 @@ namespace IdOps.Server.Storage.Mongo.Configuration
                     cm.AutoMap();
                     cm.SetIgnoreExtraElements(true);
                 })
+                .AddBsonClassMap<EncryptedValue>(cm =>
+                {
+                    cm.AutoMap();
+                    cm.SetIsRootClass(true);
+                    cm.SetIgnoreExtraElements(true);
+                })  
+                .AddBsonClassMap<KeyVaultEncryptedValue>(cm =>
+                    cm.AutoMap()
+                    )
                 .WithCollectionSettings(s => s.ReadConcern = ReadConcern.Majority)
                 .WithCollectionSettings(s => s.ReadPreference = ReadPreference.Nearest)
                 .WithCollectionConfiguration(collection =>

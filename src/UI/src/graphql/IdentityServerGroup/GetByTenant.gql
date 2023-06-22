@@ -1,0 +1,7 @@
+#import "./Fragments.gql"
+
+query identityServerGroupByTenant($tenant: String!) {
+  identityServerGroupByTenant(tenant: $tenant) {
+    ...IdentityServerGroup
+  }
+}

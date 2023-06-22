@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate.Types;
-using IdOps.Data.Errors;
-using IdOps.Exceptions;
+
 using IdOps.Model;
 
 namespace IdOps.GraphQL
