@@ -58,12 +58,10 @@ export default {
       }
     },
     async startAuthorizationCodeFlow(){
-      const clientClientId = this.client.clientId;
       const authority = await this.getAuthorityUrl();
-      const scope = "api.read";
       const redirect_uri = "http://localhost:5010";
 
-      console.log(await authorizationCodeFlow(authority, scope, clientClientId, redirect_uri))
+      console.log(await authorizationCodeFlow(authority, this.client, redirect_uri))
     },
     async getAuthorityUrl() {
       const environmentId = await this.getLastPublishedEnvironmentId();

@@ -1,4 +1,8 @@
-export async function authorizationCodeFlow(authority, scope, clientClientId, redirectUri){
+import { getApiScopes } from "../services/idResourceService";
+
+export async function authorizationCodeFlow(authority, client, redirectUri){
+  const clientClientId = client.clientId;
+  const scope = await getClientApiScopes(client);
   const request = await createAuthorizationRequest(authority, scope, clientClientId, redirectUri);
   return request;
 }
@@ -8,7 +12,7 @@ async function createAuthorizationRequest(authority, scope, clientClientId, redi
   url.searchParams.append("response_type", "code")
   url.searchParams.append("scope", scope);
   url.searchParams.append("client_id",clientClientId);
-  url.searchParams.append("state", "foo");
+  url.searchParams.append("state", await createCodeChallenge());
   url.searchParams.append("redirect_uri", redirectUri);
   url.searchParams.append("code_challenge", await createCodeChallenge());
   url.searchParams.append("code_challenge_method", "S256");
@@ -50,4 +54,17 @@ function base64UrlEncode(a) {
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
     .replace(/=+$/, "");
+}
+
+async function getClientApiScopes(client){
+
+  const scopes = (await getApiScopes()).data.apiScopes;
+  const scopeIds = client.apiScopes;
+  const result = [];
+
+  scopeIds.forEach(id => {
+    result.push(scopes.find(scope => scope.id === id).name)
+  })
+
+  return result.join(" ");
 }
