@@ -2,7 +2,15 @@
   <v-dialog v-model="activator" width="600">
     <v-card min-height="300" v-if="grantType === 'client_credentials'" key="client_credentials">
       <v-card-title class="headline">Token</v-card-title>
-      <v-card-text>{{ clientCredentialsToken }}</v-card-text>
+      <v-card-text>{{ accessToken }}</v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" text @click.native="close">Close</v-btn>
+      </v-card-actions>
+    </v-card>
+    <v-card min-height="300" v-else-if="grantType === 'authorization_code'" key="authorization_code">
+      <v-card-title class="headline">Token</v-card-title>
+      <v-card-text>{{ accessToken }}</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="primary" text @click.native="close">Close</v-btn>
@@ -20,16 +28,16 @@
 </template>
 
 <script>
-import { getClientCredentialsToken } from "../../services/tokenFlowService";
+import { getAccessToken } from "../../services/tokenFlowService";
 import { getIdentityServerGroupByTenant } from "../../services/systemService";
 import { getAllIdentityServer } from "../../services/systemService";
 import { getPublishedResources } from "../../services/publishingService";
-
+import { authorizationCodeFlow } from "../../tokenFlows/authorizationCodeFlow"
 export default {
   props: ["client", "grantType", "activator"],
   data() {
     return {
-      clientCredentialsToken: ""
+      accessToken: ""
     };
   },
   methods: {
@@ -49,13 +57,21 @@ export default {
         grantType: "client_credentials",
         saveTokens: false
       };
-      const result = (await getClientCredentialsToken(requestTokenInput)).data.requestToken.result;
+      const result = (await getAccessToken(requestTokenInput)).data.requestToken.result;
       if(result.isSuccess){
-        this.clientCredentialsToken = result.accessToken.token;
+        this.accessToken = result.accessToken.token;
       } else {
         this.close();
         alert("An error occured: " + result.errorMessage);
       }
+    },
+    async startAuthorizationCodeFlow(){
+      const clientId = this.client.clientId;
+      const authority = await this.getAuthorityUrl();
+      const scope = "api.read";
+      const redirect_uri = "http://localhost:5010";
+
+      console.log(await authorizationCodeFlow(authority, scope, clientId, redirect_uri))
     },
     getLastSavedSecretId() {
       const secret = this.client.clientSecrets.findLast(secret => secret.encryptedSecret !== null);
@@ -77,13 +93,25 @@ export default {
         .findLast(publishedResource => publishedResource.type === "Client").environments
         .findLast(environment => environment.state === "Latest");
       return lastPublishedResource.environment.id;
+    },
+    selectFlow(grantType){
+      switch(grantType){
+        case "client_credentials":
+          this.clientCredentialsFlow();
+          break;
+        case "authorization_code":
+          this.startAuthorizationCodeFlow();
+          break;
+        default:
+          console.log(grantType);
+      }
     }
   },
   watch: {
     grantType: {
       immediate: true,
       handler() {
-        this.clientCredentialsFlow();
+        this.selectFlow(this.grantType);
       }
     }
   }
