@@ -28,11 +28,12 @@
 </template>
 
 <script>
-import { getAccessToken } from "../../services/tokenFlowService";
 import { getIdentityServerGroupByTenant } from "../../services/systemService";
 import { getAllIdentityServer } from "../../services/systemService";
 import { getPublishedResources } from "../../services/publishingService";
-import { authorizationCodeFlow } from "../../tokenFlows/authorizationCodeFlow"
+import { authorizationCodeFlow } from "../../tokenFlows/authorizationCodeFlow";
+import { clientCredentialsFlow } from "../../tokenFlows/clientCredentialsFlow";
+
 export default {
   props: ["client", "grantType", "activator"],
   data() {
@@ -44,20 +45,11 @@ export default {
     close() {
       this.$emit("update:activator", false);
     },
-    async clientCredentialsFlow() {
-
-      const clientId = this.client.id;
-      const secretId = this.getLastSavedSecretId();
+    async startClientCredentialsFlow() {
       const authority = await this.getAuthorityUrl();
 
-      const requestTokenInput = {
-        authority: authority,
-        clientId: clientId,
-        secretId: secretId,
-        grantType: "client_credentials",
-        saveTokens: false
-      };
-      const result = (await getAccessToken(requestTokenInput)).data.requestToken.result;
+      const result = (await clientCredentialsFlow(authority, this.client)).data.requestToken.result;
+
       if(result.isSuccess){
         this.accessToken = result.accessToken.token;
       } else {
@@ -66,16 +58,12 @@ export default {
       }
     },
     async startAuthorizationCodeFlow(){
-      const clientId = this.client.clientId;
+      const clientClientId = this.client.clientId;
       const authority = await this.getAuthorityUrl();
       const scope = "api.read";
       const redirect_uri = "http://localhost:5010";
 
-      console.log(await authorizationCodeFlow(authority, scope, clientId, redirect_uri))
-    },
-    getLastSavedSecretId() {
-      const secret = this.client.clientSecrets.findLast(secret => secret.encryptedSecret !== null);
-      return secret.id;
+      console.log(await authorizationCodeFlow(authority, scope, clientClientId, redirect_uri))
     },
     async getAuthorityUrl() {
       const environmentId = await this.getLastPublishedEnvironmentId();
@@ -97,7 +85,7 @@ export default {
     selectFlow(grantType){
       switch(grantType){
         case "client_credentials":
-          this.clientCredentialsFlow();
+          this.startClientCredentialsFlow();
           break;
         case "authorization_code":
           this.startAuthorizationCodeFlow();
