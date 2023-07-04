@@ -3,26 +3,27 @@ import { getApiScopes } from "../services/idResourceService";
 export async function authorizationCodeFlow(authority, client, redirectUri){
   const clientClientId = client.clientId;
   const scope = await getClientApiScopes(client);
-  const request = await createAuthorizationRequest(authority, scope, clientClientId, redirectUri);
+  const state = createCodeVerifier() +"://" + client.id;
+  const request = await createAuthorizationRequest(authority, scope, clientClientId, redirectUri, state);
   return request;
 }
 
-async function createAuthorizationRequest(authority, scope, clientClientId, redirectUri){
+async function createAuthorizationRequest(authority, scope, clientClientId, redirectUri, state){
   const url = new URL(authority+"/connect/authorize");
   url.searchParams.append("response_type", "code")
   url.searchParams.append("scope", scope);
   url.searchParams.append("client_id",clientClientId);
   url.searchParams.append("state", await createCodeChallenge());
   url.searchParams.append("redirect_uri", redirectUri);
-  url.searchParams.append("code_challenge", await createCodeChallenge());
+  url.searchParams.append("code_challenge", await createCodeChallenge(createCodeVerifier()));
   url.searchParams.append("code_challenge_method", "S256");
 
   return url.href;
 
 }
 
-async function createCodeChallenge() {
-  var hashed = await sha256(createCodeVerifier());
+async function createCodeChallenge(verifier) {
+  var hashed = await sha256(verifier);
   var base64encoded = base64UrlEncode(hashed);
   return base64encoded;
 }
