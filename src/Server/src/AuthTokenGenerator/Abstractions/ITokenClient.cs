@@ -15,4 +15,8 @@ public interface ITokenClient
     Task<TokenResponse> RequestClientCredentialsTokenAsync(
         ClientCredentialsTokenRequest request, 
         CancellationToken cancellationToken);
+
+    Task<TokenResponse> RequestAuthorizationCodeTokenAsync(
+        AuthorizationCodeTokenRequest request,
+        CancellationToken cancellationToken);
 }
