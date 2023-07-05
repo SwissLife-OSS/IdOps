@@ -1,35 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using IdentityModel.Client;
 using IdOps.Abstractions;
 using IdOps.Model;
 using IdOps.Models;
+using IdOps.Security;
 
 namespace IdOps.GraphQL;
 
-public class TokenRequestDataResultFactory : IResultFactory<TokenRequestData, RequestTokenInput>
+public class TokenRequestDataResultFactory : IResultFactory<TokenRequest, RequestTokenInput>
 {
     private readonly IEncryptionService _encryptionService;
     private readonly IClientService _clientService;
     private readonly IApiScopeService _scopeService;
+    private readonly IHttpClientFactory _httpClientFactory;
 
     public TokenRequestDataResultFactory(
         IEncryptionService encryptionService,
         IClientService clientService, 
-        IApiScopeService apiScopeService)
+        IApiScopeService apiScopeService,
+        IHttpClientFactory httpClientFactory)
     {
         _encryptionService = encryptionService;
         _clientService = clientService;
         _scopeService = apiScopeService;
+        _httpClientFactory = httpClientFactory;
     }
 
-
-    public async Task<TokenRequestData> Create(
+    public async Task<TokenRequest> CreateRequestAsync(
         RequestTokenInput input,
         CancellationToken cancellationToken)
     {
+        if (input.grantType == null)
+        {
+            throw new ArgumentNullException("No grants found");
+        }
+
+        return input.grantType switch
+        {
+            "client_credentials" => await BuildClientCredentialsTokenRequestAsync(input,
+                cancellationToken),
+            _ => throw new Exception()
+        };
+    }
+
+    private async Task<ClientCredentialsTokenRequest> BuildClientCredentialsTokenRequestAsync(
+        RequestTokenInput input, 
+        CancellationToken cancellationToken)
+    {
+        using HttpClient httpClient = _httpClientFactory.CreateClient();
+        DiscoveryDocumentResponse disco = await httpClient.GetDiscoveryDocumentAsync(input.Authority, cancellationToken);
+
         Client? client = await _clientService.GetByIdAsync(input.ClientId, cancellationToken);
         if (client == null)
         {
@@ -38,35 +63,36 @@ public class TokenRequestDataResultFactory : IResultFactory<TokenRequestData, Re
 
         var clientId = client.ClientId;
 
-        var secretEncrypted = client.ClientSecrets.First(secret => secret.Id.Equals(input.SecretId))
-            .EncryptedValue;
+        if (!client.AllowedGrantTypes.Contains(input.grantType))
+        {
+            throw new ArgumentException("Grant not valid");
+        }
+
+        var secretEncrypted = client.ClientSecrets.First(secret => secret.Id.Equals(input.SecretId)).EncryptedValue;
         if (secretEncrypted == null)
         {
             throw new KeyNotFoundException("No encrypted secret found");
         }
 
-        var secretDecrypted =
-            await _encryptionService.DecryptAsync(secretEncrypted, cancellationToken);
+        var secretDecrypted = await _encryptionService.DecryptAsync(secretEncrypted, cancellationToken);
 
         if (client.AllowedGrantTypes == null)
         {
-            throw new ArgumentNullException("No grant types found");
+            throw new ArgumentNullException("Client has no registered grant types");
         }
 
-        string grantType = client.AllowedGrantTypes.Contains(input.grantType)
-            ? input.grantType
-            : throw new ArgumentException("Grant not valid");
-
-        var scopeIds = client.AllowedScopes.ToList().ConvertAll(clientScope => clientScope.Id);
+        var scopeIds = client.AllowedScopes.Select(clientScope => clientScope.Id).ToList();
         var scopes = await _scopeService.GetByIdsAsync(scopeIds, cancellationToken);
-        var scopeNames = scopes.Select(scope => scope.Name).ToList();
+        var scopeNames = string.Join(", ", scopes.Select(scope => scope.Name));
 
-        var tokenRequestData =
-            new TokenRequestData(input.Authority, clientId, secretDecrypted, grantType, scopeNames)
-            {
-                SaveTokens = input.SaveTokens
-            };
-
-        return tokenRequestData;
+        return new ClientCredentialsTokenRequest
+        {
+            Address = disco.TokenEndpoint,
+            ClientId = clientId,
+            ClientSecret = secretDecrypted,
+            Scope = scopeNames,
+            GrantType = "client_credentials"
+        };
     }
+
 }
