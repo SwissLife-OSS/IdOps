@@ -13,10 +13,11 @@ async function createAuthorizationRequest(authority, scope, clientClientId, redi
   url.searchParams.append("response_type", "code")
   url.searchParams.append("scope", scope);
   url.searchParams.append("client_id",clientClientId);
-  url.searchParams.append("state", await createCodeChallenge());
+  url.searchParams.append("state", state);
   url.searchParams.append("redirect_uri", redirectUri);
   url.searchParams.append("code_challenge", await createCodeChallenge(createCodeVerifier()));
   url.searchParams.append("code_challenge_method", "S256");
+  url.searchParams.append("response_mode", "form_post");
 
   return url.href;
 

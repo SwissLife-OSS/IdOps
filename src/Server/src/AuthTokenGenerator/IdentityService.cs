@@ -60,6 +60,48 @@ namespace IdOps
                 AccessToken = accessToken
             };
         }
+        
+        public async Task<RequestTokenResult> RequestTokenAsync(
+            TokenRequest request,
+            CancellationToken cancellationToken)
+        {
+
+            TokenResponse response = request.GrantType switch
+            {
+                "authorization_request" => await _tokenClient.RequestAuthorizationCodeTokenAsync(
+                    (AuthorizationCodeTokenRequest) request ,
+                    cancellationToken),
+                _ => throw new Exception()
+            };
+
+            if (response.IsError)
+            {
+                RequestTokenResult result = new RequestTokenResult(false);
+
+                result.ErrorMessage = response.Error switch
+                {
+                    "Unauthorized" => "Unauthorized",
+                    "invalid_client" => "Invalid_client",
+                    _ => "Unexpected_error"
+                };
+
+                return result;
+            }
+            
+            TokenModel? accessToken = _tokenAnalyzer.Analyze(response.AccessToken);
+            if (accessToken == null)
+            {
+                return new RequestTokenResult(false)
+                {
+                    ErrorMessage = "Access Token could not be analyzed"
+                };
+            }
+            return new RequestTokenResult(true)
+            {
+                AccessToken = accessToken
+            };
+        }
+        
 
         private async Task<TokenResponse> RequestClientCredentialTokenAsync(
             TokenRequestData request, 
@@ -75,6 +117,15 @@ namespace IdOps
                     GrantType = request.GrantType,
                     Scope = request.Scopes.Any() ? string.Join(" ", request.Scopes) : null
                 }, cancellationToken);
+        }
+
+        private async Task<TokenResponse> RequestAuthorizationCodeTokenAsync(
+            AuthorizationCodeTokenRequest request, 
+            DiscoveryDocumentResponse disco,
+            CancellationToken cancellationToken)
+        {
+            return await _tokenClient.RequestAuthorizationCodeTokenAsync(
+                new AuthorizationCodeTokenRequest(), cancellationToken);
         }
 
         private async Task<TokenResponse> RequestOtherGrantTypeTokenAsync(

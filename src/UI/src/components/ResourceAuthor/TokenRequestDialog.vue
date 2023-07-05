@@ -59,7 +59,7 @@ export default {
     },
     async startAuthorizationCodeFlow(){
       const authority = await this.getAuthorityUrl();
-      const redirect_uri = "http://localhost:5010";
+      const redirect_uri = "http://localhost:5000/clients/callback";
 
       console.log(await authorizationCodeFlow(authority, this.client, redirect_uri))
     },

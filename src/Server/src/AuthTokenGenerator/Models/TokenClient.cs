@@ -37,7 +37,18 @@ public class TokenClient : ITokenClient
         CancellationToken cancellationToken)
     {
         using HttpClient httpClient = _httpClientFactory.CreateClient();
-        var response =  await httpClient.RequestClientCredentialsTokenAsync(request, cancellationToken);
+        var response =  
+            await httpClient.RequestClientCredentialsTokenAsync(request, cancellationToken);
+        return response;
+    }
+
+    public async Task<TokenResponse> RequestAuthorizationCodeTokenAsync(
+        AuthorizationCodeTokenRequest request, 
+        CancellationToken cancellationToken)
+    {
+        using HttpClient httpClient = _httpClientFactory.CreateClient();
+        var response =
+            await httpClient.RequestAuthorizationCodeTokenAsync(request, cancellationToken);
         return response;
     }
 }
