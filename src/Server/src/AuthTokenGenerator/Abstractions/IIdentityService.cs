@@ -1,3 +1,4 @@
+using IdentityModel.Client;
 using IdOps.Models;
 
 namespace IdOps.Abstractions
@@ -5,7 +6,7 @@ namespace IdOps.Abstractions
     public interface IIdentityService
     {
         Task<RequestTokenResult> RequestTokenAsync(
-            TokenRequestData request, 
+            TokenRequest request,
             CancellationToken cancellationToken);
     }
 }
