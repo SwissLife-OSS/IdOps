@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using IdOps.Abstractions;
-using IdOps.Models;
 
 namespace IdOps.GraphQL
 {
@@ -10,5 +7,6 @@ namespace IdOps.GraphQL
         Guid ClientId, 
         Guid SecretId,
         string grantType,
-        bool SaveTokens);
+        bool SaveTokens,
+        string? code);
 }

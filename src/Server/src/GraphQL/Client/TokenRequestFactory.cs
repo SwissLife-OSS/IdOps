@@ -12,14 +12,14 @@ using IdOps.Security;
 
 namespace IdOps.GraphQL;
 
-public class TokenRequestDataResultFactory : IResultFactory<TokenRequest, RequestTokenInput>
+public class TokenRequestFactory : IResultFactory<TokenRequest, RequestTokenInput>
 {
     private readonly IEncryptionService _encryptionService;
     private readonly IClientService _clientService;
     private readonly IApiScopeService _scopeService;
     private readonly IHttpClientFactory _httpClientFactory;
 
-    public TokenRequestDataResultFactory(
+    public TokenRequestFactory(
         IEncryptionService encryptionService,
         IClientService clientService, 
         IApiScopeService apiScopeService,
@@ -42,9 +42,11 @@ public class TokenRequestDataResultFactory : IResultFactory<TokenRequest, Reques
 
         return input.grantType switch
         {
-            "client_credentials" => await BuildClientCredentialsTokenRequestAsync(input,
-                cancellationToken),
-            _ => throw new Exception()
+            "client_credentials" => 
+                await BuildClientCredentialsTokenRequestAsync(input, cancellationToken),
+            "authorization_code" => 
+                await BuildAuthorizationCodeTokenRequestAsync(input, cancellationToken),
+            _ => throw new Exception("grant not valid")
         };
     }
 
@@ -92,6 +94,55 @@ public class TokenRequestDataResultFactory : IResultFactory<TokenRequest, Reques
             ClientSecret = secretDecrypted,
             Scope = scopeNames,
             GrantType = "client_credentials"
+        };
+    }
+
+    private async Task<AuthorizationCodeTokenRequest> BuildAuthorizationCodeTokenRequestAsync(
+        RequestTokenInput input, 
+        CancellationToken cancellationToken)
+    {
+        using HttpClient httpClient = _httpClientFactory.CreateClient();
+        DiscoveryDocumentResponse disco = await httpClient.GetDiscoveryDocumentAsync(input.Authority, cancellationToken);
+
+        Client? client = await _clientService.GetByIdAsync(input.ClientId, cancellationToken);
+        if (client == null)
+        {
+            throw new ArgumentNullException($"Element with ID {input.ClientId} not found.");
+        }
+
+        var clientId = client.ClientId;
+
+        if (!client.AllowedGrantTypes.Contains(input.grantType))
+        {
+            throw new ArgumentException("Grant not valid");
+        }
+
+        if (input.code == null)
+        {
+            throw new ArgumentNullException("No code found");
+        }
+
+        var secretEncrypted = client.ClientSecrets.First(secret => secret.Id.Equals(input.SecretId)).EncryptedValue;
+        if (secretEncrypted == null)
+        {
+            throw new KeyNotFoundException("No encrypted secret found");
+        }
+
+        var secretDecrypted = await _encryptionService.DecryptAsync(secretEncrypted, cancellationToken);
+
+        if (client.AllowedGrantTypes == null)
+        {
+            throw new ArgumentNullException("Client has no registered grant types");
+        }
+
+        return new AuthorizationCodeTokenRequest()
+        {
+            Address = disco.TokenEndpoint,
+            ClientId = clientId,
+            ClientSecret = secretDecrypted,
+            Code = input.code,
+            GrantType = "authorization_code"
+            
         };
     }
 

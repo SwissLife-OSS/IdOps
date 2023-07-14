@@ -6,6 +6,7 @@ using IdentityModel.Client;
 using IdOps.Abstractions;
 using IdOps.Model;
 using IdOps.Models;
+using IdOps.Store;
 
 namespace IdOps.GraphQL
 {
@@ -76,6 +77,15 @@ namespace IdOps.GraphQL
                 await identityService.RequestTokenAsync(tokenRequest, cancellationToken);
 
             return new RequestTokenPayload(tokenResult);
+        }
+
+        [AuthorizeClientAuthoring(AccessMode.Write, includeTenantAuth: false)]
+        public async Task<string> SaveSessionAsync(
+            [Service] ISessionStore sessionStore,
+            Session session)
+        {
+            sessionStore.SaveSession(session.Id, session);
+            return session.Id;
         }
     }
 }

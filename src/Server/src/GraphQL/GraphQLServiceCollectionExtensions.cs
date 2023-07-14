@@ -10,6 +10,7 @@ using IdOps.GraphQL.GraphQL.Serialization;
 using IdOps.GraphQL.Hashing;
 using IdOps.GraphQL.Publish;
 using IdOps.Model;
+using IdOps.Store;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdOps.GraphQL
@@ -33,7 +34,9 @@ namespace IdOps.GraphQL
 
             builder.Services.AddSingleton<
                 IResultFactory<TokenRequest,RequestTokenInput>,
-                TokenRequestDataResultFactory>();
+                TokenRequestFactory>();
+
+            builder.Services.AddSingleton<ISessionStore, SessionStore>();
 
             return builder;
         }

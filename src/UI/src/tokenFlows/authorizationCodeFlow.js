@@ -1,9 +1,13 @@
 import { getApiScopes } from "../services/idResourceService";
+import { saveSession } from "../services/tokenFlowService";
 
 export async function authorizationCodeFlow(authority, client, redirectUri){
   const clientClientId = client.clientId;
   const scope = await getClientApiScopes(client);
-  const state = createCodeVerifier() +"://" + client.id;
+  const state = createCodeVerifier();
+
+  saveCurrentSession(client, state, authority, "http://localhost:5010")
+
   const request = await createAuthorizationRequest(authority, scope, clientClientId, redirectUri, state);
   return request;
 }
@@ -59,7 +63,6 @@ function base64UrlEncode(a) {
 }
 
 async function getClientApiScopes(client){
-
   const scopes = (await getApiScopes()).data.apiScopes;
   const scopeIds = client.apiScopes;
   const result = [];
@@ -69,4 +72,22 @@ async function getClientApiScopes(client){
   })
 
   return result.join(" ");
+}
+
+async function saveCurrentSession(client, state, authority, callback){
+  const session = {
+    id: state,
+    clientId: client.id,
+    secretId: getLastSavedSecretId(client),
+    authority: authority,
+    callbackUri: callback
+  }
+  console.log(session);
+
+  await saveSession(session);
+}
+
+function getLastSavedSecretId(client) {
+  const secret = client.clientSecrets.findLast(secret => secret.encryptedSecret !== null);
+  return secret.id;
 }
