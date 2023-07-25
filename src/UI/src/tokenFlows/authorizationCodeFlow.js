@@ -5,24 +5,24 @@ export async function authorizationCodeFlow(authority, client, redirectUri){
   const clientClientId = client.clientId;
   const scope = await getClientApiScopes(client);
   const state = createCodeVerifier();
+  const codeVerifier = createCodeVerifier();
 
-  saveCurrentSession(client, state, authority, "http://localhost:5010")
+  saveCurrentSession(client, state, codeVerifier, "http://localhost:5010")
 
-  const request = await createAuthorizationRequest(authority, scope, clientClientId, redirectUri, state);
+  const request = await createAuthorizationRequest(authority, scope, clientClientId, redirectUri, state, codeVerifier);
   return request;
 }
 
-async function createAuthorizationRequest(authority, scope, clientClientId, redirectUri, state){
+async function createAuthorizationRequest(authority, scope, clientClientId, redirectUri, state, codeVerifier){
   const url = new URL(authority+"/connect/authorize");
   url.searchParams.append("response_type", "code")
   url.searchParams.append("scope", scope);
   url.searchParams.append("client_id",clientClientId);
   url.searchParams.append("state", state);
   url.searchParams.append("redirect_uri", redirectUri);
-  url.searchParams.append("code_challenge", await createCodeChallenge(createCodeVerifier()));
+  url.searchParams.append("code_challenge", await createCodeChallenge(codeVerifier));
   url.searchParams.append("code_challenge_method", "S256");
   url.searchParams.append("response_mode", "form_post");
-
   return url.href;
 
 }
@@ -74,12 +74,12 @@ async function getClientApiScopes(client){
   return result.join(" ");
 }
 
-async function saveCurrentSession(client, state, authority, callback){
+async function saveCurrentSession(client, state, codeVerifier, callback){
   const session = {
     id: state,
     clientId: client.id,
     secretId: getLastSavedSecretId(client),
-    authority: authority,
+    codeVerifier: codeVerifier,
     callbackUri: callback
   }
   console.log(session);

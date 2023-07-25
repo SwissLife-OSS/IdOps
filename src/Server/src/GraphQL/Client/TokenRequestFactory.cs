@@ -35,29 +35,33 @@ public class TokenRequestFactory : IResultFactory<TokenRequest, RequestTokenInpu
         RequestTokenInput input,
         CancellationToken cancellationToken)
     {
-        if (input.grantType == null)
+        if (input.GrantType == null)
         {
             throw new ArgumentNullException("No grants found");
         }
 
-        return input.grantType switch
+        return input.GrantType switch
         {
             "client_credentials" => 
-                await BuildClientCredentialsTokenRequestAsync(input, cancellationToken),
+                await BuildClientCredentialsTokenRequestAsync(
+                    (RequestClientCredentialsTokenInput)input,
+                    cancellationToken),
             "authorization_code" => 
-                await BuildAuthorizationCodeTokenRequestAsync(input, cancellationToken),
+                await BuildAuthorizationCodeTokenRequestAsync(
+                    (RequestAuthorizationCodeTokenInput)input,
+                    cancellationToken),
             _ => throw new Exception("grant not valid")
         };
     }
 
     private async Task<ClientCredentialsTokenRequest> BuildClientCredentialsTokenRequestAsync(
-        RequestTokenInput input, 
+        RequestClientCredentialsTokenInput input, 
         CancellationToken cancellationToken)
     {
         using HttpClient httpClient = _httpClientFactory.CreateClient();
         DiscoveryDocumentResponse disco = await httpClient.GetDiscoveryDocumentAsync(input.Authority, cancellationToken);
 
-        Client? client = await _clientService.GetByIdAsync(input.ClientId, cancellationToken);
+        Client? client = await _clientService.GetByIdAsync(new Guid(input.ClientId), cancellationToken);
         if (client == null)
         {
             throw new ArgumentNullException($"Element with ID {input.ClientId} not found.");
@@ -65,12 +69,12 @@ public class TokenRequestFactory : IResultFactory<TokenRequest, RequestTokenInpu
 
         var clientId = client.ClientId;
 
-        if (!client.AllowedGrantTypes.Contains(input.grantType))
+        if (!client.AllowedGrantTypes.Contains(input.GrantType))
         {
             throw new ArgumentException("Grant not valid");
         }
 
-        var secretEncrypted = client.ClientSecrets.First(secret => secret.Id.Equals(input.SecretId)).EncryptedValue;
+        var secretEncrypted = client.ClientSecrets.First(secret => secret.Id.Equals(new Guid(input.SecretId))).EncryptedValue;
         if (secretEncrypted == null)
         {
             throw new KeyNotFoundException("No encrypted secret found");
@@ -98,13 +102,13 @@ public class TokenRequestFactory : IResultFactory<TokenRequest, RequestTokenInpu
     }
 
     private async Task<AuthorizationCodeTokenRequest> BuildAuthorizationCodeTokenRequestAsync(
-        RequestTokenInput input, 
+        RequestAuthorizationCodeTokenInput input, 
         CancellationToken cancellationToken)
     {
         using HttpClient httpClient = _httpClientFactory.CreateClient();
         DiscoveryDocumentResponse disco = await httpClient.GetDiscoveryDocumentAsync(input.Authority, cancellationToken);
 
-        Client? client = await _clientService.GetByIdAsync(input.ClientId, cancellationToken);
+        Client? client = await _clientService.GetByIdAsync(new Guid(input.ClientId), cancellationToken);
         if (client == null)
         {
             throw new ArgumentNullException($"Element with ID {input.ClientId} not found.");
@@ -112,17 +116,17 @@ public class TokenRequestFactory : IResultFactory<TokenRequest, RequestTokenInpu
 
         var clientId = client.ClientId;
 
-        if (!client.AllowedGrantTypes.Contains(input.grantType))
+        if (!client.AllowedGrantTypes.Contains(input.GrantType))
         {
             throw new ArgumentException("Grant not valid");
         }
 
-        if (input.code == null)
+        if (input.Code == null)
         {
             throw new ArgumentNullException("No code found");
         }
 
-        var secretEncrypted = client.ClientSecrets.First(secret => secret.Id.Equals(input.SecretId)).EncryptedValue;
+        var secretEncrypted = client.ClientSecrets.First(secret => secret.Id.Equals(new Guid(input.SecretId))).EncryptedValue;
         if (secretEncrypted == null)
         {
             throw new KeyNotFoundException("No encrypted secret found");
@@ -140,9 +144,11 @@ public class TokenRequestFactory : IResultFactory<TokenRequest, RequestTokenInpu
             Address = disco.TokenEndpoint,
             ClientId = clientId,
             ClientSecret = secretDecrypted,
-            Code = input.code,
-            GrantType = "authorization_code"
-            
+            Code = input.Code,
+            GrantType = "authorization_code",
+            RedirectUri = "http://localhost:5000/clients/callback",
+            CodeVerifier = input.Verifier
+
         };
     }
 

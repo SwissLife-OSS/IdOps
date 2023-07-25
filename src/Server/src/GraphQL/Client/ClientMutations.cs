@@ -67,7 +67,7 @@ namespace IdOps.GraphQL
         public async Task<RequestTokenPayload> RequestTokenAsync(
             [Service] IIdentityService identityService,
             [Service] IResultFactory<TokenRequest, RequestTokenInput> requestResultFactory,
-            RequestTokenInput input,
+            RequestClientCredentialsTokenInput input,
             CancellationToken cancellationToken)
         {
             TokenRequest tokenRequest =

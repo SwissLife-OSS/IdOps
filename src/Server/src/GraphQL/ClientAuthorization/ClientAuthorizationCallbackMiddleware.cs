@@ -43,17 +43,19 @@ public class ClientAuthorizationCallbackMiddleware
         var stateId = context.Request.Form["state"].ToString();
         var code = context.Request.Form["code"].ToString();
         var issuer = context.Request.Form["iss"].ToString();
-
         var session = _sessionStore.GetSession(stateId);
 
+        
         var requestTokenInput 
-            = new RequestTokenInput(
+            = new RequestAuthorizationCodeTokenInput(
                 issuer, 
-                new Guid(session.ClientId),
-                new Guid(session.SecretId),
+                session.ClientId,
+                session.SecretId,
                 "authorization_code",
-                false, 
-                code);
+                code,
+                session.CodeVerifier,
+                session.CallbackUri
+                );
 
         TokenRequest request =
             await _tokenRequestFactory.CreateRequestAsync(requestTokenInput,
@@ -62,9 +64,10 @@ public class ClientAuthorizationCallbackMiddleware
 
         RequestTokenResult result = await _identityService.RequestTokenAsync(
             request, CancellationToken.None);
-
+        
         return;
     }
     
 }
+
 
