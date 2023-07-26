@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using IdentityModel.Client;
@@ -43,7 +44,16 @@ public class ClientAuthorizationCallbackMiddleware
         var stateId = context.Request.Form["state"].ToString();
         var code = context.Request.Form["code"].ToString();
         var issuer = context.Request.Form["iss"].ToString();
-        var session = _sessionStore.GetSession(stateId);
+        Session session;
+        try
+        {
+            session = _sessionStore.GetSession(stateId);
+        }
+        catch (KeyNotFoundException e)
+        {
+            await Task.Delay(1000);
+            session = _sessionStore.GetSession(stateId);
+        }
 
         
         var requestTokenInput 
@@ -54,7 +64,7 @@ public class ClientAuthorizationCallbackMiddleware
                 "authorization_code",
                 code,
                 session.CodeVerifier,
-                session.CallbackUri
+                "http://localhost:5000/clients/callback"
                 );
 
         TokenRequest request =
@@ -64,6 +74,8 @@ public class ClientAuthorizationCallbackMiddleware
 
         RequestTokenResult result = await _identityService.RequestTokenAsync(
             request, CancellationToken.None);
+        
+        context.Response.Redirect(session.CallbackUri);
         
         return;
     }

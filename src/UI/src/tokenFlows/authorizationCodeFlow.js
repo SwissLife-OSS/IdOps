@@ -7,7 +7,7 @@ export async function authorizationCodeFlow(authority, client, redirectUri){
   const state = createCodeVerifier();
   const codeVerifier = createCodeVerifier();
 
-  saveCurrentSession(client, state, codeVerifier, "http://localhost:5010")
+  saveCurrentSession(client, state, codeVerifier, window.location.href)
 
   const request = await createAuthorizationRequest(authority, scope, clientClientId, redirectUri, state, codeVerifier);
   return request;

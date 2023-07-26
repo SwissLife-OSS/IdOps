@@ -58,10 +58,11 @@ export default {
       }
     },
     async startAuthorizationCodeFlow(){
+      this.accessToken = "Please switch to the newly opened tab, log in and come back for the access token!"
       const authority = await this.getAuthorityUrl();
       const redirect_uri = "http://localhost:5000/clients/callback";
 
-      console.log(await authorizationCodeFlow(authority, this.client, redirect_uri))
+      window.open(await authorizationCodeFlow(authority, this.client, redirect_uri), '_blank');
     },
     async getAuthorityUrl() {
       const environmentId = await this.getLastPublishedEnvironmentId();

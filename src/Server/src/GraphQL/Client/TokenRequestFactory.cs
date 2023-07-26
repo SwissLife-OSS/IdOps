@@ -146,7 +146,7 @@ public class TokenRequestFactory : IResultFactory<TokenRequest, RequestTokenInpu
             ClientSecret = secretDecrypted,
             Code = input.Code,
             GrantType = "authorization_code",
-            RedirectUri = "http://localhost:5000/clients/callback",
+            RedirectUri = input.RedirectUri,
             CodeVerifier = input.Verifier
 
         };
