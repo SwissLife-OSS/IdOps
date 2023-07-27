@@ -67,6 +67,7 @@ namespace IdOps.Api
                 endpoints.MapGraphQL();
                 endpoints.MapControllers();
                 endpoints.MapHub<OpsHub>("/signal");
+                endpoints.MapHub<AccessTokenHub>("/clients/hub");
                 endpoints.MapAuthorizeClient();
             });
 

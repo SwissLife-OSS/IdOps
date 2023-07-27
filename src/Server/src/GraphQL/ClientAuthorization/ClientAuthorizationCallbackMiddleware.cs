@@ -8,6 +8,7 @@ using IdOps.GraphQL;
 using IdOps.Models;
 using IdOps.Store;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
 
 namespace IdOps;
 
@@ -17,19 +18,22 @@ public class ClientAuthorizationCallbackMiddleware
     private readonly ISessionStore _sessionStore;
     private readonly IResultFactory<TokenRequest, RequestTokenInput> _tokenRequestFactory;
     private readonly IIdentityService _identityService;
-    
+    private readonly IHubContext<OpsHub> _hubContext;
+
 
     public ClientAuthorizationCallbackMiddleware(
         RequestDelegate next,
         ISessionStore sessionStore,
         IResultFactory<TokenRequest, RequestTokenInput> tokenRequestFactory,
-        IIdentityService identityService
+        IIdentityService identityService,
+        IHubContext<OpsHub> hubContext
         )
     {
         _next = next;
         _sessionStore = sessionStore;
         _tokenRequestFactory = tokenRequestFactory;
         _identityService = identityService;
+        _hubContext = hubContext;
     }
 
     public async Task Invoke(HttpContext context)
@@ -75,7 +79,9 @@ public class ClientAuthorizationCallbackMiddleware
         RequestTokenResult result = await _identityService.RequestTokenAsync(
             request, CancellationToken.None);
         
-        context.Response.Redirect(session.CallbackUri);
+        await _hubContext.Clients.Client(session.CallbackUri)
+            .SendAsync("ReceiveAccessToken", result);
+        
         
         return;
     }

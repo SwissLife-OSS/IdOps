@@ -62,7 +62,11 @@ export default {
       const authority = await this.getAuthorityUrl();
       const redirect_uri = "http://localhost:5000/clients/callback";
 
-      window.open(await authorizationCodeFlow(authority, this.client, redirect_uri), '_blank');
+      window.open(await authorizationCodeFlow(authority, this.client, redirect_uri, this.$socket), '_blank');
+
+      this.$socket.on("ReceiveAccessToken", response => {
+        this.accessToken = response.accessToken.token
+      });
     },
     async getAuthorityUrl() {
       const environmentId = await this.getLastPublishedEnvironmentId();
