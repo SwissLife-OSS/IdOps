@@ -1,0 +1,3 @@
+mutation SaveSession($input: SessionInput!) {
+  saveSession(session: $input)
+}
