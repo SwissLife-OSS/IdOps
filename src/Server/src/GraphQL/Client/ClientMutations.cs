@@ -2,9 +2,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate;
 using HotChocolate.Types;
+using IdentityModel.Client;
 using IdOps.Abstractions;
 using IdOps.Model;
 using IdOps.Models;
+using IdOps.Store;
 
 namespace IdOps.GraphQL
 {
@@ -64,18 +66,26 @@ namespace IdOps.GraphQL
         [AuthorizeClientAuthoring(AccessMode.Write, includeTenantAuth: false)]
         public async Task<RequestTokenPayload> RequestTokenAsync(
             [Service] IIdentityService identityService,
-            [Service] IResultFactory<TokenRequestData, RequestTokenInput> requestResultFactory,
-            RequestTokenInput input,
+            [Service] IResultFactory<TokenRequest, RequestTokenInput> requestResultFactory,
+            RequestClientCredentialsTokenInput input,
             CancellationToken cancellationToken)
         {
-            var tokenRequestData =
-                await requestResultFactory.Create(input,cancellationToken);
-
-
+            TokenRequest tokenRequest =
+                await requestResultFactory.CreateRequestAsync(input,cancellationToken);
+            
             RequestTokenResult tokenResult =
-                await identityService.RequestTokenAsync(tokenRequestData, cancellationToken);
+                await identityService.RequestTokenAsync(tokenRequest, cancellationToken);
 
             return new RequestTokenPayload(tokenResult);
+        }
+
+        [AuthorizeClientAuthoring(AccessMode.Write, includeTenantAuth: false)]
+        public async Task<string> SaveSessionAsync(
+            [Service] ISessionStore sessionStore,
+            Session session)
+        {
+            sessionStore.SaveSession(session.Id, session);
+            return session.Id;
         }
     }
 }

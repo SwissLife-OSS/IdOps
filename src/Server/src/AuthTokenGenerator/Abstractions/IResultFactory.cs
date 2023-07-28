@@ -2,5 +2,5 @@
 
 public interface IResultFactory<TResult, in TInput>
 {
-    Task<TResult> Create(TInput input, CancellationToken cancellationToken);
+    Task<TResult> CreateRequestAsync(TInput input, CancellationToken cancellationToken);
 }

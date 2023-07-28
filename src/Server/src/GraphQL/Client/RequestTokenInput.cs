@@ -1,14 +1,11 @@
-using System;
-using System.Collections.Generic;
-using IdOps.Abstractions;
-using IdOps.Models;
+﻿using System;
 
-namespace IdOps.GraphQL
+namespace IdOps.GraphQL;
+
+public class RequestTokenInput
 {
-    public record RequestTokenInput(
-        string Authority, 
-        Guid ClientId, 
-        Guid SecretId,
-        string grantType,
-        bool SaveTokens);
+  public string Authority { get; set; }
+  public string ClientId { get; set; }
+  public string SecretId { get; set; }
+  public string GrantType { get; set; }
 }

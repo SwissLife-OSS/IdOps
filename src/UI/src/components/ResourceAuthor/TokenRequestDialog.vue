@@ -2,7 +2,15 @@
   <v-dialog v-model="activator" width="600">
     <v-card min-height="300" v-if="grantType === 'client_credentials'" key="client_credentials">
       <v-card-title class="headline">Token</v-card-title>
-      <v-card-text>{{ clientCredentialsToken }}</v-card-text>
+      <v-card-text>{{ accessToken }}</v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" text @click.native="close">Close</v-btn>
+      </v-card-actions>
+    </v-card>
+    <v-card min-height="300" v-else-if="grantType === 'authorization_code'" key="authorization_code">
+      <v-card-title class="headline">Token</v-card-title>
+      <v-card-text>{{ accessToken }}</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="primary" text @click.native="close">Close</v-btn>
@@ -20,46 +28,45 @@
 </template>
 
 <script>
-import { getClientCredentialsToken } from "../../services/tokenFlowService";
 import { getIdentityServerGroupByTenant } from "../../services/systemService";
 import { getAllIdentityServer } from "../../services/systemService";
 import { getPublishedResources } from "../../services/publishingService";
+import { authorizationCodeFlow } from "../../tokenFlows/authorizationCodeFlow";
+import { clientCredentialsFlow } from "../../tokenFlows/clientCredentialsFlow";
 
 export default {
   props: ["client", "grantType", "activator"],
   data() {
     return {
-      clientCredentialsToken: ""
+      accessToken: ""
     };
   },
   methods: {
     close() {
       this.$emit("update:activator", false);
     },
-    async clientCredentialsFlow() {
-
-      const clientId = this.client.id;
-      const secretId = this.getLastSavedSecretId();
+    async startClientCredentialsFlow() {
       const authority = await this.getAuthorityUrl();
 
-      const requestTokenInput = {
-        authority: authority,
-        clientId: clientId,
-        secretId: secretId,
-        grantType: "client_credentials",
-        saveTokens: false
-      };
-      const result = (await getClientCredentialsToken(requestTokenInput)).data.requestToken.result;
+      const result = (await clientCredentialsFlow(authority, this.client)).data.requestToken.result;
+
       if(result.isSuccess){
-        this.clientCredentialsToken = result.accessToken.token;
+        this.accessToken = result.accessToken.token;
       } else {
         this.close();
         alert("An error occured: " + result.errorMessage);
       }
     },
-    getLastSavedSecretId() {
-      const secret = this.client.clientSecrets.findLast(secret => secret.encryptedSecret !== null);
-      return secret.id;
+    async startAuthorizationCodeFlow(){
+      this.accessToken = "Please switch to the newly opened tab, log in and come back for the access token!"
+      const authority = await this.getAuthorityUrl();
+      const redirect_uri = this.getRedirectUrl();
+
+      window.open(await authorizationCodeFlow(authority, this.client, redirect_uri, this.$socket), '_blank');
+
+      this.$socket.on("ReceiveAccessToken", response => {
+        this.accessToken = response.accessToken.token
+      });
     },
     async getAuthorityUrl() {
       const environmentId = await this.getLastPublishedEnvironmentId();
@@ -70,6 +77,11 @@ export default {
 
       return result;
     },
+    getRedirectUrl() {
+      const redirectUris = this.client.redirectUris;
+      const callback = redirectUris.filter(url => url.includes("/clients/callback"));
+      return callback.pop();
+    },
     async getLastPublishedEnvironmentId() {
       const publishedResources = (await getPublishedResources()).data;
 
@@ -77,13 +89,25 @@ export default {
         .findLast(publishedResource => publishedResource.type === "Client").environments
         .findLast(environment => environment.state === "Latest");
       return lastPublishedResource.environment.id;
+    },
+    selectFlow(grantType){
+      switch(grantType){
+        case "client_credentials":
+          this.startClientCredentialsFlow();
+          break;
+        case "authorization_code":
+          this.startAuthorizationCodeFlow();
+          break;
+        default:
+          console.log(grantType);
+      }
     }
   },
   watch: {
     grantType: {
       immediate: true,
       handler() {
-        this.clientCredentialsFlow();
+        this.selectFlow(this.grantType);
       }
     }
   }

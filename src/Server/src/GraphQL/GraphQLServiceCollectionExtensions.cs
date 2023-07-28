@@ -1,6 +1,7 @@
 using System;
 using HotChocolate.Execution.Configuration;
 using HotChocolate.Types;
+using IdentityModel.Client;
 using IdOps.Abstractions;
 using IdOps.Authorization;
 using IdOps.Data.Errors;
@@ -9,7 +10,7 @@ using IdOps.GraphQL.GraphQL.Serialization;
 using IdOps.GraphQL.Hashing;
 using IdOps.GraphQL.Publish;
 using IdOps.Model;
-using IdOps.Models;
+using IdOps.Store;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdOps.GraphQL
@@ -32,8 +33,10 @@ namespace IdOps.GraphQL
                 .AddHttpResultSerializer<ForbiddenHttpResultSerializer>();
 
             builder.Services.AddSingleton<
-                IResultFactory<TokenRequestData,RequestTokenInput>,
-                TokenRequestDataResultFactory>();
+                IResultFactory<TokenRequest,RequestTokenInput>,
+                TokenRequestFactory>();
+
+            builder.Services.AddSingleton<ISessionStore, SessionStore>();
 
             return builder;
         }

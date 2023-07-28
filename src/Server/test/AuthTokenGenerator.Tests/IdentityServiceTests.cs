@@ -53,7 +53,7 @@ namespace IdOps
 
             //Act
             RequestTokenResult _ =
-                await identityService.RequestTokenAsync(CreateTokenRequestData(grantType),
+                await identityService.RequestTokenAsync(CreateClientCredentialsTokenRequest(grantType),
                     CancellationToken.None);
 
             //Assert
@@ -74,14 +74,16 @@ namespace IdOps
             _tokenAnalyzerMock = new Mock<ITokenAnalyzer>(MockBehavior.Strict);
         }
 
-        private TokenRequestData CreateTokenRequestData(string grantType)
+        private ClientCredentialsTokenRequest CreateClientCredentialsTokenRequest(string grantType)
         {
-            var tokenRequestData = new TokenRequestData("http://localhost:1234",
-                "11111111111111111111111111111111",
-                "thisIsATestSecret" +
-                "111111111111111111111111111111111111111111111111111111111111111111111", grantType,
-                new[] { "scope1", "scope2"});
-            return tokenRequestData;
+            var tokenRequest = new ClientCredentialsTokenRequest();
+
+            tokenRequest.Address = "http://localhost:1234";
+            tokenRequest.ClientId = "11111111111111111111111111111111";
+            tokenRequest.ClientSecret = "thisIsATestSecret";
+            tokenRequest.GrantType = grantType;
+            tokenRequest.Scope = "scope1, scope2";
+            return tokenRequest;
         }
 
         private DiscoveryDocumentResponse CreateDiscoveryResponse()
