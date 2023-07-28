@@ -12,7 +12,6 @@ public static class ClientAppAuthorizationEndpointRouteBuilder
         this IEndpointRouteBuilder endpointRouteBuilder)
     {
         endpointRouteBuilder
-            .MapAuthorizeClientAuth()
             .MapAuthorizeClientAuthCallback();
 
         return endpointRouteBuilder;
@@ -36,29 +35,6 @@ public static class ClientAppAuthorizationEndpointRouteBuilder
         endpointRouteBuilder
             .Map(pattern, requestPipeline.Build())
             .WithDisplayName("Clients-authorize-callback")
-            .AllowAnonymous();
-
-        return endpointRouteBuilder;
-    }
-
-    private static IEndpointRouteBuilder MapAuthorizeClientAuth(
-        this IEndpointRouteBuilder endpointRouteBuilder)
-    {
-        RoutePattern pattern = Parse("clients/{id:guid}");
-        IApplicationBuilder requestPipeline = endpointRouteBuilder
-            .CreateApplicationBuilder();
-
-        requestPipeline
-            .UseMiddleware<ClientAuthorizationMiddleware>()
-            .Use(_ => context =>
-            {
-                context.Response.StatusCode = 404;
-                return Task.CompletedTask;
-            });
-
-        endpointRouteBuilder
-            .Map(pattern, requestPipeline.Build())
-            .WithDisplayName("Clients-authorize")
             .AllowAnonymous();
 
         return endpointRouteBuilder;

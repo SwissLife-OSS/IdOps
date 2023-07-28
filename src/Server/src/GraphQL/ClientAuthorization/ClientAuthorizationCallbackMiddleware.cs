@@ -68,7 +68,7 @@ public class ClientAuthorizationCallbackMiddleware
                 "authorization_code",
                 code,
                 session.CodeVerifier,
-                "http://localhost:5000/clients/callback"
+                session.RedirectUrl
                 );
 
         TokenRequest request =
@@ -79,7 +79,7 @@ public class ClientAuthorizationCallbackMiddleware
         RequestTokenResult result = await _identityService.RequestTokenAsync(
             request, CancellationToken.None);
         
-        await _hubContext.Clients.Client(session.CallbackUri)
+        await _hubContext.Clients.Client(session.SignalrConnectionId)
             .SendAsync("ReceiveAccessToken", result);
         
         

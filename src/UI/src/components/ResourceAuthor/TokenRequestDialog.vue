@@ -60,7 +60,7 @@ export default {
     async startAuthorizationCodeFlow(){
       this.accessToken = "Please switch to the newly opened tab, log in and come back for the access token!"
       const authority = await this.getAuthorityUrl();
-      const redirect_uri = "http://localhost:5000/clients/callback";
+      const redirect_uri = this.getRedirectUrl();
 
       window.open(await authorizationCodeFlow(authority, this.client, redirect_uri, this.$socket), '_blank');
 
@@ -76,6 +76,11 @@ export default {
       const result = authorities.find(authority => authority.groupId === serverGroupId && authority.environmentId === environmentId).url;
 
       return result;
+    },
+    getRedirectUrl() {
+      const redirectUris = this.client.redirectUris;
+      const callback = redirectUris.filter(url => url.includes("/clients/callback"));
+      return callback.pop();
     },
     async getLastPublishedEnvironmentId() {
       const publishedResources = (await getPublishedResources()).data;

@@ -1,21 +1,19 @@
 import { getApiScopes } from "../services/idResourceService";
 import { saveSession } from "../services/tokenFlowService";
 
-export async function authorizationCodeFlow(authority, client, redirectUri, socket) {
+export async function authorizationCodeFlow(authority, client, redirectUrl, socket) {
   const clientClientId = client.clientId;
   const scope = await getClientApiScopes(client);
   const state = createCodeVerifier();
   const codeVerifier = createCodeVerifier();
 
-  console.log(socket);
-
-  saveCurrentSession(client, state, codeVerifier, socket.connectionId);
+  saveCurrentSession(client, state, codeVerifier, socket.connectionId, redirectUrl);
 
   const request = await createAuthorizationRequest(
     authority,
     scope,
     clientClientId,
-    redirectUri,
+    redirectUrl,
     state,
     codeVerifier
   );
@@ -92,15 +90,15 @@ async function getClientApiScopes(client) {
   return result.join(" ");
 }
 
-async function saveCurrentSession(client, state, codeVerifier, callback) {
+async function saveCurrentSession(client, state, codeVerifier, signalrConnectionId, redirectUrl) {
   const session = {
     id: state,
     clientId: client.id,
     secretId: getLastSavedSecretId(client),
     codeVerifier: codeVerifier,
-    callbackUri: callback
+    signalrConnectionId: signalrConnectionId,
+    redirectUrl: redirectUrl
   };
-  console.log(session);
 
   await saveSession(session);
 }
