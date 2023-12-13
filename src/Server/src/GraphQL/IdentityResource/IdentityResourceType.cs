@@ -13,14 +13,15 @@ namespace IdOps.GraphQL
         {
             descriptor
                 .Field("identityServerGroup")
-                .ResolveWith<Resolvers>(_ => _.GetIdentityServerGroup(default!, default!, default!));
+                .ResolveWith<Resolvers>(_
+                    => _.GetIdentityServerGroup(default!, default!, default!));
         }
 
         class Resolvers
         {
             public Task<IdentityServerGroup> GetIdentityServerGroup(
                 [Parent] IdentityResource resource,
-                [DataLoader] IdentityServerGroupByIdDataLoader identityServerGroupById,
+                IdentityServerGroupByIdDataLoader identityServerGroupById,
                 CancellationToken cancellationToken)
             {
                 return identityServerGroupById.LoadAsync(

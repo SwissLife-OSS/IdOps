@@ -11,8 +11,7 @@ namespace IdOps.GraphQL
 {
     public class PersonalAccessTokenType : ObjectType<PersonalAccessToken>
     {
-        protected override void Configure(
-            IObjectTypeDescriptor<PersonalAccessToken> descriptor)
+        protected override void Configure(IObjectTypeDescriptor<PersonalAccessToken> descriptor)
         {
             descriptor.Field("dependencies")
                 .ResolveWith<DependencyResolvers>(_ => _
@@ -38,7 +37,7 @@ namespace IdOps.GraphQL
 
             public Task<Tenant> GetTenantAsync(
                 [Parent] PersonalAccessToken client,
-                [DataLoader] TenantByIdDataLoader tenantbyId,
+                TenantByIdDataLoader tenantbyId,
                 CancellationToken cancellationToken)
             {
                 return tenantbyId.LoadAsync(client.Tenant, cancellationToken);

@@ -2,7 +2,7 @@
   "data": {
     "createApplication": {
       "application": {
-        "id": "379b5561cf554cc0b2f161260b7ccf10",
+        "id": "6ea7f085ab3b43aca0a5054d70e7150a",
         "name": "MyApplication",
         "tenant": "TestTenant",
         "templateId": "4a74d535d5c34e21b5b4137c27b2e6dc",

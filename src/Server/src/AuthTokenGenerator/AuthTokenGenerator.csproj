@@ -1,20 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <AssemblyName>IdOps.AuthTokenGenerator</AssemblyName>
-        <PackageId>IdOps.Server.AuthTokenGenerator</PackageId>
-        <TargetFramework>net6.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyName>IdOps.AuthTokenGenerator</AssemblyName>
+    <PackageId>IdOps.Server.AuthTokenGenerator</PackageId>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <PackageReference Include="IdentityModel" Version="6.0.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.15" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="IdentityModel" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
+  </ItemGroup>
 
 </Project>

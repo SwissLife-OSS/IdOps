@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="HotChocolate.AspNetCore" Version="$(HotChocolateVersion)" />
+    <PackageReference Include="HotChocolate.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>

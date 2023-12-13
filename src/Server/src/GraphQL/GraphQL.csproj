@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HotChocolate.AspNetCore" Version="$(HotChocolateVersion)" />
-    <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="$(HotChocolateVersion)" />
+    <PackageReference Include="HotChocolate.AspNetCore" />
+    <PackageReference Include="HotChocolate.AspNetCore.Authorization" />
   </ItemGroup>
 
 
@@ -18,6 +18,11 @@
     <ProjectReference Include="..\Authorization\Authorization.csproj" />
     <ProjectReference Include="..\AuthTokenGenerator\AuthTokenGenerator.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Serialization\" />
   </ItemGroup>
 
 </Project>

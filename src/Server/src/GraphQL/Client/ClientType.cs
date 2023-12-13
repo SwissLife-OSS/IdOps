@@ -14,21 +14,23 @@ namespace IdOps.GraphQL
         protected override void Configure(IObjectTypeDescriptor<Client> descriptor)
         {
             descriptor.Field("identityScopes")
-                .Resolve(x => x.Parent<Client>().AllowedScopes
-                   .Where(s => s.Type == ScopeType.Identity)
-                   .Select(s => s.Id));
+                .Resolve(x => x.Parent<Client>()
+                    .AllowedScopes
+                    .Where(s => s.Type == ScopeType.Identity)
+                    .Select(s => s.Id));
 
             descriptor.Field("apiScopes")
-                .Resolve(x => x.Parent<Client>().AllowedScopes
+                .Resolve(x => x.Parent<Client>()
+                    .AllowedScopes
                     .Where(s => s.Type == ScopeType.Resource)
                     .Select(s => s.Id));
 
             descriptor.Field("dependencies")
                 .ResolveWith<DependencyResolvers>(_ => _
-                .GetDependenciesAsync(default!, default!, default!));
+                    .GetDependenciesAsync(default!, default!, default!));
 
             descriptor.Field("tenantInfo")
-               .ResolveWith<Resolvers>(_ => _.GetTenantAsync(default!, default!, default!));
+                .ResolveWith<Resolvers>(_ => _.GetTenantAsync(default!, default!, default!));
 
             descriptor.Field("application")
                 .ResolveWith<Resolvers>(_ => _.GetApplicationAsync(default!, default!, default!));
@@ -47,7 +49,7 @@ namespace IdOps.GraphQL
 
             public Task<Tenant> GetTenantAsync(
                 [Parent] Client client,
-                [DataLoader] TenantByIdDataLoader tenantbyId,
+                TenantByIdDataLoader tenantbyId,
                 CancellationToken cancellationToken)
             {
                 return tenantbyId.LoadAsync(client.Tenant, cancellationToken);
@@ -55,14 +57,13 @@ namespace IdOps.GraphQL
         }
     }
 
-
     public class ResourceType : ObjectType<IResource>
     {
         protected override void Configure(IObjectTypeDescriptor<IResource> descriptor)
         {
             descriptor.Field("dependencies")
-                    .ResolveWith<DependencyResolvers>(_ => _
-                        .GetDependenciesAsync(default!, default!, default!));
+                .ResolveWith<DependencyResolvers>(_ => _
+                    .GetDependenciesAsync(default!, default!, default!));
         }
     }
 

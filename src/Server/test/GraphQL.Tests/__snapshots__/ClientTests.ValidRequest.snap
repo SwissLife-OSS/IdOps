@@ -2,7 +2,7 @@
   "data": {
     "createClient": {
       "client": {
-        "id": "a8b5e8ed461d4c3e9033818913b38a40",
+        "id": "cb7be06777bd4db38191df2b5b58f2bb",
         "name": "MyClient",
         "tenant": "TestTenant",
         "allowedGrantTypes": [

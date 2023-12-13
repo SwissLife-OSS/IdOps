@@ -33,7 +33,6 @@ namespace IdOps.GraphQL
             UpdateClientRequest input,
             CancellationToken cancellationToken)
         {
-
             Client client = await _clientService.UpdateClientAsync(input, cancellationToken);
 
             return new SaveClientPayload(client);
@@ -52,10 +51,9 @@ namespace IdOps.GraphQL
 
         [AuthorizeClientAuthoring(AccessMode.Write, includeTenantAuth: false)]
         public async Task<SaveClientPayload> RemoveClientSecretAsync(
-            RemoveClientSecretRequest input, 
+            RemoveClientSecretRequest input,
             CancellationToken cancellationToken)
         {
-
             Client client = await _clientService.RemoveClientSecretAsync(input, cancellationToken);
 
             return new SaveClientPayload(client);
@@ -69,8 +67,7 @@ namespace IdOps.GraphQL
             CancellationToken cancellationToken)
         {
             var tokenRequestData =
-                await requestResultFactory.Create(input,cancellationToken);
-
+                await requestResultFactory.Create(input, cancellationToken);
 
             RequestTokenResult tokenResult =
                 await identityService.RequestTokenAsync(tokenRequestData, cancellationToken);

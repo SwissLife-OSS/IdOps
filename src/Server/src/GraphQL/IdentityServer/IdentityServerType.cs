@@ -10,8 +10,7 @@ namespace IdOps.GraphQL
 {
     public class IdentityServerType : ObjectType<Model.IdentityServer>
     {
-        protected override void Configure(
-            IObjectTypeDescriptor<Model.IdentityServer> descriptor)
+        protected override void Configure(IObjectTypeDescriptor<Model.IdentityServer> descriptor)
         {
             descriptor.Field("group")
                 .ResolveWith<Resolvers>(_ => _.GetGroupAsync(default!, default!, default!));
@@ -21,14 +20,16 @@ namespace IdOps.GraphQL
 
             descriptor.Field("discoveryDocument")
                 .ResolveWith<Resolvers>(_ => _.GetDiscoveryDocumentAsync(
-                    default!, default!, default!));
+                    default!,
+                    default!,
+                    default!));
         }
 
         class Resolvers
         {
             public async Task<IdentityServerGroup> GetGroupAsync(
                 [Parent] Model.IdentityServer server,
-                [DataLoader] IdentityServerGroupByIdDataLoader groupById,
+                IdentityServerGroupByIdDataLoader groupById,
                 CancellationToken cancellationToken)
             {
                 return await groupById.LoadAsync(server.GroupId, cancellationToken);

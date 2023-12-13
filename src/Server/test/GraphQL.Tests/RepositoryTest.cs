@@ -3,28 +3,30 @@ using MongoDB.Driver;
 using MongoDB.Extensions.Context;
 using Squadron;
 
-namespace IdOps.GraphQL.Tests
+namespace IdOps.GraphQL.Tests;
+
+public class RepositoryTest
 {
-    public class RepositoryTest
+    public RepositoryTest(MongoResource mongoResource)
     {
-        protected readonly MongoResource MongoResource;
-        protected IdOpsDbContext DbContext { get; }
+        MongoResource = mongoResource;
+        DbContext = CreateDbContext();
+    }
 
-        public RepositoryTest(MongoResource mongoResource)
+    protected MongoResource MongoResource { get; }
+
+    protected IdOpsDbContext DbContext { get; }
+
+    protected virtual IdOpsDbContext CreateDbContext()
+    {
+        IMongoDatabase db = MongoResource.CreateDatabase();
+
+        var options = new MongoOptions
         {
-            MongoResource = mongoResource;
-            DbContext = CreateDbContext();
-        }
+            ConnectionString = MongoResource.ConnectionString,
+            DatabaseName = db.DatabaseNamespace.DatabaseName
+        };
 
-        protected virtual IdOpsDbContext CreateDbContext()
-        {
-            IMongoDatabase? db = MongoResource.CreateDatabase();
-
-            return new IdOpsDbContext(new MongoOptions
-            {
-                ConnectionString = MongoResource.ConnectionString,
-                DatabaseName = db.DatabaseNamespace.DatabaseName
-            }, default);
-        }
+        return new IdOpsDbContext(options, default);
     }
 }

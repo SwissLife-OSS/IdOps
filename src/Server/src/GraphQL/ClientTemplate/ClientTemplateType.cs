@@ -17,7 +17,7 @@ namespace IdOps.GraphQL
                 .ResolveWith<Resolvers>(_ => _.GetSecretsAsync(default!, default!, default));
 
             descriptor.Field("tenantInfo")
-               .ResolveWith<Resolvers>(_ => _.GetTenantAsync(default!, default!, default!));
+                .ResolveWith<Resolvers>(_ => _.GetTenantAsync(default!, default!, default!));
         }
 
         class Resolvers
@@ -27,12 +27,14 @@ namespace IdOps.GraphQL
                 [Service] IEnvironmentService service,
                 CancellationToken cancellationToken)
             {
-                List<ClientTemplateSecret> result = clientTemplate.Secrets.Select(s => new ClientTemplateSecret
-                {
-                    EnvironmentId = s.EnvironmentId,
-                    Type = s.Type,
-                    Value = (s.Value is { }) ? "***" : null
-                }).ToList();
+                List<ClientTemplateSecret> result = clientTemplate.Secrets.Select(s
+                        => new ClientTemplateSecret
+                        {
+                            EnvironmentId = s.EnvironmentId,
+                            Type = s.Type,
+                            Value = (s.Value is { }) ? "***" : null
+                        })
+                    .ToList();
 
                 IEnumerable<Environment>? envs =
                     await service.GetAllAsync(cancellationToken);
@@ -41,10 +43,7 @@ namespace IdOps.GraphQL
                 {
                     if (!result.Any(t => t.EnvironmentId == env.Id))
                     {
-                        result.Add(new ClientTemplateSecret
-                        {
-                            EnvironmentId = env.Id
-                        });
+                        result.Add(new ClientTemplateSecret { EnvironmentId = env.Id });
                     }
                 }
 
@@ -53,7 +52,7 @@ namespace IdOps.GraphQL
 
             public Task<Tenant> GetTenantAsync(
                 [Parent] ClientTemplate template,
-                [DataLoader] TenantByIdDataLoader tenantbyId,
+                TenantByIdDataLoader tenantbyId,
                 CancellationToken cancellationToken)
             {
                 return tenantbyId.LoadAsync(template.Tenant, cancellationToken);
