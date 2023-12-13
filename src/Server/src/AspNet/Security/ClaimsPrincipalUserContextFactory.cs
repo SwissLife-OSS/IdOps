@@ -36,16 +36,28 @@ namespace IdOps.Api.Security
 
         private User CreateUser(ClaimsPrincipal? principal)
         {
-            if (principal is { })
+            if (principal is not null)
             {
-                string userId = principal.FindFirstValue("sub");
-                string name = principal.FindFirstValue("name");
+                var userId = principal.FindFirstValue("sub");
 
-                IEnumerable<string> roles = principal.Claims
+                if (string.IsNullOrEmpty(userId))
+                {
+                    throw new InvalidOperationException("sub claim is missing");
+                }
+
+                var name = principal.FindFirstValue("name");
+
+                if (string.IsNullOrEmpty(name))
+                {
+                    throw new InvalidOperationException("name claim is missing");
+                }
+
+                var roles = principal.Claims
                     .Where(x => x.Type == "role" && x.Value.StartsWith("IdOps"))
-                    .Select(x => x.Value);
+                    .Select(x => x.Value)
+                    .ToList();
 
-                return new User(userId, name, roles.ToList());
+                return new User(userId, name, roles);
             }
 
             throw new InvalidOperationException("principal is null");

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using HotChocolate.Language;
 using HotChocolate.Resolvers;
 using IdOps.Security;
 using Microsoft.AspNetCore.Authorization;
@@ -60,14 +61,13 @@ namespace IdOps.Authorization
                         return fromResult;
                     }
 
-                    ITenantInput? input = gql.ArgumentValue<ITenantInput>("input");
-
-                    if (input is { })
+                    var valueNode = gql.ArgumentLiteral<IValueNode>("input");
+                    if (valueNode is ObjectValueNode objectValueNode &&
+                        objectValueNode.Fields.Any(x => x.Name.Value == "tenant"))
                     {
-                        return new[]
-                        {
-                            input.Tenant
-                        };
+                        ITenantInput input = gql.ArgumentValue<ITenantInput>("input");
+
+                        return new[] { input.Tenant };
                     }
 
                     break;
@@ -84,9 +84,11 @@ namespace IdOps.Authorization
                 {
                     case IHasTenant c:
                         return new[] { c.Tenant };
-                    case IEnumerable<IHasTenant > list:
+
+                    case IEnumerable<IHasTenant> list:
                         return list.Select(x => x.Tenant).Distinct();
-                    case ISearchResult<IHasTenant > sr:
+
+                    case ISearchResult<IHasTenant> sr:
                         return GetFromResult(sr.Items);
                 }
             }

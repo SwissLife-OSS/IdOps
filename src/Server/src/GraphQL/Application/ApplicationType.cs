@@ -20,7 +20,8 @@ namespace IdOps.GraphQL
 
             descriptor
                 .Field("userClaimRules")
-                .ResolveWith<Resolvers>(_ => _.GetUserClaimRulesAsync(default!, default!, default!));
+                .ResolveWith<Resolvers>(_
+                    => _.GetUserClaimRulesAsync(default!, default!, default!));
 
             descriptor.Field("tenantInfo")
                 .ResolveWith<Resolvers>(_ => _.GetTenantAsync(default!, default!, default!));
@@ -42,7 +43,7 @@ namespace IdOps.GraphQL
 
             public Task<Tenant> GetTenantAsync(
                 [Parent] Application application,
-                [DataLoader] TenantByIdDataLoader tenantbyId,
+                TenantByIdDataLoader tenantbyId,
                 CancellationToken cancellationToken)
             {
                 return tenantbyId.LoadAsync(application.Tenant, cancellationToken);
@@ -50,7 +51,7 @@ namespace IdOps.GraphQL
 
             public Task<ClientTemplate> GetTemplateAsync(
                 [Parent] Application application,
-                [DataLoader] ClientTemplateByIdDataLoader templateById,
+                ClientTemplateByIdDataLoader templateById,
                 CancellationToken cancellationToken)
             {
                 return templateById.LoadAsync(application.TemplateId, cancellationToken);

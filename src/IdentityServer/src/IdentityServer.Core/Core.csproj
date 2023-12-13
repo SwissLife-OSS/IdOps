@@ -14,11 +14,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
-    <PackageReference Include="Duende.IdentityServer" Version="$(IdentityServerVersion)" />
-    <PackageReference Include="MassTransit" Version="$(MassTransitVersion)" />
-    <PackageReference Include="FluentValidation" Version="10.3.6" />
-    <PackageReference Include="OpenTelemetry.Api" Version="1.1.0" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="$(AspNetCoreVersion)" />
+    <PackageReference Include="Duende.IdentityServer" />
+    <PackageReference Include="MassTransit" />
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="OpenTelemetry.Api" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" />
     <ProjectReference Include="..\Hashing\Hashing.csproj" />
   </ItemGroup>
 

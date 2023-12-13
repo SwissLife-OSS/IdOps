@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate;
+using HotChocolate.Authorization;
 using HotChocolate.Types;
+using IdOps.Authorization;
 using IdOps.Model;
 
 namespace IdOps.GraphQL

@@ -1,5 +1,6 @@
 using System.Reflection;
 using HotChocolate.AspNetCore.Authorization;
+using HotChocolate.Authorization;
 using HotChocolate.Types;
 using HotChocolate.Types.Descriptors;
 using IdOps.Authorization;
@@ -22,28 +23,31 @@ namespace IdOps.GraphQL
         {
         }
 
-        public override void OnConfigure(
+        protected override void OnConfigure(
             IDescriptorContext context,
-            IObjectFieldDescriptor descriptor, MemberInfo member)
+            IObjectFieldDescriptor descriptor,
+            MemberInfo member)
         {
             if (_includeTenantAuth)
             {
                 descriptor
-                    .Authorize(AuthorizationPolicies.Names.TenantResourceAccess, ApplyPolicy.AfterResolver);
+                    .Authorize(AuthorizationPolicies.Names.TenantResourceAccess,
+                        ApplyPolicy.AfterResolver);
             }
 
             if (_mode == AccessMode.Write)
             {
                 descriptor
-                    .Authorize(AuthorizationPolicies.Names.ResourceAuthoringEdit, ApplyPolicy.BeforeResolver);
+                    .Authorize(AuthorizationPolicies.Names.ResourceAuthoringEdit);
             }
             else
             {
                 descriptor
-                    .Authorize(AuthorizationPolicies.Names.ResourceAuthoringRead, ApplyPolicy.BeforeResolver);
+                    .Authorize(AuthorizationPolicies.Names.ResourceAuthoringRead);
             }
         }
     }
+
     public class IdOpsAuthorization : DescriptorAttribute
     {
         protected override void TryConfigure(
@@ -67,7 +71,8 @@ namespace IdOps.GraphQL
             ICustomAttributeProvider element)
         {
             descriptor
-                .Authorize(AuthorizationPolicies.Names.ResourceAuthoringEdit, ApplyPolicy.BeforeResolver);
+                .Authorize(AuthorizationPolicies.Names.ResourceAuthoringEdit,
+                    ApplyPolicy.BeforeResolver);
         }
 
         private void TryConfigure(
@@ -76,8 +81,8 @@ namespace IdOps.GraphQL
             ICustomAttributeProvider element)
         {
             descriptor
-                .Authorize(AuthorizationPolicies.Names.ResourceAuthoringEdit, ApplyPolicy.BeforeResolver);
+                .Authorize(AuthorizationPolicies.Names.ResourceAuthoringEdit,
+                    ApplyPolicy.BeforeResolver);
         }
     }
-
 }

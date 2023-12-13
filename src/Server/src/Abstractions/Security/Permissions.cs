@@ -50,7 +50,6 @@ namespace IdOps.Security
             }
         }
 
-
         public static readonly Dictionary<string, List<string>> RoleMap;
 
         static Permissions()
@@ -76,8 +75,7 @@ namespace IdOps.Security
                 ["IdOps.Read"] =
                     new List<string>
                     {
-                        ClientAuthoring.Read,
-                        ClientAuthoring.PersonalAccessToken.Read
+                        ClientAuthoring.Read, ClientAuthoring.PersonalAccessToken.Read
                     },
                 ["IdOps.Edit"] = new List<string>
                 {

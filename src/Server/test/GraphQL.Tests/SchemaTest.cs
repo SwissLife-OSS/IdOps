@@ -8,10 +8,9 @@ using Xunit;
 namespace IdOps.GraphQL.Tests
 {
     [Collection(TestCollectionNames.GraphQL)]
-    public class SchemaTest
-        : TestHelper
+    public class SchemaTest : TestHelper
     {
-        public SchemaTest(MongoResource mongoResource) : base(mongoResource)
+        public SchemaTest(MongoResource resource) : base(resource)
         {
         }
 

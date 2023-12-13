@@ -4,76 +4,76 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace IdOps.Security
+namespace IdOps.Security;
+
+public sealed class DefaultUserContext : IUserContext
 {
-    public class DefaultUserContext : IUserContext
+    private readonly ITenantUserRoleResolver _tenantUserRoleResolver;
+
+    private readonly HashSet<string> _permissions;
+
+    public DefaultUserContext(User user, ITenantUserRoleResolver tenantUserRoleResolver)
     {
-        private readonly User _user;
-        private readonly ITenantUserRoleResolver _tenantUserRoleResolver;
-        private HashSet<string> _permissions;
+        User = user;
+        _tenantUserRoleResolver = tenantUserRoleResolver;
+        _permissions = user.GetPermissions();
+    }
 
-        public bool IsAuthenticated => true;
+    public bool IsAuthenticated => true;
 
-        public string UserId => _user.Id;
+    public User User { get; }
 
-        public User User => _user;
+    public string UserId => User.Id;
 
-        public DefaultUserContext(User user, ITenantUserRoleResolver tenantUserRoleResolver)
+    public IEnumerable<string> Roles => User.Roles;
+
+    public IEnumerable<string> Permissions => _permissions;
+
+    public async Task<IReadOnlyList<string>> GetTenantsAsync(CancellationToken ct)
+    {
+        var roleMap = await _tenantUserRoleResolver.GetClaimRoleMappingsAsync(ct);
+
+        var userTenants = new List<string>();
+
+        foreach (var role in Roles)
         {
-            _user = user;
-            _tenantUserRoleResolver = tenantUserRoleResolver;
-            _permissions = GetPermissions(user);
+            if (roleMap.ContainsKey(role))
+            {
+                userTenants.AddRange(roleMap[role].Select(x => x.TenantId));
+            }
         }
 
-        private HashSet<string> GetPermissions(User user)
-        {
-            var permissions = new HashSet<string>();
+        return userTenants;
+    }
 
-            if (user.Roles is { } roles && roles.Any())
+    public bool HasRole(string role)
+    {
+        return Roles.Contains(role, StringComparer.InvariantCulture);
+    }
+
+    public bool HasPermission(string permission)
+    {
+        return _permissions.Contains(permission);
+    }
+}
+
+static file class Extensions
+{
+    public static HashSet<string> GetPermissions(this User user)
+    {
+        var permissions = new HashSet<string>();
+
+        if (user.Roles is { Count: > 0 } roles)
+        {
+            foreach (var role in roles)
             {
-                foreach (var role in roles)
+                if (Permissions.RoleMap.TryGetValue(role, out List<string>? value))
                 {
-                    if (Security.Permissions.RoleMap.ContainsKey(role))
-                    {
-                        permissions.UnionWith(Security.Permissions.RoleMap[role]);
-                    }
+                    permissions.UnionWith(value);
                 }
             }
-
-            return permissions;
         }
 
-        public IEnumerable<string> Roles => _user.Roles;
-
-        public IEnumerable<string> Permissions => _permissions;
-
-        public async Task<IReadOnlyList<string>> GetTenantsAsync(
-            CancellationToken cancellationToken)
-        {
-            IReadOnlyDictionary<string, IList<TenantRole>> maps = await _tenantUserRoleResolver
-                .GetClaimRoleMappingsAsync(cancellationToken);
-
-            var userTenants = new List<string>();
-
-            foreach ( var role in Roles)
-            {
-                if (maps.ContainsKey(role))
-                {
-                    userTenants.AddRange(maps[role].Select(x => x.TenantId));
-                }
-            }
-
-            return userTenants;
-        }
-
-        public bool HasRole(string role)
-        {
-            return Roles.Contains(role, StringComparer.InvariantCulture);
-        }
-
-        public bool HasPermission(string permission)
-        {
-            return _permissions.Contains(permission, StringComparer.InvariantCulture);
-        }
+        return permissions;
     }
 }

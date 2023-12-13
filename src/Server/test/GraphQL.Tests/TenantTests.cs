@@ -7,67 +7,81 @@ using Snapshooter.Xunit;
 using Squadron;
 using Xunit;
 
-namespace IdOps.GraphQL.Tests
+namespace IdOps.GraphQL.Tests;
+
+[Collection(TestCollectionNames.GraphQL)]
+public class TenantTests : TestHelper
 {
-    [Collection(TestCollectionNames.GraphQL)]
-    public class TenantTests : TestHelper
+    public TenantTests(MongoResource resource) : base(resource)
     {
-        public TenantTests(MongoResource mongoResource) : base(mongoResource)
-        {
-        }
+    }
 
-        [Fact]
-        public async Task ValidRequest()
-        {
-            // arrange
-            ITestRequestBuilder requestBuilder = TestRequestBuilder.New()
-                .AddExecutor(await CreateSchema())
-                .AddRequestFromFile("GetTenants")
-                .AddScope(AuthorizationPolicies.Names.ApiAccess);
+    [Theory]
+    [InlineData(Roles.Admin)]
+    [InlineData(Roles.Edit)]
+    [InlineData(Roles.Read)]
+    public async Task ValidRequest(string role)
+    {
+        // arrange
+        ITestRequestBuilder requestBuilder = TestRequestBuilder
+            .New()
+            .AddExecutor(await CreateSchema())
+            .AddRequestFromFile("GetTenants")
+            .AddUser()
+            .AddRole(role);
 
-            await InsertTenantIntoDB();
+        await TestDataBuilder
+            .New(Services)
+            .SetupTenant()
+            .ExecuteAsync();
 
-            // act
-            IExecutionResult result = await requestBuilder.ExecuteAsync();
+        // act
+        IExecutionResult result = await requestBuilder.ExecuteAsync();
 
-            // assert
-            result.ToJson()
-                .MatchSnapshot();
-        }
+        // assert
+        result.ToJson().MatchSnapshot();
+    }
 
-        [Fact]
-        public async Task GetWrongTenant_ResultIsEmpty()
-        {
-            // arrange
-            ITestRequestBuilder requestBuilder = TestRequestBuilder.New()
-                .AddExecutor(await CreateSchema())
-                .AddRequestFromFile("GetTenants")
-                .AddScope(AuthorizationPolicies.Names.ApiAccess);
+    [Fact]
+    public async Task GetWrongTenant_ResultIsEmpty()
+    {
+        // arrange
+        ITestRequestBuilder requestBuilder = TestRequestBuilder.New()
+            .AddExecutor(await CreateSchema())
+            .AddRequestFromFile("GetTenants")
+            .AddUser()
+            .AddRole(Roles.Admin);
 
-            await InsertWrongTenantIntoDB();
+        await TestDataBuilder
+            .New(Services)
+            .SetupWrongTenant()
+            .ExecuteAsync();
 
-            // act
-            IExecutionResult result = await requestBuilder.ExecuteAsync();
+        // act
+        IExecutionResult result = await requestBuilder.ExecuteAsync();
 
-            // assert
-            result.ToJson()
-                .MatchSnapshot();
-        }
+        // assert
+        result.ToJson().MatchSnapshot();
+    }
 
-        [Fact]
-        public async Task GetTenant_ByUserWithoutPermission_IsDenied()
-        {
-            // arrange
-            ITestRequestBuilder requestBuilder = TestRequestBuilder.New()
-                .AddExecutor(await CreateSchema())
-                .AddRequestFromFile("GetTenants");
+    [Fact]
+    public async Task GetTenant_NotAuthenticated()
+    {
+        // arrange
+        ITestRequestBuilder requestBuilder = TestRequestBuilder.New()
+            .AddExecutor(await CreateSchema())
+            .AddRequestFromFile("GetTenants")
+            .SetAuthenticated(false);
 
-            // act
-            IExecutionResult result = await requestBuilder.ExecuteAsync();
+        await TestDataBuilder
+            .New(Services)
+            .SetupTenant()
+            .ExecuteAsync();
 
-            // assert
-            result.ToJson()
-                .MatchSnapshot();
-        }
+        // act
+        IExecutionResult result = await requestBuilder.ExecuteAsync();
+
+        // assert
+        result.ToJson().MatchSnapshot();
     }
 }

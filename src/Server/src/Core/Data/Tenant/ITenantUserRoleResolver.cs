@@ -6,6 +6,6 @@ namespace IdOps
 {
     public interface ITenantUserRoleResolver
     {
-        Task<IReadOnlyDictionary<string, IList<TenantRole>>> GetClaimRoleMappingsAsync(CancellationToken cancellationToken);
+        Task<IReadOnlyDictionary<string, IList<TenantRole>>> GetClaimRoleMappingsAsync(CancellationToken ct);
     }
 }

@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using HotChocolate.Authorization;
 using HotChocolate.Types;
 using IdOps.Model;
 
@@ -10,12 +11,12 @@ namespace IdOps.GraphQL
     {
         private readonly IApplicationService _applicationService;
 
-        public ApplicationMutations(
-            IApplicationService applicationService)
+        public ApplicationMutations(IApplicationService applicationService)
         {
             _applicationService = applicationService;
         }
 
+        [AuthorizeClientAuthoring(AccessMode.Write, includeTenantAuth: true)]
         public async Task<CreateApplicationPayload> CreateApplicationAsync(
             CreateApplicationRequest input,
             CancellationToken cancellationToken)
@@ -29,6 +30,7 @@ namespace IdOps.GraphQL
                 result.Clients);
         }
 
+        [AuthorizeClientAuthoring(AccessMode.Write)]
         public async Task<UpdateApplicationPayload> UpdateApplicationAsync(
             UpdateApplicationRequest input,
             CancellationToken cancellationToken)
@@ -40,6 +42,7 @@ namespace IdOps.GraphQL
             return new UpdateApplicationPayload(application);
         }
 
+        [AuthorizeClientAuthoring(AccessMode.Write)]
         public async Task<UpdateApplicationPayload> RemoveClientFromApplicationAsync(
             RemoveClientRequest input,
             CancellationToken cancellationToken)
@@ -51,6 +54,7 @@ namespace IdOps.GraphQL
             return new UpdateApplicationPayload(application);
         }
 
+        [AuthorizeClientAuthoring(AccessMode.Write)]
         public async Task<UpdateApplicationPayload> AddClientToApplicationAsync(
             AddClientRequest input,
             CancellationToken cancellationToken)
@@ -62,12 +66,15 @@ namespace IdOps.GraphQL
             return new UpdateApplicationPayload(application);
         }
 
+        [AuthorizeClientAuthoring(AccessMode.Write)]
         public async Task<AddEnvironmentToApplicationPayload> AddEnvironmentToApplicationAsync(
-            AddEnvironmentToApplicationRequest input, CancellationToken cancellationToken)
+            AddEnvironmentToApplicationRequest input,
+            CancellationToken cancellationToken)
         {
-            ApplicationWithClients? result = await _applicationService.AddEnvironmentToApplicationAsync(
-                input,
-                cancellationToken);
+            ApplicationWithClients? result =
+                await _applicationService.AddEnvironmentToApplicationAsync(
+                    input,
+                    cancellationToken);
 
             return new AddEnvironmentToApplicationPayload(result.Application, result.Clients);
         }
