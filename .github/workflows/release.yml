@@ -11,9 +11,9 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Use .NET SDK from global.json
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
       - name: Build, Test and Push
         uses: swisslife-oss/actions/release-packages@main
         with:
@@ -25,13 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: |
-            6
-            7
+        uses: actions/setup-dotnet@v4
       - name: Restore tools
         run: dotnet tool restore
       - name: Build, Test and Sonar
