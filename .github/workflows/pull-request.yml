@@ -12,6 +12,13 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
+      - name: setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          check-latest: true
+          node-version-file: 'src/UI/package.json'
+          cache: 'yarn'
+          cache-dependency-path: 'src/UI/yarn.lock'
       - name: Build, Test and Sonar
         uses: swisslife-oss/actions/pull-request@main
         with:
@@ -23,3 +30,16 @@ jobs:
           pr_target_branch: ${{ github.base_ref }}
           github_repository: ${{ github.repository }}
           sonar_exclusions: ${{ vars.SONAR_EXCLUSIONS }}
+
+  ui:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          check-latest: true
+          node-version-file: 'src/UI/package.json'
+          cache: 'yarn'
+          cache-dependency-path: 'src/UI/yarn.lock'
