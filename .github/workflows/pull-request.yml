@@ -38,6 +38,8 @@ jobs:
           cache-dependency-path: 'src/UI/yarn.lock'
       - name: Build UI
         run: |
+          export NODE_OPTIONS=--openssl-legacy-provider
+          yarn config set strict-ssl false
           yarn --cwd src/UI
           yarn --cwd src/UI build
           rm -rf src/Server/src/AspNet/UI
