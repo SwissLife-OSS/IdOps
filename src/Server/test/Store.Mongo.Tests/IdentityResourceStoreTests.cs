@@ -25,18 +25,20 @@ public class IdentityResourceStoreTests : IClassFixture<MongoResource>
     {
         // Arrange
         IIdOpsDbContext context = CreateDbContext();
-
         await context.IdentityResources.InsertManyAsync(TestData.GetIdentityResources());
-
         var store = new IdentityResourceStore(context);
+        var id = Guid.Parse("00000000-0001-0000-0000-000000000000");
+        var tenant = "bar";
 
         // Act
-        IReadOnlyList<IdentityResource> result = await store.GetAllAsync(default, default, default);
+        IReadOnlyList<IdentityResource> result = await store.GetAllAsync(
+            new[] { id },
+            new[] { tenant },
+            default);
 
         // Assert
-        result.Count.Should().Be(2);
-        result[0].Id.Should().Be(Guid.Parse("00000000-0001-0000-0000-000000000000"));
-        result[1].Id.Should().Be(Guid.Parse("00000000-0002-0000-0000-000000000000"));
+        result.Count.Should().Be(1);
+        result[0].Id.Should().Be(id);
     }
 
     private IIdOpsDbContext CreateDbContext()
