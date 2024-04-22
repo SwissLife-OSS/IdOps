@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HotChocolate;
 using HotChocolate.Execution;
 using IdOps.Authorization;
+using IdOps.Security;
 using Snapshooter;
 using Snapshooter.Xunit;
 using Squadron;
@@ -16,18 +17,26 @@ namespace IdOps.GraphQL.Tests
     public class ApplicationTests
         : TestHelper
     {
-        public ApplicationTests(MongoResource mongoResource) : base(mongoResource)
+        public ApplicationTests(MongoResource resource) : base(resource)
         {
         }
 
-        [Fact]
-        public async Task ValidRequest()
+        [Theory]
+        [InlineData(Roles.Admin)]
+        [InlineData(Roles.Edit)]
+        public async Task ValidRequest(string role)
         {
             // arrange
             ITestRequestBuilder requestBuilder = TestRequestBuilder.New()
                 .AddExecutor(await CreateSchema())
                 .AddRequestFromFile("CreateApplication")
-                .AddScope(AuthorizationPolicies.Names.ApiAccess);
+                .AddUser()
+                .AddRole(role);
+
+            await TestDataBuilder
+                .New(Services)
+                .SetupTenant()
+                .ExecuteAsync();
 
             // act
             IExecutionResult result = await requestBuilder.ExecuteAsync();
@@ -36,20 +45,49 @@ namespace IdOps.GraphQL.Tests
             result.ToJson().MatchSnapshot(x => x.IgnoreFields("**.id"));
         }
 
-        [Fact]
-        public async Task CreateApplication_ByUserWithoutPermission_IsDenied()
+        [Theory]
+        [InlineData(null)]
+        [InlineData(Roles.Read)]
+        public async Task CreateApplication_ByUserWithoutPermission_IsDenied(string? role)
         {
             // arrange
             ITestRequestBuilder requestBuilder = TestRequestBuilder.New()
                 .AddExecutor(await CreateSchema())
+                .AddUser()
+                .AddRole(role)
                 .AddRequestFromFile("CreateApplication");
+            
+            await TestDataBuilder
+                .New(Services)
+                .SetupTenant()
+                .ExecuteAsync();
 
             // act
             IExecutionResult result = await requestBuilder.ExecuteAsync();
 
             // assert
-            result.ToJson()
-                .MatchSnapshot();
+            result.ToJson().MatchSnapshot();
+        }
+
+        [Fact]
+        public async Task CreateApplication_NotAuthenticated()
+        {
+            // arrange
+            ITestRequestBuilder requestBuilder = TestRequestBuilder.New()
+                .AddExecutor(await CreateSchema())
+                .AddRequestFromFile("CreateApplication")
+                .SetAuthenticated(false);
+            
+            await TestDataBuilder
+                .New(Services)
+                .SetupTenant()
+                .ExecuteAsync();
+
+            // act
+            IExecutionResult result = await requestBuilder.ExecuteAsync();
+
+            // assert
+            result.ToJson().MatchSnapshot();
         }
     }
 }

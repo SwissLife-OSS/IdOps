@@ -12,14 +12,14 @@ namespace IdOps.GraphQL
         protected override void Configure(IObjectTypeDescriptor<ApiScope> descriptor)
         {
             descriptor.Field("tenantInfo")
-               .ResolveWith<Resolvers>(_ => _.GetTenantAsync(default!, default!, default!));
+                .ResolveWith<Resolvers>(_ => _.GetTenantAsync(default!, default!, default!));
         }
 
         class Resolvers
         {
             public Task<Tenant> GetTenantAsync(
                 [Parent] ApiScope apiScope,
-                [DataLoader] TenantByIdDataLoader tenantbyId,
+                TenantByIdDataLoader tenantbyId,
                 CancellationToken cancellationToken)
             {
                 return tenantbyId.LoadAsync(apiScope.Tenant, cancellationToken);

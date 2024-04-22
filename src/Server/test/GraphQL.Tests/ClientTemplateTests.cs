@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using HotChocolate;
 using HotChocolate.Execution;
 using IdOps.Authorization;
+using IdOps.Security;
 using Snapshooter.Xunit;
 using Squadron;
 using Xunit;
@@ -11,20 +12,28 @@ namespace IdOps.GraphQL.Tests
     [Collection(TestCollectionNames.GraphQL)]
     public class ClientTemplateTests : TestHelper
     {
-        public ClientTemplateTests(MongoResource mongoResource) : base(mongoResource)
+        public ClientTemplateTests(MongoResource resource) : base(resource)
         {
         }
 
-        [Fact]
-        public async Task ValidRequest()
+        [Theory]
+        [InlineData(Roles.Admin)]
+        [InlineData(Roles.Edit)]
+        [InlineData(Roles.Read)]
+        public async Task ValidRequest(string role)
         {
             // arrange
             ITestRequestBuilder requestBuilder = TestRequestBuilder.New()
                 .AddExecutor(await CreateSchema())
                 .AddRequestFromFile("GetClientTemplates")
-                .AddScope(AuthorizationPolicies.Names.ApiAccess);
+                .AddUser()
+                .AddRole(role);
 
-            await InsertTemplateIntoDB();
+            await TestDataBuilder
+                .New(Services)
+                .SetupTenant()
+                .SetupTemplate()
+                .ExecuteAsync();
 
             // act
             IExecutionResult result = await requestBuilder.ExecuteAsync();
@@ -35,43 +44,25 @@ namespace IdOps.GraphQL.Tests
         }
 
         [Fact]
-        public async Task GetClientTemplates_FromUserWithoutPermission_IsDenied()
-        {
-            // arrange
-            NewServiceForUserWithNoPermission();
-
-            ITestRequestBuilder requestBuilder = TestRequestBuilder.New()
-                .AddExecutor(await CreateSchema())
-                .AddRequestFromFile("GetClientTemplates")
-                .AddScope(AuthorizationPolicies.Names.ApiAccess);
-
-            await InsertTemplateIntoDB();
-
-            // act
-            IExecutionResult result = await requestBuilder.ExecuteAsync();
-
-            // assert
-            result.ToJson()
-                .MatchSnapshot();
-        }
-
-        [Fact]
-        public async Task GetClientTemplates_ForWrongTenant_IsDenied()
+        public async Task GetClientTemplates_NotAuthenticated()
         {
             // arrange
             ITestRequestBuilder requestBuilder = TestRequestBuilder.New()
                 .AddExecutor(await CreateSchema())
                 .AddRequestFromFile("GetClientTemplates")
-                .AddScope(AuthorizationPolicies.Names.ApiAccess);
+                .SetAuthenticated(false);
 
-            await InsertTemplateOfWrongTenant();
+            await TestDataBuilder
+                .New(Services)
+                .SetupTenant()
+                .SetupTemplate()
+                .ExecuteAsync();
 
             // act
             IExecutionResult result = await requestBuilder.ExecuteAsync();
 
             // assert
-            result.ToJson()
-                .MatchSnapshot();
+            result.ToJson().MatchSnapshot();
         }
     }
 }

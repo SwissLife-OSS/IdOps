@@ -86,6 +86,25 @@ namespace IdOps.Server.Store.Mongo.Tests
                 }
             };
 
+        public static List<IdentityResource> GetIdentityResources() =>
+            new()
+            {
+                new()
+                {
+                    Id = Guid.Parse("00000000-0001-0000-0000-000000000000"),
+                    Name = "foo1",
+                    Tenants = new List<string> { "bar" },
+                    IdentityServerGroupId = Guid.Parse("00000000-0001-0000-0000-000000000000")
+                },
+                new()
+                {
+                    Id = Guid.Parse("00000000-0002-0000-0000-000000000000"),
+                    Name = "foo2",
+                    Tenants = new List<string> { "bar" },
+                    IdentityServerGroupId = Guid.Parse("00000000-0002-0000-0000-000000000000")
+                }
+            };
+
         public static List<PersonalAccessToken> GetPersonalAccessTokens() =>
             new()
             {

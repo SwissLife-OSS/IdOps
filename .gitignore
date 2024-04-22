@@ -345,3 +345,6 @@ appsettings.user.json
 __mismatch__
 
 .tye/
+
+# vscode
+.mono

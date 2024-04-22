@@ -15,20 +15,19 @@ namespace IdOps
         public TenantService(
             ITenantStore tenantStore,
             IUserContextAccessor userContextAccessor)
-                : base(userContextAccessor)
+            : base(userContextAccessor)
         {
             _tenantStore = tenantStore;
         }
 
-        public async Task<IEnumerable<Tenant>> GetAllAsync(
-            CancellationToken cancellationToken)
+        public async Task<IEnumerable<Tenant>> GetAllAsync(CancellationToken cancellationToken)
         {
             IReadOnlyList<string> userTenants = await GetUserTenantsAsync(cancellationToken);
 
             return await _tenantStore.GetManyAsync(userTenants, cancellationToken);
         }
 
-        public async Task<Tenant> SaveAsync(
+        public Task<Tenant> SaveAsync(
             SaveTenantRequest request,
             CancellationToken cancellationToken)
         {
@@ -42,7 +41,7 @@ namespace IdOps
                 Emails = request.Emails?.ToList() ?? new List<string>()
             };
 
-            return await _tenantStore.SaveAsync(tenant, cancellationToken);
+            return _tenantStore.SaveAsync(tenant, cancellationToken);
         }
     }
 }

@@ -9,7 +9,7 @@
         }
       ],
       "path": [
-        "apiScopes"
+        "tenants"
       ],
       "extensions": {
         "code": "AUTH_NOT_AUTHORIZED"

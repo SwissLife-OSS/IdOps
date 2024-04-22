@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
+using HotChocolate.Authorization;
 using HotChocolate.Resolvers;
 using HotChocolate.Types;
 using IdOps.Authorization;
@@ -66,11 +67,9 @@ namespace IdOps.GraphQL.Publish
             IResolverContext context,
             CancellationToken cancellationToken)
         {
-            IReadOnlyList<IFieldSelection>? selections = context
-                .GetSelections((ObjectType)context.ObjectType,
-                    context.Selection.SyntaxNode.SelectionSet);
+            var selections = context.GetSelections((ObjectType)context.ObjectType);
 
-            if (selections is { } s && s.Count() == 1 && s[0].Field.Name == "id")
+            if (selections is { Count: 1 } && selections[0].Field.Name is "id")
             {
                 return new Model.Environment { Id = environment.EnvironmentId };
             }

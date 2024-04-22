@@ -5,7 +5,6 @@ using IdOps.Abstractions;
 using IdOps.Authorization;
 using IdOps.Data.Errors;
 using IdOps.GraphQL.DataLoaders;
-using IdOps.GraphQL.GraphQL.Serialization;
 using IdOps.GraphQL.Hashing;
 using IdOps.GraphQL.Publish;
 using IdOps.Model;
@@ -27,12 +26,8 @@ namespace IdOps.GraphQL
 
             configureRequestExecutorBuilder?.Invoke(requestExecutorBuilder);
 
-            builder
-                .Services
-                .AddHttpResultSerializer<ForbiddenHttpResultSerializer>();
-
             builder.Services.AddSingleton<
-                IResultFactory<TokenRequestData,RequestTokenInput>,
+                IResultFactory<TokenRequestData, RequestTokenInput>,
                 TokenRequestDataResultFactory>();
 
             return builder;
@@ -138,7 +133,6 @@ namespace IdOps.GraphQL
                 .AddType<ExpiresAtInvalid>()
                 .AddType<HashAlgorithmNotFound>()
                 .AddType<NoEncryptedSecretError>();
-
 
             return builder;
         }
