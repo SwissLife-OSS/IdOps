@@ -23,3 +23,23 @@ jobs:
           pr_target_branch: ${{ github.base_ref }}
           github_repository: ${{ github.repository }}
           sonar_exclusions: ${{ vars.SONAR_EXCLUSIONS }}
+
+  ui:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          check-latest: true
+          node-version-file: 'src/UI/package.json'
+          cache: 'yarn'
+          cache-dependency-path: 'src/UI/yarn.lock'
+      - name: Build UI
+        run: |
+          export NODE_OPTIONS=--openssl-legacy-provider
+          yarn config set strict-ssl false
+          yarn --cwd src/UI
+          yarn --cwd src/UI build
+        shell: bash
