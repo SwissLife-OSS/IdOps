@@ -12,13 +12,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
-      - name: setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          check-latest: true
-          node-version-file: 'src/UI/package.json'
-          cache: 'yarn'
-          cache-dependency-path: 'src/UI/yarn.lock'
       - name: Build, Test and Sonar
         uses: swisslife-oss/actions/pull-request@main
         with:
@@ -36,10 +29,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           check-latest: true
           node-version-file: 'src/UI/package.json'
           cache: 'yarn'
           cache-dependency-path: 'src/UI/yarn.lock'
+      - name: Build UI
+        run: |
+          export NODE_OPTIONS=--openssl-legacy-provider
+          yarn --cwd src/UI
+          yarn --cwd src/UI build
+          rm -rf src/Server/src/AspNet/UI
+          mkdir src/Server/src/AspNet/UI/
+          cp -rf src/UI/dist/* src/Server/src/AspNet/UI
+        shell: bash
