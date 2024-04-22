@@ -69,8 +69,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthTokenGenerator.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Store.Mongo.Tests", "src\Server\test\Store.Mongo.Tests\Store.Mongo.Tests.csproj", "{65BCE070-F2EB-4812-BC59-B1E439356086}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Encryption.KeyVault.Tests", "src\Server\test\Encryption.KeyVault.Tests\Encryption.KeyVault.Tests.csproj", "{2CD2CB2E-FE69-4A0C-A600-9AECBAB80858}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -369,18 +367,6 @@ Global
 		{65BCE070-F2EB-4812-BC59-B1E439356086}.Release|x64.Build.0 = Release|Any CPU
 		{65BCE070-F2EB-4812-BC59-B1E439356086}.Release|x86.ActiveCfg = Release|Any CPU
 		{65BCE070-F2EB-4812-BC59-B1E439356086}.Release|x86.Build.0 = Release|Any CPU
-		{2CD2CB2E-FE69-4A0C-A600-9AECBAB80858}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2CD2CB2E-FE69-4A0C-A600-9AECBAB80858}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2CD2CB2E-FE69-4A0C-A600-9AECBAB80858}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{2CD2CB2E-FE69-4A0C-A600-9AECBAB80858}.Debug|x64.Build.0 = Debug|Any CPU
-		{2CD2CB2E-FE69-4A0C-A600-9AECBAB80858}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2CD2CB2E-FE69-4A0C-A600-9AECBAB80858}.Debug|x86.Build.0 = Debug|Any CPU
-		{2CD2CB2E-FE69-4A0C-A600-9AECBAB80858}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2CD2CB2E-FE69-4A0C-A600-9AECBAB80858}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2CD2CB2E-FE69-4A0C-A600-9AECBAB80858}.Release|x64.ActiveCfg = Release|Any CPU
-		{2CD2CB2E-FE69-4A0C-A600-9AECBAB80858}.Release|x64.Build.0 = Release|Any CPU
-		{2CD2CB2E-FE69-4A0C-A600-9AECBAB80858}.Release|x86.ActiveCfg = Release|Any CPU
-		{2CD2CB2E-FE69-4A0C-A600-9AECBAB80858}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -418,7 +404,6 @@ Global
 		{EE6AEEED-F8EC-47A2-96D6-588C5C5B1725} = {F70ABE9E-7F4E-4F4C-B75B-96B9222F03A4}
 		{4FB823F5-63E5-415D-9F8A-F49F014B8A79} = {C02928F2-8843-47FA-BE18-5510B6092929}
 		{65BCE070-F2EB-4812-BC59-B1E439356086} = {C02928F2-8843-47FA-BE18-5510B6092929}
-		{2CD2CB2E-FE69-4A0C-A600-9AECBAB80858} = {C02928F2-8843-47FA-BE18-5510B6092929}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {535806C4-C844-4EB4-8F0B-7382A8CD1CEF}
