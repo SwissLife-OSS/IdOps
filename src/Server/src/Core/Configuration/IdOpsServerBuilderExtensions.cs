@@ -30,7 +30,7 @@ namespace IdOps
 
             builder.Services.AddCoreServices(options, configuration);
             builder.Services.AddMessaging(options.Messaging);
-            builder.Services.AddEncryptionProviders(configuration);
+            services.AddEncryptionProvider<NoEncryptionProvider>(isDefault: true);
             return builder;
         }
 
@@ -94,13 +94,12 @@ namespace IdOps
             services.RegisterHashAlgorithms();
         }
 
-        private static void AddEncryptionProviders(
+        public static void AddKeyVaultEncryptionProvider(
             this IServiceCollection services,
             IConfiguration configuration)
         {
             services.AddAzureKeyVault(configuration);
-            services.AddEncryptionProvider<KeyVaultEncryptionProvider>(isDefault: false);
-            services.AddEncryptionProvider<NoEncryptionProvider>(isDefault: true);
+            services.AddEncryptionProvider<KeyVaultEncryptionProvider>(isDefault: true);
         }
 
         private static void AddConsumers(this IBusRegistrationConfigurator busConfigurator)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IdOps;
 
-public class EncryptionService : IEncryptionService
+internal class EncryptionService : IEncryptionService
 {
     private readonly EncryptionServiceOptions _options;
     private readonly IReadOnlyDictionary<string, IEncryptionProvider> _providers;

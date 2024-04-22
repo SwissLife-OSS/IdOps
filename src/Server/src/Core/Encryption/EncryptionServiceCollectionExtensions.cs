@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -6,9 +6,9 @@ using Microsoft.Extensions.Options;
 
 namespace IdOps;
 
-public static class EncryptionServiceCollectionExtensions
+internal static class EncryptionServiceCollectionExtensions
 {
-    public static IServiceCollection AddEncryptionProvider<T>(
+    internal static IServiceCollection AddEncryptionProvider<T>(
         this IServiceCollection services,
         bool isDefault = false) where T : class, IEncryptionProvider
     {

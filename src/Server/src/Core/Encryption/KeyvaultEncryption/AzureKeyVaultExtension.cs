@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace IdOps;
 
-public static class AzureKeyVaultExtension
+internal static class AzureKeyVaultExtension
 {
-    public static IServiceCollection AddAzureKeyVault(
+    internal static IServiceCollection AddAzureKeyVault(
         this IServiceCollection services,
         IConfiguration configuration)
     {
