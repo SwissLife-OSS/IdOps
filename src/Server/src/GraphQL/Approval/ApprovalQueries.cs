@@ -63,7 +63,7 @@ namespace IdOps.GraphQL.Publish
             IResolverContext context,
             CancellationToken cancellationToken)
         {
-            var selections = context.GetSelections((ObjectType)context.Selection.Type);
+            var selections = context.GetSelections((ObjectType)context.Selection.Type.NamedType());
 
             if (selections is { Count: 1 } && selections[0].Field.Name is "id")
             {
