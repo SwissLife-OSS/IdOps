@@ -1,11 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using HotChocolate;
-using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Authorization;
 using HotChocolate.Resolvers;
 using HotChocolate.Types;
@@ -67,7 +63,7 @@ namespace IdOps.GraphQL.Publish
             IResolverContext context,
             CancellationToken cancellationToken)
         {
-            var selections = context.GetSelections((ObjectType)context.ObjectType);
+            var selections = context.GetSelections((ObjectType)context.Selection.Type.NamedType());
 
             if (selections is { Count: 1 } && selections[0].Field.Name is "id")
             {
