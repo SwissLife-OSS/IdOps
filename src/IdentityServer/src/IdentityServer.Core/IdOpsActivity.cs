@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Duende.IdentityServer;
 using IdOps.IdentityServer.DataConnector;
 using IdOps.IdentityServer.Model;
 using OpenTelemetry.Trace;
@@ -7,13 +8,12 @@ namespace IdOps.IdentityServer;
 
 internal static class IdOpsActivity
 {
-    private static readonly ActivitySource ActivitySource = new("IdOps.IdentityServer");
-
     public static Activity? StartDataConnector(
         DataConnectorOptions options,
         UserDataConnectorCallerContext context)
     {
-        Activity? activity = ActivitySource.StartActivity($"DataConnector {options.Name}");
+        Activity? activity =
+            Telemetry.ActivitySource.StartActivity($"DataConnector {options.Name}");
         activity?.SetTag("idops.identityserver.dataconnector.enabled", options.Enabled);
 
         Activity? parentOrCurrent = activity?.Parent ?? activity;
@@ -23,7 +23,9 @@ internal static class IdOpsActivity
         return activity;
     }
 
-    public static void EnrichDataConnectorResult(this Activity? activity, UserDataConnectorResult result)
+    public static void EnrichDataConnectorResult(
+        this Activity? activity,
+        UserDataConnectorResult result)
     {
         if (result.Error != null)
         {

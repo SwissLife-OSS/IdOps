@@ -1,4 +1,5 @@
 using System;
+using IdOps.IdentityServer.AzureEventHub;
 using IdOps.IdentityServer.AzureServiceBus;
 using IdOps.IdentityServer.Events;
 using IdOps.IdentityServer.RabbitMQ;
@@ -53,6 +54,8 @@ namespace IdOps.IdentityServer.Samples
                             busBuilder.UseAzureServiceBus();
                             break;
                     }
+                    
+                    busBuilder.UseEventHub();
                 }).AddProfileService<SampleProfileService>();
 
             services.AddSingleton<IIdOpsEventSink, ActivityEnricherSink>();

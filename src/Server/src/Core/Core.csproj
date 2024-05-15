@@ -14,6 +14,7 @@
     <PackageReference Include="Azure.Security.KeyVault.Keys" />
     <PackageReference Include="Handlebars.Net" />
     <PackageReference Include="MassTransit.RabbitMQ" />
+    <PackageReference Include="Masstransit.EventHub" />
     <PackageReference Include="MassTransit.Azure.ServiceBus.Core" />
     <PackageReference Include="AnyClone" />
     <PackageReference Include="AnyDiff" />

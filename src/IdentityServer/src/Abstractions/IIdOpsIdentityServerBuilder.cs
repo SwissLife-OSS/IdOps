@@ -6,7 +6,9 @@ namespace IdOps.IdentityServer
     public interface IIdOpsIdentityServerBuilder
     {
         IConfiguration? Configuration { get; }
+
         IServiceCollection Services { get; }
+
         IdOpsOptions Options { get; }
     }
 
@@ -16,9 +18,16 @@ namespace IdOps.IdentityServer
 
         public MessagingOptions Messaging { get; set; } = default!;
 
+        public EventHubOptions? EventHub { get; set; } = default!;
+
         public string ServerGroup { get; set; } = default!;
 
         public bool EnableDataConnectors { get; set; }
+    }
+
+    public class EventHubOptions
+    {
+        public string ConnectionString { get; set; } = default!;
     }
 
     public class MessagingOptions
