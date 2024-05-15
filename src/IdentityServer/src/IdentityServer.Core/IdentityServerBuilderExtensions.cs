@@ -72,11 +72,10 @@ namespace Microsoft.Extensions.DependencyInjection
                     SingleReader = true,
                     AllowSynchronousContinuations = false
                 });
-
+            
             builder.Services.AddSingleton(channel.Reader);
             builder.Services.AddSingleton(channel.Writer);
-            builder.Services.AddHostedService<IEventSenderWorker>();
-            builder.Services.AddSingleton<BusEventSender>();
+            builder.Services.AddHostedService(sp => sp.GetRequiredService<IEventSenderWorker>());
             builder.Services.AddSingleton<BusEventSink>();
             builder.Services.AddResources();
             builder.Services.AddSingleton(builder.Options);
