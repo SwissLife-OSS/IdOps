@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Diagnostics.Metrics;
 using IdOps.Messages;
 using MassTransit;
 
@@ -25,4 +24,3 @@ internal static class IdOpsActivity
         activity?.SetTag("messaging.masstransit.batch_count", context.Message.Length);
     }
 }
-
