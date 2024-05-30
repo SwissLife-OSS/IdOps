@@ -50,6 +50,23 @@ public static class EventHubIdOpsBuilderExtensions
                     throw new ApplicationException(
                         "EventHub configuration is missing. Please check your settings.");
                 }
+
+                if (options.Storage is { } storageOption)
+                {
+                    if (storageOption.Url is { } url)
+                    {
+                        k.Storage(new Uri(url), new DefaultAzureCredential());
+                    }
+                    else if (storageOption.ConnectionString is { } connectionString)
+                    {
+                        k.Storage(connectionString);
+                    }
+                    else
+                    {
+                        throw new ApplicationException(
+                            "EventHub storage configuration is missing. Please check your settings.");
+                    }
+                }
             }));
         });
 
