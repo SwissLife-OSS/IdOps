@@ -1,7 +1,6 @@
 using System;
 using Azure.Identity;
 using IdOps.IdentityServer.Abstractions;
-using IdOps.IdentityServer.Azure;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -74,23 +73,6 @@ namespace IdOps.IdentityServer.Azure
                     {
                         throw new ApplicationException(
                             "EventHub configuration is missing. Please check your settings.");
-                    }
-
-                    if (eventHub.Storage is { } storageOption)
-                    {
-                        if (storageOption.Url is { } url)
-                        {
-                            k.Storage(new Uri(url), new DefaultAzureCredential());
-                        }
-                        else if (storageOption.ConnectionString is { } connectionString)
-                        {
-                            k.Storage(connectionString);
-                        }
-                        else
-                        {
-                            throw new ApplicationException(
-                                "EventHub storage configuration is missing. Please check your settings.");
-                        }
                     }
                 })
             );

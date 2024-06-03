@@ -11,8 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Messaging.AzureEventHub\Messaging.AzureEventHub.csproj" />
-    <ProjectReference Include="..\..\Messaging.AzureServiceBus\Messaging.AzureServiceBus.csproj" />
+    <ProjectReference Include="..\..\Messaging.Azure\Messaging.Azure.csproj" />
     <ProjectReference Include="..\..\Messaging.RabbitMQ\Messaging.RabbitMQ.csproj" />
     <ProjectReference Include="..\..\src\IdentityServer.Core\Core.csproj" />
     <ProjectReference Include="..\..\src\Store.Mongo\Store.Mongo.csproj" />

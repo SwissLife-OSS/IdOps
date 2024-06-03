@@ -32,6 +32,6 @@ namespace IdOps.IdentityServer
     {
         Memory,
         RabbitMq,
-        AzureServiceBus
+        Azure
     }
 }

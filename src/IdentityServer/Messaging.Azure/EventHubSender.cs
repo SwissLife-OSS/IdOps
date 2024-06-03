@@ -5,28 +5,32 @@ using System.Threading.Tasks;
 using IdOps.IdentityServer.Abstractions;
 using IdOps.Messages;
 using MassTransit;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace IdOps.IdentityServer.Azure;
 
 public sealed class EventHubSender : BackgroundService, IEventSenderWorker
 {
+    private readonly IServiceProvider _serviceProvider;
     private readonly ChannelReader<IdentityEventMessage> _channelReader;
-    private readonly IEventHubProducerProvider _producerProvider;
 
     public EventHubSender(
-        IEventHubProducerProvider provider,
+        IServiceProvider serviceProvider,
         ChannelReader<IdentityEventMessage> channelReader)
     {
-        _producerProvider = provider;
+        _serviceProvider = serviceProvider;
         _channelReader = channelReader;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         await Task.Yield();
+        await using AsyncServiceScope scope = _serviceProvider.CreateAsyncScope();
+        IEventHubProducerProvider provider =
+            scope.ServiceProvider.GetRequiredService<IEventHubProducerProvider>();
 
-        IEventHubProducer producer = await _producerProvider.GetProducer("identity-events");
+        IEventHubProducer producer = await provider.GetProducer("identity-events");
 
         // we reuse the buffer to avoid allocations
         var buffer = new IdentityEventMessage[50];
