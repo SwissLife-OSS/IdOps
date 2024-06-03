@@ -6,7 +6,6 @@ using IdOps.Consumers;
 using IdOps.IdentityServer.Hashing;
 using IdOps.Model;
 using MassTransit;
-using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

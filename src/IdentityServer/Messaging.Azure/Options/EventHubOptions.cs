@@ -1,4 +1,4 @@
-namespace IdOps.IdentityServer.AzureEventHub;
+namespace IdOps.IdentityServer.Azure;
 
 public class EventHubOptions
 {

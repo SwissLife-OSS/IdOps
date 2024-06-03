@@ -7,7 +7,7 @@ using IdOps.Messages;
 using MassTransit;
 using Microsoft.Extensions.Hosting;
 
-namespace IdOps.IdentityServer.AzureEventHub;
+namespace IdOps.IdentityServer.Azure;
 
 public sealed class EventHubSender : BackgroundService, IEventSenderWorker
 {
@@ -26,7 +26,7 @@ public sealed class EventHubSender : BackgroundService, IEventSenderWorker
     {
         await Task.Yield();
 
-        var producer = await _producerProvider.GetProducer("identity-events");
+        IEventHubProducer producer = await _producerProvider.GetProducer("identity-events");
 
         // we reuse the buffer to avoid allocations
         var buffer = new IdentityEventMessage[50];
@@ -34,7 +34,7 @@ public sealed class EventHubSender : BackgroundService, IEventSenderWorker
         {
             while (await _channelReader.WaitToReadAsync(stoppingToken))
             {
-                // we read as many messages as we can 
+                // we read as many messages as we can
                 for (var i = 0; i < buffer.Length; i++)
                 {
                     if (!_channelReader.TryRead(out IdentityEventMessage? entity))

@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{17CDA34C-429
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IdentityServer", "IdentityServer", "{D264CAEC-2137-46D8-B637-FCE7CBE3B390}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging.AzureServiceBus", "src\IdentityServer\Messaging.AzureServiceBus\Messaging.AzureServiceBus.csproj", "{C8F188CA-2671-4364-B53C-43832627C0DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging.Azure", "src\IdentityServer\Messaging.Azure\Messaging.Azure.csproj", "{C8F188CA-2671-4364-B53C-43832627C0DA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging.RabbitMQ", "src\IdentityServer\Messaging.RabbitMQ\Messaging.RabbitMQ.csproj", "{9C1A424A-64A5-4BAA-BCE5-529F2148497F}"
 EndProject

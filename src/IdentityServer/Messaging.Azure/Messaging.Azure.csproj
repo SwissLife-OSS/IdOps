@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="MassTransit.Azure.ServiceBus.Core" />
     <PackageReference Update="Microsoft.SourceLink.GitHub" />
+    <PackageReference Include="Masstransit.EventHub"/>
   </ItemGroup>
 
   <ItemGroup>
