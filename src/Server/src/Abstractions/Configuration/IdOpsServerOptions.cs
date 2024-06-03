@@ -31,6 +31,15 @@ namespace IdOps.Configuration
         public string? ConnectionString { get; set; }
 
         public string? Namespace { get; set; }
+
+        public EventStorageHubOptions? Storage { get; set; }
+    }
+
+    public sealed class EventStorageHubOptions
+    {
+        public string? ConnectionString { get; set; }
+
+        public string? Url { get; set; }
     }
 
     public enum MessagingTransport
