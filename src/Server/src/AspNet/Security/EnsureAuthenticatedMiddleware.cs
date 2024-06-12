@@ -30,31 +30,37 @@ namespace IdOps.Api.Security
 
                 return;
             }
-            else
+
+            if (context.Request.Path.StartsWithSegments("/api")
+                || context.Request.Path.StartsWithSegments("/graphql")
+                || context.Request.Path.StartsWithSegments("/signalR")
+                || context.Request.Path.StartsWithSegments("/error"))
             {
-                if (context.Request.Path.StartsWithSegments("/api")
-                    || context.Request.Path.StartsWithSegments("/graphql")
-                    || context.Request.Path.StartsWithSegments("/signalR")
-                    || context.Request.Path.StartsWithSegments("/error"))
+                if (HasIdOpsRole(context))
                 {
-                    if (HasIdOpsRole(context))
-                    {
-                        await _next(context);
-                    }
-                    else
-                    {
-                        context.Response.StatusCode = 403;
-                        await context.Response.WriteAsync("Access denied!");
-                    }
+                    await _next(context);
                 }
-                else if (!context.User.Identity.IsAuthenticated)
+                else
+                {
+                    context.Response.StatusCode = 403;
+                    await context.Response.WriteAsync("Access denied!");
+                }
+            }
+            else if (!context.User.Identity.IsAuthenticated)
+            {
+                if (context.Request.Path == "/")
                 {
                     await context.ChallengeAsync();
                 }
                 else
                 {
-                    await _next(context);
+                    context.Response.StatusCode = 403;
+                    await context.Response.WriteAsync("Access denied!");
                 }
+            }
+            else
+            {
+                await _next(context);
             }
         }
 
