@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -51,6 +52,8 @@ namespace IdOps.Api.Security
                 options.GetClaimsFromUserInfoEndpoint = true;
                 options.ClaimActions.MapAllExcept("role", "user_application", "idp", "nbf", "iat", "exp", "amr", "nonce", "at_hash", "auth_time", "tenant");
                 options.ClaimActions.MapUserRoles();
+                options.NonceCookie.SameSite = SameSiteMode.Lax;
+                options.CorrelationCookie.SameSite = SameSiteMode.Lax;
 
                 options.Events = new OpenIdConnectEvents
                 {
