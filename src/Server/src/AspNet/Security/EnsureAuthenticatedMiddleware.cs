@@ -23,6 +23,7 @@ namespace IdOps.Api.Security
         public async Task InvokeAsync(HttpContext context)
         {
             if (context.Request.Path.StartsWithSegments("/_health") ||
+                context.Request.Path.StartsWithSegments("/fonts") ||
                 context.Request.Path.StartsWithSegments("/api/session") ||
                 _env.IsDevelopment())
             {
