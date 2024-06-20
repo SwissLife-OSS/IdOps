@@ -31,7 +31,12 @@ namespace IdOps.Api.Security
                 return;
             }
 
-            if (context.Request.Path.StartsWithSegments("/api")
+            if (context.Request.Path.StartsWithSegments("/api/session/auth"))
+            {
+                await context.ChallengeAsync();
+            }
+            else if (
+                context.Request.Path.StartsWithSegments("/api")
                 || context.Request.Path.StartsWithSegments("/graphql")
                 || context.Request.Path.StartsWithSegments("/signalR")
                 || context.Request.Path.StartsWithSegments("/error"))
