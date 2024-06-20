@@ -20,7 +20,6 @@ namespace IdOps.IdentityServer.DataConnector
     {
         private readonly ILogger<UserDataConnectorService> _logger;
         private readonly IEnumerable<IUserDataConnector> _connectors;
-        private readonly IUserDataConnectorDataRepository _repository;
         private readonly IEventService _eventService;
 
         private static readonly Dictionary<string, ConnectorProfileType> ProfileTypeMap
@@ -34,12 +33,10 @@ namespace IdOps.IdentityServer.DataConnector
         public UserDataConnectorService(
             ILogger<UserDataConnectorService> logger,
             IEnumerable<IUserDataConnector> connectors,
-            IUserDataConnectorDataRepository repository,
             IEventService eventService)
         {
             _logger = logger;
             _connectors = connectors;
-            _repository = repository;
             _eventService = eventService;
         }
 
@@ -108,7 +105,7 @@ namespace IdOps.IdentityServer.DataConnector
             IUserDataConnector? connector = _connectors
                 .Single(x => x.Name == options.Name);
 
-            var timeOutToken = new CancellationTokenSource(Debugger.IsAttached ? 300000 : 5000);
+            var timeOutToken = new CancellationTokenSource(300000);
 
             CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(
                 cancellationToken,
@@ -121,56 +118,7 @@ namespace IdOps.IdentityServer.DataConnector
 
             activity?.EnrichDataConnectorResult(result);
 
-            if (result.Success && result.Executed && result.CacheKey != null)
-            {
-                try
-                {
-                    await SaveDataAsync(options, result, context.Subject, cancellationToken);
-                }
-                catch (Exception ex)
-                {
-                    _logger.DataConnectorSaveDataFailed(connector.Name);
-                    activity?.RecordException(ex);
-                }
-            }
-            else if (!result.Success && result.CacheKey != null)
-            {
-                UserDataConnectorData? storedData = await _repository.GetAsync(
-                    result.CacheKey,
-                    connector.Name,
-                    cancellationToken);
-
-                if (storedData != null)
-                {
-                    claims = storedData.Claims.Select(x => new Claim(x.Type, x.Value));
-                }
-                else
-                {
-                    throw result.Error;
-                }
-            }
-
             return claims;
-        }
-
-        private async Task SaveDataAsync(
-            DataConnectorOptions options,
-            UserDataConnectorResult result,
-            string subject,
-            CancellationToken cancellationToken)
-        {
-            await _repository.SaveAsync(new UserDataConnectorData
-            {
-                Claims = result.Claims.Select(x => new ClaimData
-                {
-                    Type = x.Type,
-                    Value = x.Value
-                }),
-                Key = result.CacheKey!,
-                SubjectId = subject,
-                Connector = options.Name,
-                LastModifiedAt = DateTime.UtcNow
-            }, cancellationToken);
         }
 
         private bool ShouldExecute(DataConnectorOptions options, string caller)
