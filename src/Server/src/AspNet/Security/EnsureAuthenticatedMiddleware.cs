@@ -24,7 +24,7 @@ namespace IdOps.Api.Security
         {
             if (context.Request.Path.StartsWithSegments("/api/session/auth"))
             {
-                await context.ChallengeAsync();
+                await context.ChallengeAsync(new AuthenticationProperties { RedirectUri = "/" });
             }
             else if (context.Request.Path.StartsWithSegments("/_health") ||
                      context.Request.Path.StartsWithSegments("/fonts") ||
