@@ -10,49 +10,52 @@ using IdOps.IdentityServer.Extensions;
 using IdOps.Messages;
 using Microsoft.AspNetCore.Http;
 
-namespace IdOps.IdentityServer.Events
+namespace IdOps.IdentityServer.Events;
+
+public class BusEventSink : IIdOpsEventSink
 {
-    public class BusEventSink : IIdOpsEventSink
+    private readonly ChannelWriter<IdentityEventMessage> _channelWriter;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IdOpsOptions _idOpsOptions;
+    private readonly JsonSerializerOptions _jsonOptions = new()
     {
-        private readonly ChannelWriter<IdentityEventMessage> _channelWriter;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IdOpsOptions _idOpsOptions;
-        private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        DefaultIgnoreCondition = JsonIgnoreCondition.Never, WriteIndented = true
+    };
+
+    public BusEventSink(
+        ChannelWriter<IdentityEventMessage> channelWriter,
+        IHttpContextAccessor httpContextAccessor,
+        IdOpsOptions idOpsOptions)
+    {
+        _channelWriter = channelWriter;
+        _httpContextAccessor = httpContextAccessor;
+        _idOpsOptions = idOpsOptions;
+        _jsonOptions.Converters.Add(new JsonStringEnumConverter());
+    }
+
+    public async ValueTask ProcessAsync(Event evt, Activity? activity)
+    {
+        if (activity != null)
         {
-            IgnoreNullValues = true,
-            WriteIndented = true
+            evt.ActivityId = activity.Id;
+        }
+
+        evt.RemoteIpAddress = _httpContextAccessor.HttpContext?.GetRemoteIpAddress();
+
+        if (evt.GetType().FullName is not { } fullName)
+        {
+            return;
+        }
+
+        var entity = new IdentityEventMessage
+        {
+            EnvironmentName = _idOpsOptions.EnvironmentName,
+            ServerGroup = _idOpsOptions.ServerGroup,
+            Type = fullName,
+            Hostname = Environment.MachineName,
+            Data = Encoding.UTF8.GetBytes(JsonSerializer.Serialize<object>(evt, _jsonOptions))
         };
 
-        public BusEventSink(
-            ChannelWriter<IdentityEventMessage> channelWriter,
-            IHttpContextAccessor httpContextAccessor,
-            IdOpsOptions idOpsOptions)
-        {
-            _channelWriter = channelWriter;
-            _httpContextAccessor = httpContextAccessor;
-            _idOpsOptions = idOpsOptions;
-            _jsonOptions.Converters.Add(new JsonStringEnumConverter());
-        }
-
-        public async ValueTask ProcessAsync(Event evt, Activity? activity)
-        {
-            if (activity != null)
-            {
-                evt.ActivityId = activity.Id;
-            }
-
-            evt.RemoteIpAddress = _httpContextAccessor.HttpContext?.GetRemoteIpAddress();
-
-            var entity = new IdentityEventMessage
-            {
-                EnvironmentName = _idOpsOptions.EnvironmentName,
-                ServerGroup = _idOpsOptions.ServerGroup,
-                Type = evt.GetType().FullName,
-                Hostname = Environment.MachineName,
-                Data = Encoding.UTF8.GetBytes(JsonSerializer.Serialize<object>(evt, _jsonOptions)),
-            };
-
-            await _channelWriter.WriteAsync(entity);
-        }
+        await _channelWriter.WriteAsync(entity);
     }
 }

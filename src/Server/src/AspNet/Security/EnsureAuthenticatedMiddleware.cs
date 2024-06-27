@@ -22,16 +22,19 @@ namespace IdOps.Api.Security
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (context.Request.Path.StartsWithSegments("/_health") ||
-                context.Request.Path.StartsWithSegments("/api/session") ||
-                _env.IsDevelopment())
+            if (context.Request.Path.StartsWithSegments("/api/session/auth"))
+            {
+                await context.ChallengeAsync(new AuthenticationProperties { RedirectUri = "/" });
+            }
+            else if (context.Request.Path.StartsWithSegments("/_health") ||
+                     context.Request.Path.StartsWithSegments("/fonts") ||
+                     context.Request.Path.StartsWithSegments("/api/session") ||
+                     _env.IsDevelopment())
             {
                 await _next(context);
-
-                return;
             }
-
-            if (context.Request.Path.StartsWithSegments("/api")
+            else if (
+                context.Request.Path.StartsWithSegments("/api")
                 || context.Request.Path.StartsWithSegments("/graphql")
                 || context.Request.Path.StartsWithSegments("/signalR")
                 || context.Request.Path.StartsWithSegments("/error"))

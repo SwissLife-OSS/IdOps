@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Azure.Identity;
 using IdOps.Configuration;
 using IdOps.Consumers;
 using IdOps.IdentityServer.Hashing;
@@ -160,6 +161,51 @@ namespace IdOps
             return s;
         }
 
+        private static void UseEventHub(
+            this IBusRegistrationConfigurator s,
+            EventHubOptions options)
+        {
+            s.AddRider(x =>
+            {
+                x.AddConsumer<IdentityServerEventBatchConsumer>();
+                x.UsingEventHub((contex, k) =>
+                {
+                    if (options.Namespace is { } @namespace)
+                    {
+                        k.Host(@namespace, new DefaultAzureCredential());
+                    }
+                    else if (options.ConnectionString is not null)
+                    {
+                        k.Host(options.ConnectionString);
+                    }
+                    else
+                    {
+                        throw new ApplicationException(
+                            "EventHub configuration is missing. Please check your settings.");
+                    }
+
+                    k.ReceiveEndpoint("identity-events", e => e.ConfigureConsumers(contex));
+
+                    if (options.Storage is { } storageOption)
+                    {
+                        if (storageOption.Url is { } url)
+                        {
+                            k.Storage(new Uri(url), new DefaultAzureCredential());
+                        }
+                        else if (storageOption.ConnectionString is { } connectionString)
+                        {
+                            k.Storage(connectionString);
+                        }
+                        else
+                        {
+                            throw new ApplicationException(
+                                "EventHub storage configuration is missing. Please check your settings.");
+                        }
+                    }
+                });
+            });
+        }
+
         private static IBusRegistrationConfigurator UseInMemory(
             this IBusRegistrationConfigurator s,
             MessagingOptions options)
@@ -184,12 +230,19 @@ namespace IdOps
                     case MessagingTransport.RabbitMq:
                         s.UseRabbitMq(options);
                         break;
+
                     case MessagingTransport.AzureServiceBus:
                         s.UseAzureServiceBus(options);
                         break;
+
                     case MessagingTransport.Memory:
                         s.UseInMemory(options);
                         break;
+                }
+
+                if (options.EventHub is { } eventHub)
+                {
+                    s.UseEventHub(eventHub);
                 }
             });
 

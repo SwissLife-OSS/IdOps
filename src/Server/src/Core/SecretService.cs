@@ -40,12 +40,6 @@ public class SecretService : ISecretService
 
         secret.Value = secretValue.ToSha256();
 
-        if (request.SaveValue.GetValueOrDefault() && _encryptionService is not NoEncryptionProvider)
-        {
-            secret.EncryptedValue =
-                await _encryptionService.EncryptAsync(secretValue, CancellationToken.None);
-        }
-        
         return (secret, secretValue);
     }
 

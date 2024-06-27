@@ -3,6 +3,7 @@ using System.Threading.Channels;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Validation;
 using IdOps.IdentityServer;
+using IdOps.IdentityServer.Abstractions;
 using IdOps.IdentityServer.DataConnector;
 using IdOps.IdentityServer.Events;
 using IdOps.IdentityServer.Hashing;
@@ -22,7 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public IConfiguration? Configuration { get; init; }
 
-        public IdOpsOptions Options { get; internal set; } = new IdOpsOptions();
+        public IdOpsOptions Options { get; internal set; } = new();
     }
 
     public record BusBuilder(
@@ -50,11 +51,10 @@ namespace Microsoft.Extensions.DependencyInjection
 
             var idOpsBuilder = new IdOpsIdentityServerBuilder(builder.Services)
             {
-                Configuration = configuration,
-                Options = options ?? new IdOpsOptions()
+                Configuration = configuration, Options = options ?? new IdOpsOptions()
             };
 
-            return idOpsBuilder.AddIdOps(builder,configure);
+            return idOpsBuilder.AddIdOps(builder, configure);
         }
 
         private static IIdentityServerBuilder AddIdOps(
@@ -62,6 +62,7 @@ namespace Microsoft.Extensions.DependencyInjection
             IIdentityServerBuilder identityServerBuilder,
             Action<IIdOpsIdentityServerBuilder>? configure)
         {
+            builder.Services.AddSingleton<IEventSenderWorker, BusEventSender>();
             configure?.Invoke(builder);
 
             var channel = Channel
@@ -71,20 +72,23 @@ namespace Microsoft.Extensions.DependencyInjection
                     SingleReader = true,
                     AllowSynchronousContinuations = false
                 });
-
+            
             builder.Services.AddSingleton(channel.Reader);
             builder.Services.AddSingleton(channel.Writer);
-            builder.Services.AddHostedService<BusEventSender>();
+            builder.Services.AddHostedService(sp => sp.GetRequiredService<IEventSenderWorker>());
+            builder.Services.AddSingleton<BusEventSink>();
             builder.Services.AddResources();
             builder.Services.AddSingleton(builder.Options);
             builder.Services.AddSingleton<IResourceUpdateHandler, ResourceUpdateHandler>();
             builder.Services.AddSingleton<IEventSink, IdOpsEventSink>();
             builder.Services.AddSingleton<IIdOpsEventSink, BusEventSink>();
-            builder.Services.AddTransient<IExtensionGrantValidator, PersonalAccessTokenGrantValidator>();
+            builder.Services
+                .AddTransient<IExtensionGrantValidator, PersonalAccessTokenGrantValidator>();
             builder.Services.AddSingleton<IpAllowListValidator>();
             builder.Services.AddSingleton<ClientIdExtractor>();
             builder.Services.AddSingleton(
-                builder.Configuration?.GetSection("InternalIpFilter").Get<InternalIpFilterConfiguration>() ??
+                builder.Configuration?.GetSection("InternalIpFilter")
+                    .Get<InternalIpFilterConfiguration>() ??
                 new InternalIpFilterConfiguration());
             builder.Services
                 .AddSingleton<IPersonalAccessTokenValidator, PersonalAccessTokenValidator>();
@@ -104,10 +108,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static BusBuilder AddMassTransit(this IIdOpsIdentityServerBuilder builder)
         {
-            return new BusBuilder(builder, (b) =>
-            {
-                b.AddConsumer<UpdateResourceConsumer>();
-            });
+            return new BusBuilder(builder,
+                b =>
+                {
+                    b.AddConsumer<UpdateResourceConsumer>();
+                });
         }
 
         public static IIdOpsIdentityServerBuilder UseInMemory(this BusBuilder builder)
@@ -119,10 +124,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 s.UsingInMemory((provider, cfg) =>
                 {
                     cfg.ReceiveEndpoint(
-                        $"id-{builder.IdOpsBuilder.Options!.EnvironmentName.ToLower()}", e =>
-                    {
-                        e.ConfigureConsumers(provider);
-                    });
+                        $"id-{builder.IdOpsBuilder.Options!.EnvironmentName.ToLower()}",
+                        e =>
+                        {
+                            e.ConfigureConsumers(provider);
+                        });
                 });
             });
 
@@ -169,9 +175,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return builder;
         }
 
-
-        private static IIdentityServerBuilder AddIdOpsStores(
-            this IIdentityServerBuilder builder)
+        private static IIdentityServerBuilder AddIdOpsStores(this IIdentityServerBuilder builder)
         {
             builder.Services.AddSingleton<IManageClientStore, ClientStore>();
             builder.Services.AddSingleton<IManageResourceStore, ResourceStore>();

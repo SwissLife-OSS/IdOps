@@ -46,6 +46,7 @@ namespace IdOps.Consumers
 
                 if (events.Length > 0)
                 {
+                    IdOpsMeters.RecordReceiverBatchSize(events.Length);
                     await _eventStore.CreateManyAsync(events, context.CancellationToken);
                 }
             }

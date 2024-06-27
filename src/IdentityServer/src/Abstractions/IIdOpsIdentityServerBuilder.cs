@@ -6,7 +6,9 @@ namespace IdOps.IdentityServer
     public interface IIdOpsIdentityServerBuilder
     {
         IConfiguration? Configuration { get; }
+
         IServiceCollection Services { get; }
+
         IdOpsOptions Options { get; }
     }
 
@@ -30,6 +32,6 @@ namespace IdOps.IdentityServer
     {
         Memory,
         RabbitMq,
-        AzureServiceBus
+        Azure
     }
 }

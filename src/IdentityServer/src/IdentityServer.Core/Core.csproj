@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Masstransit.EventHub" />
     <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
     <PackageReference Include="Duende.IdentityServer" />
     <PackageReference Include="MassTransit" />

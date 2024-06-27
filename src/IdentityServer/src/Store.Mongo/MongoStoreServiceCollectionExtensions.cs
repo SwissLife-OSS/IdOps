@@ -51,9 +51,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IIdentityResourceRepository, IdentityResourceRepository>();
             services.AddSingleton<IPersonalAccessTokenRepository, PersonalAccessTokenRepository>();
             services.AddSingleton<IUserClaimRuleRepository, UserClaimRuleRepository>();
-            services.AddSingleton<
-                IUserDataConnectorDataRepository,
-                UserDataConnectorDataRepository>();
 
             return services;
         }

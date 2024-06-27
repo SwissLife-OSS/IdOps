@@ -22,6 +22,24 @@ namespace IdOps.Configuration
         public string Username { get; set; } = "guest";
 
         public string Password { get; set; } = "guest";
+
+        public EventHubOptions? EventHub { get; set; } = default!;
+    }
+
+    public class EventHubOptions
+    {
+        public string? ConnectionString { get; set; }
+
+        public string? Namespace { get; set; }
+
+        public EventStorageHubOptions? Storage { get; set; }
+    }
+
+    public sealed class EventStorageHubOptions
+    {
+        public string? ConnectionString { get; set; }
+
+        public string? Url { get; set; }
     }
 
     public enum MessagingTransport

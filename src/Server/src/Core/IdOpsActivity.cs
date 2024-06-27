@@ -6,11 +6,11 @@ namespace IdOps;
 
 internal static class IdOpsActivity
 {
-    private static readonly ActivitySource ActivitySource = new("IdOps");
-
-    public static Activity? StartEventBatchConsumer(ConsumeContext<Batch<IdentityEventMessage>> context)
+    public static Activity? StartEventBatchConsumer(
+        ConsumeContext<Batch<IdentityEventMessage>> context)
     {
-        Activity? activity = ActivitySource.StartActivity("IdentityServer Event BatchConsumer");
+        Activity? activity =
+            Telemetry.ActivitySource.StartActivity("IdentityServer Event BatchConsumer");
 
         activity?.EnrichStartEventBatchConsumer(context);
 
