@@ -1,17 +1,17 @@
-name: Pull Request
+name: CI
+run-name: CI 🔍 ${{ github.event.pull_request.title }}
 
 on:
   pull_request:
-    branches: ['main']
 
 jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
       - name: Build, Test and Sonar
         uses: swisslife-oss/actions/pull-request@main
         with:
