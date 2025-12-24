@@ -15,5 +15,6 @@ namespace  IdOps.IdentityServer.Storage.Mongo
         IMongoCollection<UserClaimRule> UserClaimRules { get; }
         IMongoCollection<UserDataConnectorData> ConnectorData { get; }
         IMongoCollection<IdOpsPersonalAccessToken> PersonalAccessTokens { get; }
+        IMongoCollection<PushedAuthorizationRequest> PushedAuthorizationRequests { get; }
     }
 }

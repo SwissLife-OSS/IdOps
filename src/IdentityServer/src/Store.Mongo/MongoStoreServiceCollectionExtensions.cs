@@ -1,4 +1,5 @@
 using System;
+using Duende.IdentityServer.Stores;
 using IdOps;
 using IdOps.Exceptions;
 using IdOps.IdentityServer;
@@ -51,6 +52,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IIdentityResourceRepository, IdentityResourceRepository>();
             services.AddSingleton<IPersonalAccessTokenRepository, PersonalAccessTokenRepository>();
             services.AddSingleton<IUserClaimRuleRepository, UserClaimRuleRepository>();
+            services.AddSingleton<IPushedAuthorizationRequestStore, PushedAuthorizationRequestStore>();
 
             return services;
         }
