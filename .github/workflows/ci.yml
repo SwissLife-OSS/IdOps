@@ -35,7 +35,7 @@ jobs:
         working-directory: ${{ matrix.project }}
         run: dotnet test ./all.csproj /p:BuildTestsOnly=true --no-build
 
-  ui:
+  build_ui:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

@@ -1,4 +1,5 @@
 name: Release
+run-name: Release 🚀 ${{ github.ref_name }}
 
 on:
   push:
@@ -8,20 +9,27 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        project: ['./src/IdentityServer', './src/Server']
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Use .NET SDK from global.json
-        uses: actions/setup-dotnet@v4
+        uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           check-latest: true
           node-version-file: 'src/UI/package.json'
           cache: 'yarn'
           cache-dependency-path: 'src/UI/yarn.lock'
+
       - name: Build UI
+        shell: bash
+        if: matrix.project == './src/Server'
         run: |
           export NODE_OPTIONS=--openssl-legacy-provider
           yarn config set strict-ssl false
@@ -30,28 +38,40 @@ jobs:
           rm -rf src/Server/src/AspNet/UI
           mkdir src/Server/src/AspNet/UI/
           cp -rf src/UI/dist/* src/Server/src/AspNet/UI
-        shell: bash
-      - name: Build, Test and Push
-        uses: swisslife-oss/actions/release-packages@main
-        with:
-          tag: ${{ github.ref_name }}
-          nuget_api_key: ${{ secrets.NUGET_API_KEY }}
-          enable_push: 'yes'
 
-  sonar:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-      - name: Restore tools
-        run: dotnet tool restore
-      - name: Build, Test and Sonar
-        uses: swisslife-oss/actions/release-sonar@main
-        with:
-          tag: ${{ github.ref_name }}
-          sonar_token: ${{ secrets.SONAR_TOKEN }}
-          sonar_project_key: 'SwissLife-OSS_IdOps'
-          sonar_project_name: "IdOps"
-          sonar_exclusions: ${{ vars.SONAR_EXCLUSIONS }}
+      - name: Build projects
+        shell: bash
+        working-directory: ${{ matrix.project }}
+        run: dotnet build ./all.csproj -c Release
+
+      - name: Extract version
+        id: extract_version
+        shell: bash
+        run: |
+          PACKAGE_VERSION="${{ github.ref_name }}"
+          ASSEMBLY_VERSION="$(echo ${{ github.ref_name }} | grep -o '^[0-9]*\.[0-9]*\.[0-9]*').0"
+          echo "package_version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
+          echo "assembly_version=$ASSEMBLY_VERSION" >> $GITHUB_OUTPUT
+          echo "Package Version: $PACKAGE_VERSION"
+          echo "Assembly Version: $ASSEMBLY_VERSION"
+
+      - name: Pack
+        shell: bash
+        working-directory: ${{ matrix.project }}
+        run: |
+          dotnet pack ./all.csproj \
+            -c Release \
+            -o ./out \
+            --no-build  \
+            --include-symbols \
+            --include-source \
+            --verbosity Minimal \
+            /p:Version=${{ steps.extract_version.outputs.package_version }} \
+            /p:AssemblyVersion=${{ steps.extract_version.outputs.assembly_version }} \
+            /p:FileVersion=${{ steps.extract_version.outputs.assembly_version }}
+
+      - name: Push
+        shell: bash
+        working-directory: ${{ matrix.project }}
+        run: |
+          find . -name '*.nupkg' | grep -v '.sources.nupkg' | parallel --jobs 0 'dotnet nuget push {} --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json'
