@@ -93,9 +93,9 @@ namespace IdOps.IdentityServer.Storage.Mongo.Model
         public string? Description { get; set; }
 
         /// <summary>
-        /// Calculated expiration time for TTL index.
+        /// Expiration time for TTL index.
         /// </summary>
-        public DateTime ExpiresAt => CreationTime.AddSeconds(Lifetime);
+        public DateTime ExpiresAt { get; set; }
 
         /// <summary>
         /// Converts from <see cref="BackChannelAuthenticationRequest"/> to serializable model.
@@ -122,7 +122,8 @@ namespace IdOps.IdentityServer.Storage.Mongo.Model
                 IsComplete = request.IsComplete,
                 AuthorizedScopes = request.AuthorizedScopes ?? Array.Empty<string>(),
                 SessionId = request.SessionId,
-                Description = request.Description
+                Description = request.Description,
+                ExpiresAt = request.CreationTime.AddSeconds(request.Lifetime)
             };
         }
 
