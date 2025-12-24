@@ -1,6 +1,7 @@
 using Duende.IdentityServer.Models;
 using IdOps.IdentityServer.DataConnector;
 using IdOps.IdentityServer.Model;
+using IdOps.IdentityServer.Storage.Mongo.Model;
 using MongoDB.Driver;
 
 namespace  IdOps.IdentityServer.Storage.Mongo
@@ -16,5 +17,6 @@ namespace  IdOps.IdentityServer.Storage.Mongo
         IMongoCollection<UserDataConnectorData> ConnectorData { get; }
         IMongoCollection<IdOpsPersonalAccessToken> PersonalAccessTokens { get; }
         IMongoCollection<PushedAuthorizationRequest> PushedAuthorizationRequests { get; }
+        IMongoCollection<SerializedBackChannelAuthenticationRequest> BackChannelAuthenticationRequests { get; }
     }
 }

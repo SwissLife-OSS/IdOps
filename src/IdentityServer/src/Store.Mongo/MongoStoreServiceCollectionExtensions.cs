@@ -53,6 +53,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IPersonalAccessTokenRepository, PersonalAccessTokenRepository>();
             services.AddSingleton<IUserClaimRuleRepository, UserClaimRuleRepository>();
             services.AddSingleton<IPushedAuthorizationRequestStore, PushedAuthorizationRequestStore>();
+            services.AddSingleton<IBackChannelAuthenticationRequestStore, BackChannelAuthenticationRequestStore>();
 
             return services;
         }
