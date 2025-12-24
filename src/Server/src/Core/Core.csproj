@@ -18,10 +18,9 @@
     <PackageReference Include="MassTransit.Azure.ServiceBus.Core" />
     <PackageReference Include="AnyClone" />
     <PackageReference Include="AnyDiff" />
-    <PackageReference Include="IdentityModel" />
+    <PackageReference Include="Duende.IdentityModel" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" />
-    <PackageReference Include="System.Linq.Async" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" />
   </ItemGroup>

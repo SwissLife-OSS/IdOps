@@ -17,7 +17,7 @@
     <PackageVersion Include="Handlebars.Net" Version="2.1.6" />
     <PackageVersion Include="HotChocolate.AspNetCore" Version="13.9.0" />
     <PackageVersion Include="HotChocolate.AspNetCore.Authorization" Version="13.9.0" />
-    <PackageVersion Include="IdentityModel" Version="7.0.0" />
+    <PackageVersion Include="Duende.IdentityModel" Version="8.0.0" />
     <PackageVersion Include="MassTransit" Version="8.2.2" />
     <PackageVersion Include="MassTransit.Azure.ServiceBus.Core" Version="8.2.2" />
     <PackageVersion Include="MassTransit.RabbitMQ" Version="8.2.2" />

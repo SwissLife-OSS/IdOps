@@ -6,7 +6,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Duende.IdentityServer.Services;
-using IdentityModel;
+using Duende.IdentityModel;
 using IdOps.IdentityServer.Events;
 using IdOps.IdentityServer.Model;
 using IdOps.IdentityServer.Storage;
