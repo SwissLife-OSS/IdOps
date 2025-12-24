@@ -7,7 +7,7 @@ using EncryptionAlgorithm = Azure.Security.KeyVault.Keys.Cryptography.Encryption
 
 namespace IdOps.Server.Encryption.KeyVault;
 
-internal class KeyVaultEncryptionService : IEncryptionService
+public class KeyVaultEncryptionService : IEncryptionService
 {
     private readonly ICryptographyClientProvider _cryptographyClientProvider;
 
@@ -26,7 +26,7 @@ internal class KeyVaultEncryptionService : IEncryptionService
         return Convert.ToBase64String(nameAsArray);
     }
 
-    public async Task<string> EncryptAsync(string input, CancellationToken cancellationToken)
+    public async Task<EncryptedValue> EncryptAsync(string input, CancellationToken cancellationToken)
     {
         var inputAsArray = Encoding.UTF8.GetBytes(input);
         var cryptographyClient = await _cryptographyClientProvider.GetCryptographyClientAsync();
@@ -34,16 +34,22 @@ internal class KeyVaultEncryptionService : IEncryptionService
         EncryptResult result = await cryptographyClient
             .EncryptAsync(EncryptionAlgorithm, inputAsArray, cancellationToken);
 
-        return Convert.ToBase64String(result.Ciphertext);
+        return new KeyVaultEncryptedValue(result);
     }
 
-    public async Task<string> DecryptAsync(string input, CancellationToken cancellationToken)
+    public async Task<string> DecryptAsync(EncryptedValue value, CancellationToken cancellationToken)
     {
-        var inputAsArray = Convert.FromBase64String(input);
+        if (value is not KeyVaultEncryptedValue keyVaultValue)
+        {
+            throw new ArgumentException(
+                $"The value must be of type {nameof(KeyVaultEncryptedValue)}.",
+                nameof(value));
+        }
+
         var cryptographyClient = await _cryptographyClientProvider.GetCryptographyClientAsync();
 
         DecryptResult result = await cryptographyClient
-            .DecryptAsync(EncryptionAlgorithm, inputAsArray, cancellationToken);
+            .DecryptAsync(EncryptionAlgorithm, keyVaultValue.CipherText, cancellationToken);
 
         return Encoding.Default.GetString(result.Plaintext);
     }

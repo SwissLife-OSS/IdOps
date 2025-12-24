@@ -11,6 +11,7 @@ concurrency:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       matrix:
         dotnet-version: [8, 9, 10]
@@ -36,6 +37,7 @@ jobs:
 
   ui:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout code
         uses: actions/checkout@v6

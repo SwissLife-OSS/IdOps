@@ -26,11 +26,13 @@ public class KeyVaultControllerTests
     [InlineData("Foo")]
     [InlineData("Bar")]
     [InlineData("FooBar")]
-    public async void EncryptAsync_Should_ReturnString(string input)
+    public async void EncryptAsync_Should_ReturnEncryptedValue(string input)
     {
         //Arrange
         var inputAsArray = Encoding.UTF8.GetBytes(input);
-        var encryptResult = CryptographyModelFactory.EncryptResult(ciphertext: inputAsArray);
+        var encryptResult = CryptographyModelFactory.EncryptResult(
+            keyId: "test-key-id",
+            ciphertext: inputAsArray);
 
         var cryptoClientMock = new Mock<CryptographyClient>(MockBehavior.Strict);
         cryptoClientMock.Setup(client =>
@@ -41,22 +43,16 @@ public class KeyVaultControllerTests
         cryptoClientProviderMock.Setup(provider => provider.GetCryptographyClientAsync())
             .ReturnsAsync(cryptoClientMock.Object);
 
-        var encryptedValueMock = new Mock<EncryptedValue>(MockBehavior.Strict);
-        encryptedValueMock.Setup(value => value.)
-        
-        var encryptionProviderMock = new Mock<IEncryptionProvider>(MockBehavior.Strict);
-        encryptionProviderMock.Setup(provider =>
-            provider.EncryptAsync(It.IsAny<string>(), default)).ReturnsAsync(EncrypteVAl)
-
-
-        var controller = new EncryptionService(cryptoClientProviderMock.Object);
+        var service = new KeyVaultEncryptionService(cryptoClientProviderMock.Object);
 
         //Act
-        string expected = Convert.ToBase64String(inputAsArray);
-        string actual = await controller.EncryptAsync(input, CancellationToken.None);
+        EncryptedValue actual = await service.EncryptAsync(input, CancellationToken.None);
 
         //Assert
-        actual.Should().Be(expected);
+        actual.Should().BeOfType<KeyVaultEncryptedValue>();
+        var keyVaultValue = (KeyVaultEncryptedValue)actual;
+        keyVaultValue.CipherText.Should().BeEquivalentTo(inputAsArray);
+        keyVaultValue.Value.Should().Be(Convert.ToBase64String(inputAsArray));
     }
 
     [Theory]
@@ -69,6 +65,10 @@ public class KeyVaultControllerTests
         //Arrange
         var inputAsArray = Convert.FromBase64String(input);
         var decryptResult = CryptographyModelFactory.DecryptResult(plaintext: inputAsArray);
+        var encryptResult = CryptographyModelFactory.EncryptResult(
+            keyId: "test-key-id",
+            ciphertext: inputAsArray);
+        var encryptedValue = new KeyVaultEncryptedValue(encryptResult);
 
         var cryptoClientMock = new Mock<CryptographyClient>(MockBehavior.Strict);
         cryptoClientMock.Setup(client =>
@@ -79,11 +79,11 @@ public class KeyVaultControllerTests
         cryptoClientProviderMock.Setup(provider => provider.GetCryptographyClientAsync())
             .ReturnsAsync(cryptoClientMock.Object);
 
-        var controller = new EncryptionService();
+        var service = new KeyVaultEncryptionService(cryptoClientProviderMock.Object);
 
         //Act
         string expected = Encoding.UTF8.GetString(inputAsArray);
-        string actual = await controller.DecryptAsync(input, CancellationToken.None);
+        string actual = await service.DecryptAsync(encryptedValue, CancellationToken.None);
 
         //Assert
         actual.Should().Be(expected);
