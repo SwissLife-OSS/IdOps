@@ -11,39 +11,47 @@ concurrency:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [8, 9, 10]
+        project: ['./src/IdentityServer', './src/Server']
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
-      - name: Build, Test and Sonar
-        uses: swisslife-oss/actions/pull-request@main
         with:
-          sonar_token: ${{ secrets.SONAR_TOKEN }}
-          sonar_project_key: 'SwissLife-OSS_IdOps'
-          sonar_project_name: "IdOps"
-          pr_number: ${{ github.event.pull_request.number }}
-          pr_source_branch: ${{ github.head_ref }}
-          pr_target_branch: ${{ github.base_ref }}
-          github_repository: ${{ github.repository }}
-          sonar_exclusions: ${{ vars.SONAR_EXCLUSIONS }}
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      - name: Build projects
+        shell: bash
+        working-directory: ${{ matrix.project }}
+        run: dotnet build ./all.csproj
+
+      - name: Run tests
+        shell: bash
+        working-directory: ${{ matrix.project }}
+        run: dotnet test ./all.csproj /p:BuildTestsOnly=true --no-build
 
   ui:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           check-latest: true
           node-version-file: 'src/UI/package.json'
           cache: 'yarn'
           cache-dependency-path: 'src/UI/yarn.lock'
+
       - name: Build UI
+        shell: bash
         run: |
           export NODE_OPTIONS=--openssl-legacy-provider
           yarn config set strict-ssl false
           yarn --cwd src/UI
           yarn --cwd src/UI build
-        shell: bash
