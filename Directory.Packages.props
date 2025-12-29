@@ -1,7 +1,6 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <DotnetVersion>10.0.0</DotnetVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="AnyClone" Version="1.1.6" />
@@ -21,20 +20,6 @@
     <PackageVersion Include="MassTransit" Version="8.2.2" />
     <PackageVersion Include="MassTransit.Azure.ServiceBus.Core" Version="8.2.2" />
     <PackageVersion Include="MassTransit.RabbitMQ" Version="8.2.2" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(DotnetVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(DotnetVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="$(DotnetVersion)" />
-    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="$(DotnetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="$(DotnetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="$(DotnetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="$(DotnetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(DotnetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="$(DotnetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="$(DotnetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="$(DotnetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(DotnetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.FileProviders.Embedded" Version="$(DotnetVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Identity.Core" Version="$(DotnetVersion)" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageVersion Include="MongoDB.Driver" Version="2.25.0" />
     <PackageVersion Include="MongoDB.Extensions.Context" Version="3.5.0" />
@@ -55,5 +40,39 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.4" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.4" />
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="8.0.4" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.4" />
+    <PackageVersion Include="Microsoft.Extensions.Identity.Core" Version="8.0.4" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net10.0' ">
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Identity.Core" Version="10.0.1" />
   </ItemGroup>
 </Project>
