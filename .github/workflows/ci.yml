@@ -11,6 +11,7 @@ concurrency:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    name: Tests dotnet ${{ matrix.dotnet-version }}
     timeout-minutes: 15
     strategy:
       matrix:
@@ -37,6 +38,7 @@ jobs:
 
   build_ui:
     runs-on: ubuntu-latest
+    name: Build UI
     timeout-minutes: 15
     steps:
       - name: Checkout code
