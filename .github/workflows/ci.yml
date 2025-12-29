@@ -11,7 +11,7 @@ concurrency:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    name: Tests dotnet ${{ matrix.dotnet-version }}
+    name: Tests dotnet ${{ matrix.dotnet-version }} ${{ matrix.project }}
     timeout-minutes: 15
     strategy:
       matrix:
