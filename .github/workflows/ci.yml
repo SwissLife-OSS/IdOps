@@ -14,7 +14,7 @@ jobs:
     timeout-minutes: 15
     strategy:
       matrix:
-        dotnet-version: [8, 9, 10]
+        dotnet-version: [8, 10]
         project: ['./src/IdentityServer', './src/Server']
     steps:
       - name: Checkout code
