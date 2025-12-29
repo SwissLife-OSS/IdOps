@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
-using IdentityModel.Client;
+using Duende.IdentityModel.Client;
 using IdOps.Abstractions;
 using IdOps.Models;
 using Moq;

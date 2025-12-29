@@ -15,5 +15,9 @@ namespace IdOps.IdentityServer.Storage.Mongo
         public string UserDataConnectorData { get; set; } = "user_connector_data";
 
         public string PersonalAccessTokens { get; set; } = "personal_access_tokens";
+
+        public string PushedAuthorizationRequests { get; set; } = "pushed_authorization_requests";
+
+        public string BackChannelAuthenticationRequests { get; set; } = "backchannel_authentication_requests";
     }
 }

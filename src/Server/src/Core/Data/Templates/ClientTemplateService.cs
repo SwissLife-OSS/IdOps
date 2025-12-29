@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using IdentityModel;
+using Duende.IdentityModel;
 using IdOps.Model;
 using IdOps.Security;
 using IdOps.Server.Storage;

@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
-using IdentityModel.Client;
+using Duende.IdentityModel.Client;
 using IdOps.Abstractions;
 using IdOps.Models;
 

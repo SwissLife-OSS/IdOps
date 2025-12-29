@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Validation;
 using FluentValidation;
-using IdentityModel;
+using Duende.IdentityModel;
 using IdOps.IdentityServer.Events;
 using IdOps.IdentityServer.Model;
 using ValidationResult = FluentValidation.Results.ValidationResult;

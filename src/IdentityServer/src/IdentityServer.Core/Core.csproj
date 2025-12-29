@@ -16,6 +16,7 @@
     <PackageReference Include="Masstransit.EventHub" />
     <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
     <PackageReference Include="Duende.IdentityServer" />
+    <PackageReference Include="Duende.IdentityModel" />
     <PackageReference Include="MassTransit" />
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="OpenTelemetry.Api" />

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
-using IdentityModel;
+using Duende.IdentityModel;
 using IdOps.IdentityServer.Model;
 
 namespace IdOps.IdentityServer.Samples.DataSeeding

@@ -5,8 +5,8 @@ using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
-using IdentityModel.Client;
-using IdentityModel.Jwk;
+using Duende.IdentityModel.Client;
+using Duende.IdentityModel.Jwk;
 using IdOps.Security;
 using IdOps.Server.Storage;
 

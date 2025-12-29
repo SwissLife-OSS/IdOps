@@ -1,6 +1,7 @@
 using Duende.IdentityServer.Models;
 using IdOps.IdentityServer.DataConnector;
 using IdOps.IdentityServer.Model;
+using IdOps.IdentityServer.Storage.Mongo.Model;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
@@ -26,6 +27,8 @@ namespace IdOps.IdentityServer.Storage.Mongo
         private IMongoCollection<UserClaimRule>? _userClaimRules = null;
         private IMongoCollection<UserDataConnectorData>? _connectorData = null;
         private IMongoCollection<IdOpsPersonalAccessToken>? _personalAccessTokens = null;
+        private IMongoCollection<PushedAuthorizationRequest>? _pushedAuthorizationRequests = null;
+        private IMongoCollection<SerializedBackChannelAuthenticationRequest>? _backChannelAuthenticationRequests = null;
 
         private CollectionNames _collectionNames = new CollectionNames();
 
@@ -109,6 +112,26 @@ namespace IdOps.IdentityServer.Storage.Mongo
             }
         }
 
+        public IMongoCollection<PushedAuthorizationRequest> PushedAuthorizationRequests
+        {
+            get
+            {
+                if (_pushedAuthorizationRequests == null)
+                    _pushedAuthorizationRequests = CreateCollection<PushedAuthorizationRequest>();
+                return _pushedAuthorizationRequests;
+            }
+        }
+
+        public IMongoCollection<SerializedBackChannelAuthenticationRequest> BackChannelAuthenticationRequests
+        {
+            get
+            {
+                if (_backChannelAuthenticationRequests == null)
+                    _backChannelAuthenticationRequests = CreateCollection<SerializedBackChannelAuthenticationRequest>();
+                return _backChannelAuthenticationRequests;
+            }
+        }
+
         protected override void OnConfiguring(IMongoDatabaseBuilder mongoDatabaseBuilder)
         {
             mongoDatabaseBuilder
@@ -128,7 +151,9 @@ namespace IdOps.IdentityServer.Storage.Mongo
                 .ConfigureCollection(new UserClaimRuleCollectionConfiguration(_collectionNames.UserClaimRule))
                 .ConfigureCollection(new UserDataConnectorDataCollectionConfiguration(_collectionNames.UserDataConnectorData))
                 .ConfigureCollection(new IdOpsClientCollectionConfiguration(_collectionNames.Client))
-                .ConfigureCollection(new PersonalAccessTokenCollectionConfiguration(_collectionNames.PersonalAccessTokens));
+                .ConfigureCollection(new PersonalAccessTokenCollectionConfiguration(_collectionNames.PersonalAccessTokens))
+                .ConfigureCollection(new PushedAuthorizationRequestCollectionConfiguration(_collectionNames.PushedAuthorizationRequests))
+                .ConfigureCollection(new BackChannelAuthenticationRequestCollectionConfiguration(_collectionNames.BackChannelAuthenticationRequests));
         }
     }
 }

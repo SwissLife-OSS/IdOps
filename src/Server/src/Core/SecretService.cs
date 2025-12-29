@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using IdOps.Model;
-using IdentityModel;
+using Duende.IdentityModel;
 using System.Linq;
 using System.Threading;
 using IdOps.Data.Errors;
