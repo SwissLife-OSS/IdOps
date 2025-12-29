@@ -10,6 +10,10 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+    <PackageReference Include="System.Linq.Async" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Azure.Security.KeyVault.Keys" />
     <PackageReference Include="Handlebars.Net" />
