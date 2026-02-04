@@ -8,23 +8,16 @@ using IdOps.Server.Storage;
 
 namespace IdOps.GraphQL.DataLoaders
 {
-    public class TenantByIdDataLoader : BatchDataLoader<string, Tenant>
+    public class TenantByIdDataLoader(
+        ITenantStore tenantStore,
+        IBatchScheduler batchScheduler)
+        : BatchDataLoader<string, Tenant>(batchScheduler, new DataLoaderOptions())
     {
-        private readonly ITenantStore _tenantStore;
-
-        public TenantByIdDataLoader(
-            ITenantStore tenantStore,
-            IBatchScheduler batchScheduler)
-            : base(batchScheduler)
-        {
-            _tenantStore = tenantStore;
-        }
-
         protected override async Task<IReadOnlyDictionary<string, Tenant>> LoadBatchAsync(
             IReadOnlyList<string> keys,
             CancellationToken cancellationToken)
         {
-            IEnumerable<Tenant>? tenants = await _tenantStore
+            IEnumerable<Tenant>? tenants = await tenantStore
                 .GetManyAsync(keys, cancellationToken);
 
             return tenants.ToDictionary(x => x.Id);

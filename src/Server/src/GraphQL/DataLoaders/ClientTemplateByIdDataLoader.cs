@@ -9,22 +9,16 @@ using IdOps.Server.Storage;
 
 namespace IdOps.GraphQL.DataLoaders
 {
-    public class ClientTemplateByIdDataLoader : BatchDataLoader<Guid, ClientTemplate>
+    public class ClientTemplateByIdDataLoader(
+        IClientTemplateStore clientTemplateStore,
+        IBatchScheduler batchScheduler)
+        : BatchDataLoader<Guid, ClientTemplate>(batchScheduler, new DataLoaderOptions())
     {
-        private readonly IClientTemplateStore _clientTemplateStore;
-
-        public ClientTemplateByIdDataLoader(
-            IClientTemplateStore clientTemplateStore,
-            IBatchScheduler batchScheduler) : base(batchScheduler)
-        {
-            _clientTemplateStore = clientTemplateStore;
-        }
-
         protected override async Task<IReadOnlyDictionary<Guid, ClientTemplate>> LoadBatchAsync(
             IReadOnlyList<Guid> keys,
             CancellationToken cancellationToken)
         {
-            IEnumerable<ClientTemplate> templates = await _clientTemplateStore.GetManyAsync(
+            IEnumerable<ClientTemplate> templates = await clientTemplateStore.GetManyAsync(
                 keys,
                 cancellationToken);
 

@@ -8,23 +8,16 @@ using IdOps.Model;
 
 namespace IdOps.GraphQL.DataLoaders
 {
-    public class ApiScopeByIdDataLoader : BatchDataLoader<Guid, ApiScope>
+    public class ApiScopeByIdDataLoader(
+        IApiScopeService apiScopeService,
+        IBatchScheduler batchScheduler)
+        : BatchDataLoader<Guid, ApiScope>(batchScheduler, new DataLoaderOptions())
     {
-        private readonly IApiScopeService _apiScopeService;
-
-        public ApiScopeByIdDataLoader(
-            IApiScopeService apiScopeService,
-            IBatchScheduler batchScheduler)
-            : base(batchScheduler)
-        {
-            _apiScopeService = apiScopeService;
-        }
-
         protected override async Task<IReadOnlyDictionary<Guid, ApiScope>> LoadBatchAsync(
             IReadOnlyList<Guid> keys,
             CancellationToken cancellationToken)
         {
-            IEnumerable<ApiScope> scopes = await _apiScopeService.GetManyAsync(
+            IEnumerable<ApiScope> scopes = await apiScopeService.GetManyAsync(
                 keys,
                 cancellationToken);
 

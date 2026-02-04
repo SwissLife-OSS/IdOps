@@ -3,6 +3,7 @@ using IdOps.IdentityServer.DataConnector;
 using IdOps.IdentityServer.Model;
 using IdOps.IdentityServer.Storage.Mongo.Model;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
@@ -134,6 +135,7 @@ namespace IdOps.IdentityServer.Storage.Mongo
 
         protected override void OnConfiguring(IMongoDatabaseBuilder mongoDatabaseBuilder)
         {
+            BsonSerializer.TryRegisterSerializer(new GuidSerializer(GuidRepresentation.CSharpLegacy));
             mongoDatabaseBuilder
                 .RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String))
                 .RegisterConventionPack(

@@ -4,9 +4,7 @@ using System.Threading.Tasks;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Stores;
 using FluentAssertions;
-using IdOps.IdentityServer.Storage.Mongo.Tests;
 using MongoDB.Driver;
-using MongoDB.Driver.Linq;
 using Snapshooter.Xunit;
 using Squadron;
 using Xunit;
@@ -210,9 +208,8 @@ namespace IdOps.IdentityServer.Storage.Mongo.Tests
             IdentityStoreDbContext dbContext,
             string key)
         {
-            return await dbContext.PersistedGrants.AsQueryable()
-                .Where(x => x.Key == key)
-                .FirstOrDefaultAsync();
+            var filter = new FilterDefinitionBuilder<PersistedGrant>().Eq(x => x.Key, key);
+            return dbContext.PersistedGrants.Find(filter).FirstOrDefault();
         }
 
         private PersistedGrant DefaultGrant => new PersistedGrant

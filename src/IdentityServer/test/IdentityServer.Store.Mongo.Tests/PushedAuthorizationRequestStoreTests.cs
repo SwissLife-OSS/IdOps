@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using Duende.IdentityServer.Models;
 using FluentAssertions;
 using MongoDB.Driver;
-using MongoDB.Driver.Linq;
-using Snapshooter.Xunit;
 using Squadron;
 using Xunit;
 
@@ -137,9 +135,8 @@ namespace IdOps.IdentityServer.Storage.Mongo.Tests
             IdentityStoreDbContext dbContext,
             string hash)
         {
-            return await dbContext.PushedAuthorizationRequests.AsQueryable()
-                .Where(x => x.ReferenceValueHash == hash)
-                .FirstOrDefaultAsync();
+            var filter = new FilterDefinitionBuilder<PushedAuthorizationRequest>().Eq(x => x.ReferenceValueHash, hash);
+            return dbContext.PushedAuthorizationRequests.Find(filter).FirstOrDefault();
         }
 
         private PushedAuthorizationRequest DefaultRequest => new PushedAuthorizationRequest

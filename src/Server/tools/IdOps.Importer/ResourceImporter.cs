@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using IdOps.Model;
 using IdOps.Server.Storage.Mongo;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using Newtonsoft.Json;
 using Omu.ValueInjecter;
 
@@ -33,7 +34,7 @@ namespace IdOps
 
         public async Task CreateApplications(CancellationToken cancellationToken)
         {
-            List<Client> clients = await _dbContext.Clients.AsQueryable().ToListAsync();
+            List<Client> clients = await _dbContext.Clients.AsQueryable().ToListAsync(cancellationToken);
 
             var groups = clients
                 .Where(x => x.Name.Contains("_"))
