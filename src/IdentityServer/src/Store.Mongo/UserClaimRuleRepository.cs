@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using IdOps.IdentityServer.Model;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace IdOps.IdentityServer.Storage.Mongo
 {

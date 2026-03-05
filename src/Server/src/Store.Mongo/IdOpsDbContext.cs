@@ -26,7 +26,6 @@ namespace IdOps.Server.Storage.Mongo
         {
             builder
                 .RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String))
-                .ConfigureConnection(con => con.LinqProvider = LinqProvider.V2)
                 .ConfigureConnection(con => con.ReadConcern = ReadConcern.Majority)
                 .ConfigureConnection(con => con.WriteConcern = WriteConcern.WMajority)
                 .ConfigureConnection(con => con.ReadPreference = ReadPreference.Primary)
