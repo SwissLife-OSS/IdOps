@@ -2,9 +2,9 @@ using System;
 using IdOps.Model;
 using IdOps.Server.Storage.Mongo.Configuration;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
-using MongoDB.Driver.Linq;
 using MongoDB.Extensions.Context;
 using Environment = IdOps.Model.Environment;
 
@@ -24,6 +24,8 @@ namespace IdOps.Server.Storage.Mongo
 
         protected override void OnConfiguring(IMongoDatabaseBuilder builder)
         {
+            BsonSerializer.TryRegisterSerializer(new GuidSerializer(GuidRepresentation.CSharpLegacy));
+
             builder
                 .RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String))
                 .ConfigureConnection(con => con.ReadConcern = ReadConcern.Majority)
